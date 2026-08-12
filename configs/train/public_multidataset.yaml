@@ -1,0 +1,59 @@
+seed: 2026
+size: 256
+datasets: [shiq, sshr, nsh, psd, synthetic]
+# Null roots resolve to the single shared data tree at repository_root/data/raw.
+roots:
+  shiq: null
+  sshr: null
+  nsh: null
+  psd: null
+  synthetic: ../data/generated/domain_randomized_shr
+batch_size: 4
+eval_batch_size: 8
+workers: 4
+samples_per_epoch: 20000
+validation_size: 512
+base_channels: 48
+restorer_channels: 96
+weight_decay: 0.0001
+grad_clip: 1.0
+eval_every: 500
+
+phases:
+  - name: adapter
+    steps: 2000
+    lr: 0.0001
+  - name: joint
+    steps: 8000
+    lr: 0.00003
+
+augmentation:
+  horizontal_flip: 0.5
+  rotate_180: 0.5
+  exposure_stops: 0.75
+  gamma_range: [0.8, 1.25]
+  white_balance: 0.12
+  noise_std: 0.015
+  blur_probability: 0.2
+
+loss:
+  photo: 0.1
+  diffuse: 0.8
+  refine: 1.5
+  refine_mse: 4.0
+  refine_ssim: 0.5
+  refine_grad: 0.2
+  specular: 2.0
+  coarse: 1.0
+  mask_pred: 0.3
+  mask_dice: 0.2
+  hl_weight: 3.0
+  smooth: 0.001
+  decomposition_consistency: 0.5
+  uncertainty_nll: 0.1
+  uncertainty_calibration: 0.05
+  fusion_gate: 0.1
+  boundary: 0.2
+  identity: 0.2
+  texture: 0.1
+  charbonnier: 0.5

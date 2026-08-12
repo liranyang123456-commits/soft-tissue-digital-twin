@@ -1,0 +1,107 @@
+output_root: outputs/geometry_gated_v5
+protocol_label: Ours-NoGT
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: gsplat
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 10000
+brdf_warm_start_densify: true
+brdf_material_steps: 3000
+photometric_stereo_max_views: 8
+diligent_image_scale: 0.5
+diligent_photometric_stereo_max_views: 20
+diligent_scene_lr: 0.001
+normal_prior: 1.0
+# Only seed DiLiGenT cow (already strong). Stanford must retrain for depth≤0.87.
+seed_from: outputs/geometry_gated_v4
+seed_scenes:
+  - cowPNG
+visual_hull_resolution: 96
+depth_prior_hull_resolution: 96
+
+# v5 hard thresholds (stricter than v4).
+gate_thresholds:
+  stanford_normal_cosine_max: 0.25
+  stanford_depth_mse_x1e3_max: 0.87
+  stanford_psnr_min: 20.0
+  stanford_teapot_psnr_min: 18.0
+  stanford_blocks_ncos_max: 0.30
+  diligent_normal_degrees_max: 18.0
+  diligent_reading_psnr_min: 24.0
+  diligent_cow_psnr_min: 26.91
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes:
+  - cowPNG
+  - readingPNG
+
+# Per-scene overrides for weak-scene failures.
+scene_overrides:
+  blocks_scene005:
+    # Covariance normals fail on orthogonal block faces; keep learned.
+    keep_learned_normals: true
+    densify_every: 0
+    visual_hull_resolution: 96
+    loss:
+      normal_smooth: 0.12
+      normal_axis: 0.10
+      silhouette_bce: 0.35
+      silhouette_dice: 0.35
+  teapot_scene002:
+    # Keep geometry/normals frozen; lift PSNR via exposure + refiner.
+    brdf_freeze_geometry: true
+    brdf_freeze_lighting: false
+    brdf_material_steps: 8000
+    use_refiner: true
+    refine_start: 0
+    scene_lr: 0.001
+    light_lr: 0.002
+    loss:
+      exposure_prior: 0.02
+      white_balance_prior: 0.01
+      background_leak: 0.2
+  readingPNG:
+    view_lock_neighbors: 1
+    image_ps_hull_resolution: 64
+    brdf_material_steps: 6000
+    scene_lr: 0.0015
+    loss:
+      material_smooth: 0.01
+      normal_prior: 1.0
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  # Soft VH depth (NoGT carving), not mesh GT.
+  depth_prior: 0.15
+  silhouette_bce: 0.3
+  silhouette_dice: 0.3
+  background_leak: 0.15
+  depth_smooth: 0.06
+  normal_smooth: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

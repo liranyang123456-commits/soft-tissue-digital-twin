@@ -1,0 +1,50 @@
+Dear Editor,
+
+We submit our manuscript "Physics-Audited Soft-Tissue Digital Twins from
+Endoscopic Video: Canonical Gaussian Fields, Simulation-in-the-Loop
+Elasticity Inversion, and Parameter Provenance" for consideration in
+Computer Methods and Programs in Biomedicine.
+
+Surgical data science and patient-specific planning need a simulable model
+of soft tissue, not merely a visual reconstruction. Yet mechanical
+parameters (Young's modulus, Poisson ratio) are not directly observable
+from images, and existing endoscopic reconstruction methods either assign
+them silently or report them as if measured. Our work addresses this gap
+with two linked contributions.
+
+First, we present a three-stage pipeline that converts monocular endoscopic
+video into a physically simulable soft-tissue digital twin: a canonical
+scene-reconstruction stage fits a Gaussian BRDF field with tool-aware
+masking (36.8/34.1 dB tissue-masked PSNR on two EndoNeRF scenes, 26.6 dB on
+real SCARED stereo data); a deformation-tracking stage follows the tissue
+motion with a constant-velocity model and divergence rollback; and a
+mechanical-inversion stage recovers elastic properties by differentiable
+simulation-in-the-loop inversion.
+
+Second, and central to the biomedical computing community, we make
+parameter provenance a first-class, auditable output: every physical
+parameter is tagged as measured, estimated, or assumed, with confidence. We
+validate the mechanical-inversion stage on four stages, from a synthetic
+closed loop (uniform modulus recovered to 0.01% error) through an
+independent FEM-generated benchmark and a force-provenance study, to a real
+ultrasound phantom with independent compression-test ground truth (modulus
+contrast 3.80x vs. 3.56x, 6.9% error). A Laplace-posterior uncertainty
+study correctly flags an unidentifiable inclusion, demonstrating that the
+audit reports calibrated rather than overconfident estimates.
+
+We believe this honest, validated route from endoscopic video to a
+simulable soft-tissue twin fits the journal's focus on computational
+methods and software systems for biomedicine. All results are reproducible
+from the released code and public datasets
+(https://github.com/liranyang123456-commits/soft-tissue-digital-twin).
+
+The manuscript is original, has not been published previously, and is not
+under consideration by any other journal. All authors have approved the
+submission and declare no competing interests.
+
+Thank you for your consideration.
+
+Sincerely,
+Ranyang Li (on behalf of all authors)
+Henan University of Technology, Zhengzhou, China
+lry@haut.edu.cn

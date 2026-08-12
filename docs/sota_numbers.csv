@@ -1,0 +1,9 @@
+method,shiq_psnr,shiq_ssim,psd_psnr,psd_ssim,sshr_psnr,sshr_ssim,venue,code
+Shen13,13.923,0.428,13.886,0.61,24.388,0.904,traditional,
+SpecularityNet,23.42,0.92,21.801,0.88,25.731,0.894,TMM,https://github.com/jianweiguo/SpecularityNet-PSD
+JSHDR,34.131,0.86,21.516,0.883,26.979,0.895,CVPR'21,https://github.com/fu123456/SHIQ
+TSHRNet,25.575,0.933,22.759,0.903,28.633,0.94,ICCV'23,https://github.com/fu123456/TSHRNet
+HighlightRNet,30.231,0.93,29.787,0.922,30.066,0.956,MM'24,https://github.com/zz0223/HRNet
+DHAN-SHR,33.81,0.975,25.28,0.883,34.103,0.959,MM'24,https://github.com/CXH-Research/DHAN-SHR
+NeuralDRM,34.501,0.979,29.803,0.943,34.637,0.965,ICCV'25 SOTA,(pending)
+MVBRDF-SHR,,,,,,,ours,

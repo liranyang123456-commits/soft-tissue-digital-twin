@@ -1,0 +1,42 @@
+# DTU SampleSet scan 1, fixed illumination 3 across all 49 cameras.
+data_type: dtu
+data_root: ../data/raw/DTU_extracted/SampleSet/MVS Data
+scan: 1
+light: 3
+image_scale: 0.125
+max_init_points: 10000
+background_color: [1.0, 1.0, 1.0]
+
+n_gaussians: 10000
+gaussian_init: point_cloud
+point_color_weight: 0.0
+lighting_mode: sh
+shared_lighting: true
+freeze_geometry: false
+freeze_lighting: false
+use_refiner: false
+chunk_size: 64
+raster_backend: gsplat
+holdout_stride: 8
+holdout_offset: 0
+
+steps: 1500
+views_per_step: 4
+refine_start: 1500
+scene_lr: 0.002
+light_lr: 0.001
+log_every: 100
+output_dir: outputs/dtu_scan1
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 0.0
+  refine_gt: 0.0
+  specular_gt: 0.0
+  energy: 0.1
+  material_smooth: 0.01
+  normal_axis: 0.01
+  scale: 0.001
+  opacity_sparse: 0.0001
+  texture_consistency: 0.01

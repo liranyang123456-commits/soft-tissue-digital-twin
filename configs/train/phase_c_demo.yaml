@@ -1,0 +1,18 @@
+resolution: 128
+steps: 80
+lr: 0.0002
+batch_size: 2
+dataset: demo
+split: train
+group_views: true
+demo_root: data/demo_mv
+freeze_physics: true
+use_generative: true
+resume: outputs/phase_b/last.pt
+output_dir: outputs/phase_c
+loss:
+  photo: 0.2
+  diffuse: 0.5
+  cons: 0.05
+  refine: 1.5
+  smooth: 0.0

@@ -1,0 +1,45 @@
+seed: 7
+size: 32
+datasets: [shiq]
+roots:
+  shiq: null
+batch_size: 1
+eval_batch_size: 1
+workers: 0
+samples_per_epoch: 2
+validation_size: 2
+base_channels: 8
+restorer_channels: 8
+weight_decay: 0.0001
+grad_clip: 1.0
+eval_every: 1
+phases:
+  - {name: adapter, steps: 1, lr: 0.0001}
+  - {name: joint, steps: 1, lr: 0.00003}
+augmentation:
+  horizontal_flip: 0.0
+  exposure_stops: 0.0
+  gamma_range: [1.0, 1.0]
+  white_balance: 0.0
+  noise_std: 0.0
+  blur_probability: 0.0
+loss:
+  photo: 0.1
+  diffuse: 0.8
+  refine: 1.0
+  refine_ssim: 0.1
+  refine_grad: 0.1
+  specular: 1.0
+  coarse: 0.5
+  mask_pred: 0.2
+  mask_dice: 0.2
+  hl_weight: 1.0
+  smooth: 0.001
+  decomposition_consistency: 0.2
+  uncertainty_nll: 0.05
+  uncertainty_calibration: 0.02
+  fusion_gate: 0.05
+  boundary: 0.1
+  identity: 0.1
+  texture: 0.05
+  charbonnier: 0.2

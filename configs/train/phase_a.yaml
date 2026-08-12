@@ -1,0 +1,17 @@
+resolution: 128
+steps: 100
+lr: 0.001
+batch_size: 2
+n_views: 4
+dataset: toy
+dataset_size: 48
+use_generative: true
+output_dir: outputs/phase_a
+loss:
+  photo: 1.0
+  diffuse: 1.0
+  cons: 0.1
+  spec_ndf: 0.05
+  mask: 0.2
+  refine: 1.0
+  smooth: 0.01

@@ -1,0 +1,14 @@
+resolution: 256
+steps: 100
+lr: 0.0002
+batch_size: 2
+freeze_physics: true
+use_generative: true
+diffusion_backend: tiny
+output_dir: outputs/phase_c
+loss:
+  photo: 0.2
+  diffuse: 0.5
+  cons: 0.05
+  refine: 1.5
+  smooth: 0.0

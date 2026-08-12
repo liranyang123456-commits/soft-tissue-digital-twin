@@ -1,0 +1,68 @@
+data_type: blender
+data_root: data/baseline_protocols/scene0070_rgb_only/ours
+transforms: transforms.json
+image_scale: 1.0
+
+# Smoke test for bidirectional depth/normal coupling + multiscale + densify.
+n_gaussians: 2048
+visual_hull_init: true
+visual_hull_resolution: 96
+visual_hull_min_view_fraction: 0.8
+visual_hull_normal_smoothing_kernel: 3
+gaussian_init: point_cloud
+point_color_weight: 0.0
+freeze_geometry: false
+normal_mode: learned
+geometry_warmup_steps: 10
+freeze_geometry_after_warmup: true
+optimize_normals_after_warmup: true
+normal_depth_consistency_start: 10
+joint_refine_start: 20
+depth_from_normal_start: 20
+
+densify_every: 10
+densify_start: 5
+densify_end: 25
+densify_fraction: 0.02
+prune_opacity_threshold: 0.02
+
+lighting_mode: sh
+shared_lighting: true
+freeze_lighting: false
+use_refiner: false
+chunk_size: 64
+raster_backend: gsplat
+
+holdout_stride: 4
+holdout_offset: 0
+steps: 30
+views_per_step: 2
+scene_lr: 0.002
+light_lr: 0.001
+log_every: 5
+output_dir: outputs/scene0070_same_protocol/ours_bidir_smoke
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 0.0
+  refine_gt: 0.0
+  specular_gt: 0.0
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.01
+  scale: 0.002
+  opacity_sparse: 0.001
+  texture_consistency: 0.02
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  exposure_prior: 0.05
+  white_balance_prior: 0.05
+  normal_depth_consistency: 0.2
+  normal_depth_scales: 2
+  depth_from_normal: 0.1
+  normal_smooth: 0.05
+  normal_edge_aware: 0.05
+  normal_planar: 0.05
+  depth_smooth: 0.02

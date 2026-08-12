@@ -1,0 +1,18 @@
+resolution: 256
+steps: 2000
+lr: 0.0005
+batch_size: 4
+n_views: 1
+dataset: shiq
+split: train
+# data_root: ../data/raw/SHIQ_extracted
+use_generative: true
+output_dir: outputs/phase_b
+loss:
+  photo: 0.5
+  diffuse: 1.5
+  cons: 0.1
+  spec_ndf: 0.1
+  mask: 0.3
+  refine: 1.0
+  smooth: 0.01

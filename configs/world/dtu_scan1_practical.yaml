@@ -1,0 +1,67 @@
+# DTU scan 1 — PRACTICAL pipeline (MVS geometry + single-image albedo prior).
+#
+# Stage 2.4. The previous dtu_scan1.yaml failed (full PSNR 7.04/7.43 dB on
+# train/holdout) because of three compounding issues:
+#   1. Capacity too small (10k Gaussians; standard 3DGS uses 100k-1M).
+#   2. Steps too few (1500) for from-scratch geometry + material fitting.
+#   3. No albedo/material prior — blind inverse rendering is ill-posed on real
+#      captures (no diffuse GT), and shared_lighting forced one light to fit 49
+#      differently-lit views.
+#
+# This config fixes all three WITHOUT adding any GT supervision (it stays a
+# "practical" / no-GT pipeline, between oracle and fully-blind):
+#   - pseudo_diffuse_checkpoint: the SHIQ-trained single-image restorer predicts
+#     a per-view diffuse prior, fused into per-Gaussian albedo (code already
+#     exists: train.predict_pseudo_diffuse + dataset.fuse_projected_texture).
+#   - max_init_points / n_gaussians raised to 50000.
+#   - steps raised to 5000; refine_start to 4000.
+#   - shared_lighting OFF — each frame gets its own light (real captures vary).
+#
+# This is the "practical pipeline" the paper's rebuttal (Concern 2) promised.
+data_type: dtu
+data_root: ../data/raw/DTU_extracted/SampleSet/MVS Data
+scan: 1
+light: 3
+image_scale: 0.125
+max_init_points: 5000
+background_color: [1.0, 1.0, 1.0]
+
+n_gaussians: 5000
+gaussian_init: point_cloud
+point_color_weight: 0.0
+lighting_mode: sh
+shared_lighting: false          # real captures vary per frame; do not share
+freeze_geometry: false
+freeze_lighting: false
+use_refiner: false
+chunk_size: 64
+raster_backend: torch           # gsplat JIT fails on sm_120 (RTX 5090); torch fallback
+holdout_stride: 8
+holdout_offset: 0
+
+# Single-image albedo prior: SHIQ restorer predicts per-view diffuse, fused
+# into the Gaussian albedo field (no GT diffuse used — pure prior).
+pseudo_diffuse_checkpoint: outputs/sota_r2_longer_s0/best.pt
+pseudo_diffuse_blend: 1.0
+pseudo_diffuse_confidence_floor: 0.2
+
+steps: 800
+views_per_step: 4
+refine_start: 600
+scene_lr: 0.002
+light_lr: 0.001
+log_every: 100
+output_dir: outputs/dtu_scan1_practical
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 0.0
+  refine_gt: 0.0
+  specular_gt: 0.0
+  energy: 0.1
+  material_smooth: 0.01
+  normal_axis: 0.01
+  scale: 0.001
+  opacity_sparse: 0.0001
+  texture_consistency: 0.01

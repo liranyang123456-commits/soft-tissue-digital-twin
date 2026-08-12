@@ -1,0 +1,140 @@
+# Fixed, frozen geometry gate — replaces the v6/v7 threshold-tuning saga.
+#
+# WHY THIS EXISTS
+# ---------------
+# v6 FAILED the gate; v7 PASSED, but only because (a) every threshold was
+# relaxed (e.g. diligent_reading_psnr_min 22.0 -> 20.5), (b) all scenes were
+# seeded from the v4 checkpoint rather than retrained (brdf_refine_scenes was
+# redefined to an empty list), and (c) the gate silently switched between
+# full_psnr and orb_psnr_l per metric. That "PASS" does not reflect method
+# improvement.
+#
+# This config fixes all three: (1) thresholds are FROZEN at the v6 values and
+# labeled as such, so they cannot be quietly relaxed; (2) brdf_refine_scenes is
+# defined exactly once and lists the weak scenes that must actually retrain;
+# (3) run_geometry_gated_ablation.py now reports BOTH full_psnr and orb_psnr_l
+# for every scene so no metric shopping is possible.
+#
+# Run with:
+#   python scripts/run_geometry_gated_ablation.py \
+#     --config configs/world/geometry_gated_fixed.yaml
+output_root: outputs/geometry_gated_fixed
+protocol_label: Ours-NoGT-fixed-gate
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: torch
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 10000
+brdf_warm_start_densify: true
+brdf_material_steps: 3000
+photometric_stereo_max_views: 8
+diligent_image_scale: 0.5
+diligent_photometric_stereo_max_views: 20
+diligent_scene_lr: 0.001
+normal_prior: 1.0
+
+# Seeding: only the genuinely strong v4 scenes are seeded (ball/gnome/cow).
+# Weak scenes (blocks/teapot/reading) MUST retrain — do NOT seed them, do NOT
+# skip their BRDF stage. This is the opposite of v7, which seeded everything.
+seed_from: outputs/geometry_gated_v4
+seed_scenes:
+  - ball_scene003
+  - gnome_scene003
+  - cowPNG
+brdf_refine_scenes:
+  # Defined exactly ONCE (v7 defined it twice; YAML kept the empty one).
+  # These weak scenes run a real BRDF refine pass after geometry.
+  - blocks_scene005
+  - teapot_scene002
+  - readingPNG
+
+# FROZEN gate thresholds (identical to v6). Do NOT edit to make a run pass;
+# if the method is improved, the SAME thresholds should be met. If they are
+# not met, report the honest FAIL rather than relaxing the line.
+gate_thresholds:
+  stanford_normal_cosine_max: 0.28
+  stanford_depth_mse_x1e3_max: 1.10
+  stanford_psnr_min: 21.0
+  stanford_teapot_psnr_min: 15.0
+  stanford_blocks_ncos_max: 0.38
+  diligent_normal_degrees_max: 19.0
+  diligent_reading_psnr_min: 22.0
+  diligent_cow_psnr_min: 26.91
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes:
+  - cowPNG
+  - readingPNG
+
+# Weak-scene overrides identical to v6 (no relaxation carried over from v7).
+scene_overrides:
+  blocks_scene005:
+    visual_hull_resolution: 80
+    loss:
+      normal_smooth: 0.10
+      normal_axis: 0.12
+      silhouette_bce: 0.28
+      silhouette_dice: 0.28
+  teapot_scene002:
+    freeze_geometry_except_opacity: true
+    optimize_sensors_only: true
+    brdf_freeze_geometry: true
+    brdf_freeze_lighting: true
+    brdf_material_steps: 6000
+    use_refiner: false
+    scene_lr: 0.0015
+    light_lr: 0.01
+    loss:
+      exposure_prior: 0.0
+      white_balance_prior: 0.0
+      background_leak: 0.25
+      silhouette_bce: 0.30
+      silhouette_dice: 0.30
+      photo_ssim: 0.15
+  readingPNG:
+    view_lock_neighbors: 0
+    image_ps_hull_resolution: 48
+    brdf_material_steps: 8000
+    optimize_sensors_only: true
+    scene_lr: 0.0012
+    light_lr: 0.005
+    loss:
+      material_smooth: 0.012
+      normal_prior: 1.2
+      photo_l1: 1.2
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  depth_prior: 0.0
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  depth_smooth: 0.02
+  normal_smooth: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

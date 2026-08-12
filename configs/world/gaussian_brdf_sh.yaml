@@ -1,0 +1,34 @@
+data_type: blender              # blender | colmap
+data_root: data/world_demo
+transforms: transforms.json
+image_scale: 0.25
+
+n_gaussians: 512
+lighting_mode: sh               # first-level SH + dominant light
+use_refiner: true
+refiner_base: 96
+shiq_refiner_checkpoint: outputs/shiq_mse/best.pt
+chunk_size: 32
+raster_backend: auto           # CUDA gsplat when available, otherwise PyTorch
+
+steps: 3000
+refine_start: 1500
+scene_lr: 0.002
+light_lr: 0.001
+refiner_lr: 0.0001
+log_every: 25
+output_dir: outputs/world_sh
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 1.0
+  refine_gt: 1.0
+  specular_gt: 0.5
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02
+

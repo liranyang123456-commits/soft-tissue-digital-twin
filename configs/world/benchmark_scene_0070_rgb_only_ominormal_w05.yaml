@@ -1,0 +1,64 @@
+data_type: blender
+data_root: data/baseline_protocols/scene0070_rgb_only/ours
+transforms: transforms.json
+image_scale: 1.0
+
+# Omnidata monocular normal prior: a dedicated surface-normal regressor gives
+# smooth, full-coverage world-space normals (vs the sparse MiDaS depth-gradient
+# prior).  Geometry stays frozen; only the shading-normal field is supervised.
+n_gaussians: 2048
+visual_hull_init: true
+visual_hull_resolution: 96
+visual_hull_min_view_fraction: 0.8
+visual_hull_normal_smoothing_kernel: 3
+gaussian_init: point_cloud
+point_color_weight: 0.0
+freeze_geometry: false
+normal_mode: learned
+geometry_warmup_steps: 600
+freeze_geometry_after_warmup: true
+optimize_normals_after_warmup: true
+normal_depth_consistency_start: 600
+
+image_normal_prior_weight: 0.05
+image_normal_prior_source: omnidata
+monocular_depth_input_size: 384
+
+lighting_mode: sh
+shared_lighting: true
+freeze_lighting: false
+use_refiner: false
+chunk_size: 64
+raster_backend: gsplat
+
+holdout_stride: 4
+holdout_offset: 0
+steps: 3000
+views_per_step: 3
+scene_lr: 0.002
+light_lr: 0.001
+log_every: 100
+output_dir: outputs/scene0070_same_protocol/ours_constant_light_ominormal_w05
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 0.0
+  refine_gt: 0.0
+  specular_gt: 0.0
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.01
+  scale: 0.002
+  opacity_sparse: 0.001
+  texture_consistency: 0.02
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  exposure_prior: 0.05
+  white_balance_prior: 0.05
+  normal_depth_consistency: 0.2
+  normal_smooth: 0.05
+  normal_edge_aware: 0.05
+  normal_planar: 0.05
+  depth_smooth: 0.02

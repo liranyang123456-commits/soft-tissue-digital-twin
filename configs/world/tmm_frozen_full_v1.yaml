@@ -1,0 +1,98 @@
+# Frozen production protocol for Stanford-ORB.
+# Hyperparameters are selected on DEV4 only. TEST38 and novel RGB must never be
+# consulted for checkpoint or hyperparameter selection.
+output_root: outputs/tmm_frozen_full_v1
+protocol_label: Ours-NoGT-TMM-frozen-v1
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: gsplat
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 6000
+brdf_warm_start_densify: true
+brdf_material_steps: 3000
+photometric_stereo_max_views: 8
+
+visual_hull_resolution: 96
+visual_hull_coarse_resolution: 0
+stanford_visual_hull_min_view_fraction: 0.9
+stanford_visual_hull_normal_smoothing_kernel: 3
+
+view_lock_mode: hard
+view_lock_temperature: 0.55
+view_lock_min_weight: 0.02
+
+image_ps_irls_iterations: 0
+image_ps_huber_delta: 1.5
+image_ps_shadow_threshold: 0.0
+image_ps_saturation_threshold: 1.0
+
+diligent_image_scale: 0.5
+diligent_photometric_stereo_max_views: 20
+diligent_scene_lr: 0.001
+diligent_world_ps_surface: false
+diligent_world_ps_initializer: hull
+diligent_image_normal_prior_weight: 0.0
+diligent_normal_lr: 0.005
+diligent_holdout_light_stride: 8
+diligent_holdout_light_offset: 0
+diligent_n_gaussians: 50000
+diligent_image_ps_lower_quantile: 0.15
+diligent_image_ps_upper_quantile: 0.50
+normal_prior: 1.0
+
+# Thresholds are development diagnostics only and are not applied to TEST38.
+gate_thresholds:
+  stanford_normal_cosine_max: 0.28
+  stanford_depth_mse_x1e3_max: 1.10
+  stanford_psnr_min: 21.0
+  stanford_teapot_psnr_min: 15.0
+  stanford_blocks_ncos_max: 0.38
+  diligent_normal_degrees_max: 19.0
+  diligent_reading_psnr_min: 22.0
+  diligent_cow_psnr_min: 26.91
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes: []
+scene_overrides: {}
+seed_scenes: []
+brdf_refine_scenes: []
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  photo_log: 0.0
+  photo_highlight: 0.0
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  depth_prior: 0.0
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  depth_smooth: 0.02
+  normal_smooth: 0.0
+  normal_edge_aware: 0.05
+  normal_planar: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

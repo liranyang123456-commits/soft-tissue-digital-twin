@@ -1,0 +1,42 @@
+# Set this to one extracted BlendedMVS PID scene.
+data_type: mvsnet
+data_root: data/raw/BlendedMVS_extracted/REPLACE_WITH_PID
+images_dir: blended_images
+cams_dir: cams
+depth_dir: rendered_depth_maps
+image_scale: 0.25
+max_init_points: 50000
+max_point_views: 16
+
+n_gaussians: 10000
+gaussian_init: point_cloud
+point_color_weight: 0.0
+lighting_mode: sh
+freeze_geometry: false
+freeze_lighting: false
+use_refiner: false
+chunk_size: 64
+raster_backend: gsplat
+holdout_stride: 8
+holdout_offset: 0
+
+steps: 3000
+views_per_step: 4
+refine_start: 3000
+scene_lr: 0.002
+light_lr: 0.001
+log_every: 100
+output_dir: outputs/blendedmvs_scene
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 0.0
+  refine_gt: 0.0
+  specular_gt: 0.0
+  energy: 0.1
+  material_smooth: 0.01
+  normal_axis: 0.01
+  scale: 0.001
+  opacity_sparse: 0.0001
+  texture_consistency: 0.01

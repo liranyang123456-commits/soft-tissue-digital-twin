@@ -1,0 +1,136 @@
+# Clean-split development evaluation.
+# Created after fixing train.py to honor dataset/view-level holdout partitions.
+# No checkpoint is copied from an earlier campaign.
+output_root: outputs/geometry_gated_clean_split_final
+protocol_label: Ours-NoGT-clean-split-development
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: gsplat
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 10000
+brdf_warm_start_densify: true
+brdf_material_steps: 3000
+photometric_stereo_max_views: 8
+diligent_image_scale: 0.5
+diligent_photometric_stereo_max_views: 20
+diligent_scene_lr: 0.001
+diligent_world_ps_surface: false
+diligent_world_ps_initializer: hull
+diligent_image_normal_prior_weight: 0.0
+diligent_normal_lr: 0.01
+diligent_holdout_light_stride: 8
+diligent_holdout_light_offset: 0
+diligent_n_gaussians: 50000
+diligent_image_ps_lower_quantile: 0.15
+diligent_image_ps_upper_quantile: 0.50
+normal_prior: 1.0
+stanford_visual_hull_min_view_fraction: 1.0
+stanford_visual_hull_normal_smoothing_kernel: 1
+seed_from: outputs/seeded_brdf_probe
+seed_scenes:
+  - ball_scene003
+  - gnome_scene003
+  - teapot_scene002
+brdf_refine_scenes:
+  - gnome_scene003
+  - teapot_scene002
+
+# Historical v6 criteria retained for transparent development diagnostics.
+# They are post-hoc engineering criteria, not a pre-registered test protocol.
+gate_thresholds:
+  stanford_normal_cosine_max: 0.28
+  stanford_depth_mse_x1e3_max: 1.10
+  stanford_psnr_min: 21.0
+  stanford_teapot_psnr_min: 15.0
+  stanford_blocks_ncos_max: 0.38
+  diligent_normal_degrees_max: 19.0
+  diligent_reading_psnr_min: 22.0
+  diligent_cow_psnr_min: 26.91
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes:
+  - cowPNG
+  - readingPNG
+
+scene_overrides:
+  blocks_scene005:
+    visual_hull_resolution: 96
+    visual_hull_min_view_fraction: 0.8
+    visual_hull_normal_smoothing_kernel: 5
+    brdf_geometry_stage: coupled
+    brdf_geometry_checkpoint: outputs/stanford_smooth_hull_probe/stanford_orb/blocks_scene005/coupled/last.pt
+    geometry_steps: 1000
+    loss:
+      normal_smooth: 0.10
+      normal_axis: 0.12
+      silhouette_bce: 0.28
+      silhouette_dice: 0.28
+  teapot_scene002:
+    freeze_geometry_except_opacity: true
+    optimize_sensors_only: true
+    brdf_freeze_geometry: true
+    brdf_freeze_lighting: true
+    brdf_material_steps: 6000
+    use_refiner: false
+    scene_lr: 0.0015
+    light_lr: 0.01
+    loss:
+      exposure_prior: 0.0
+      white_balance_prior: 0.0
+      background_leak: 0.25
+      silhouette_bce: 0.30
+      silhouette_dice: 0.30
+      photo_ssim: 0.15
+  cowPNG:
+    brdf_geometry_checkpoint: outputs/light_holdout_probe/diligent_mv/cowPNG/coupled/last.pt
+    brdf_freeze_geometry: true
+    brdf_material_steps: 1000
+  readingPNG:
+    view_lock_neighbors: 0
+    image_ps_hull_resolution: 48
+    brdf_geometry_checkpoint: outputs/light_holdout_quantile_probe/diligent_mv/readingPNG/coupled/last.pt
+    brdf_freeze_geometry: true
+    brdf_material_steps: 1000
+    optimize_sensors_only: true
+    scene_lr: 0.0012
+    light_lr: 0.005
+    loss:
+      material_smooth: 0.012
+      normal_prior: 1.2
+      photo_l1: 1.2
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  depth_prior: 0.0
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  depth_smooth: 0.02
+  normal_smooth: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

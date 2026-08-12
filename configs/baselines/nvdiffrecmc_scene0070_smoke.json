@@ -1,0 +1,17 @@
+{
+  "ref_mesh": "../../data/baseline_protocols/scene0070_rgb_only/nvdiffrec",
+  "random_textures": true,
+  "iter": 1,
+  "save_interval": 1,
+  "texture_res": [128, 128],
+  "train_res": [128, 128],
+  "batch": 1,
+  "learning_rate": [0.03, 0.003],
+  "dmtet_grid": 64,
+  "mesh_scale": 2.2,
+  "validate": true,
+  "n_samples": 2,
+  "denoiser": "bilateral",
+  "background": "white",
+  "out_dir": "../../../outputs/scene0070_same_protocol/nvdiffrecmc_smoke"
+}

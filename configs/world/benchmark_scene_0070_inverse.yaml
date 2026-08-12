@@ -1,0 +1,39 @@
+data_type: blender
+data_root: data/world_benchmark_v2/scenes/test/scene_0070
+transforms: transforms.json
+image_scale: 1.0
+
+n_gaussians: 384
+gaussian_init: geometry         # geometry known; all BRDF parameters unknown
+gaussian_prior: gaussian_brdf_gt.npz
+freeze_geometry: true
+point_color_weight: 0.0         # initialize only from projected input RGB
+initial_albedo: 0.25            # avoid saturated sigmoid logits from HDR input
+lighting_mode: sh
+freeze_lighting: true           # calibrated benchmark light metadata
+use_refiner: false
+chunk_size: 32
+raster_backend: gsplat
+holdout_stride: 4
+holdout_offset: 0
+
+steps: 1500
+views_per_step: 9
+refine_start: 1500
+scene_lr: 0.003
+light_lr: 0.0
+log_every: 100
+output_dir: outputs/world_benchmark_v2_scene_0070_inverse
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 2.0
+  refine_gt: 0.0
+  specular_gt: 1.0
+  energy: 0.1
+  material_smooth: 0.01
+  normal_axis: 0.0
+  scale: 0.0
+  opacity_sparse: 0.0
+  texture_consistency: 0.01

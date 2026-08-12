@@ -1,0 +1,36 @@
+# Blender-Cycles/Mitsuba generated mvbrdf-world-canonical-v1 transforms.
+data_type: blender
+data_root: data/cross_renderer_scene
+transforms: transforms.json
+use_dataset_split: true
+linear_hdr: true
+
+n_gaussians: 50000
+lighting_mode: sh
+shadow_mode: gaussian
+shadow_strength: 1.0
+use_refiner: false
+raster_backend: auto
+steps: 30000
+views_per_step: 4
+view_sampling: distinct_views
+scene_lr: 0.002
+light_lr: 0.0005
+output_dir: outputs/cross_renderer_hdr
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 1.0
+  specular_gt: 0.5
+  albedo_gt: 1.0
+  normal_gt: 0.5
+  depth_gt: 0.2
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

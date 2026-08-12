@@ -1,0 +1,38 @@
+# Stanford-ORB scene root in Blender-transforms or LLFF layout.
+data_type: stanford_orb
+data_root: data/external/stanford_orb/blender_LDR/baking_scene001
+ground_truth_root: data/external/stanford_orb/ground_truth
+source_is_linear: false
+image_scale: 0.25
+holdout_view_stride: 8
+holdout_view_offset: 0
+
+n_gaussians: 50000
+lighting_mode: sh
+linear_hdr: true
+shadow_mode: gaussian
+use_refiner: false
+raster_backend: auto
+
+steps: 30000
+views_per_step: 4
+view_sampling: distinct_views
+scene_lr: 0.002
+light_lr: 0.0005
+output_dir: outputs/stanford_orb
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  # ORB albedo is pseudo-GT; keep this zero for primary training/evaluation.
+  albedo_gt: 0.0
+  normal_gt: 0.5
+  depth_gt: 0.2
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

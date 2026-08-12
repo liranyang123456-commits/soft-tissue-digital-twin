@@ -1,0 +1,47 @@
+output_root: outputs/geometry_gated_v3
+protocol_label: Ours-NoGT
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: gsplat
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 10000
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes:
+  - cowPNG
+  - readingPNG
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  depth_smooth: 0.02
+  normal_smooth: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

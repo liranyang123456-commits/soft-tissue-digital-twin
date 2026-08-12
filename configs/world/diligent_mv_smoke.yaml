@@ -1,0 +1,42 @@
+data_type: diligent_mv
+data_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData/cowPNG
+source_is_linear: true
+strict_counts: true
+max_views: 4
+max_lights_per_view: 8
+image_scale: 0.25
+world_scale: 0.002
+holdout_view_stride: 4
+holdout_view_offset: 0
+
+n_gaussians: 128
+use_mesh_points: true
+max_init_points: 5000
+lighting_mode: sh
+linear_hdr: true
+freeze_lighting: true
+shadow_mode: none
+use_refiner: false
+raster_backend: auto
+
+steps: 20
+views_per_step: 2
+view_sampling: distinct_views
+scene_lr: 0.002
+log_every: 5
+output_dir: outputs/diligent_mv_cow_smoke
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 1.0
+  depth_gt: 0.0
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

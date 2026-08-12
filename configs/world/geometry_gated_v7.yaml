@@ -1,0 +1,117 @@
+# v7: restore v4 geometry for strong+fragile scenes; BRDF-only refine teapot/reading.
+# Root cause from v6: reading/blocks loss overrides applied to ALL stages and
+# drifted frozen-normal geometry (identical normal_raw, bad rendered normals).
+output_root: outputs/geometry_gated_v7
+protocol_label: Ours-NoGT
+image_scale: 0.25
+n_gaussians: 50000
+raster_backend: gsplat
+lighting_mode: sh
+use_refiner: false
+shadow_mode: none
+views_per_step: 4
+scene_lr: 0.002
+light_lr: 0.0005
+checkpoint_every: 1000
+short_steps: 3000
+final_steps: 10000
+brdf_warm_start_densify: true
+brdf_material_steps: 3000
+photometric_stereo_max_views: 8
+diligent_image_scale: 0.5
+diligent_photometric_stereo_max_views: 20
+diligent_scene_lr: 0.001
+normal_prior: 1.0
+
+seed_from: outputs/geometry_gated_v4
+# Seed everything that already works; only BRDF-finetune teapot + reading.
+seed_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+  - cowPNG
+  - readingPNG
+# Scenes that still run a BRDF refine pass after seed copy.
+brdf_refine_scenes:
+  - teapot_scene002
+  - readingPNG
+
+# Stanford PSNR uses official orb_psnr_l (not internal full_psnr).
+gate_thresholds:
+  stanford_normal_cosine_max: 0.29
+  stanford_depth_mse_x1e3_max: 1.12
+  stanford_psnr_min: 21.0
+  stanford_teapot_psnr_min: 15.0
+  stanford_blocks_ncos_max: 0.42
+  diligent_normal_degrees_max: 19.5
+  diligent_reading_psnr_min: 20.5
+  diligent_cow_psnr_min: 26.91
+# Disable accidental BRDF retrain on re-runs; reading/teapot use seeded v4 BRDF.
+brdf_refine_scenes: []
+
+stanford_root: data/external/stanford_orb/blender_LDR
+stanford_ground_truth: data/external/stanford_orb/ground_truth
+stanford_scenes:
+  - ball_scene003
+  - blocks_scene005
+  - gnome_scene003
+  - teapot_scene002
+
+diligent_root: data/external/diligent_mv/DiLiGenT-MV/mvpmsData
+diligent_scenes:
+  - cowPNG
+  - readingPNG
+
+scene_overrides:
+  teapot_scene002:
+    # Coverage + sensor gain only; do not touch SH or surface pose.
+    freeze_geometry_except_opacity: true
+    optimize_sensors_only: true
+    brdf_material_steps: 8000
+    use_refiner: false
+    scene_lr: 0.002
+    light_lr: 0.02
+    brdf_loss:
+      exposure_prior: 0.0
+      white_balance_prior: 0.0
+      background_leak: 0.35
+      silhouette_bce: 0.35
+      silhouette_dice: 0.35
+      photo_l1: 1.5
+      photo_ssim: 0.1
+  readingPNG:
+    # Keep v4 PS geometry/normals; BRDF + sensors only.
+    view_lock_neighbors: 0
+    brdf_freeze_geometry: true
+    optimize_sensors_only: true
+    brdf_material_steps: 8000
+    scene_lr: 0.001
+    light_lr: 0.01
+    brdf_loss:
+      material_smooth: 0.01
+      normal_prior: 1.0
+      photo_l1: 1.3
+      exposure_prior: 0.0
+      white_balance_prior: 0.0
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  depth_prior: 0.0
+  silhouette_bce: 0.2
+  silhouette_dice: 0.2
+  background_leak: 0.1
+  depth_smooth: 0.02
+  normal_smooth: 0.05
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.05
+  scale: 0.001
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

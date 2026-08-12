@@ -1,0 +1,16 @@
+# Author Contributions (CRediT)
+
+**Ranyang Li:** Conceptualization, Methodology, Software, Formal analysis,
+Investigation, Data curation, Writing — original draft, Funding acquisition.
+
+**Nan Wei:** Software, Validation, Investigation, Data curation (clinical
+datasets and anatomical review).
+
+**Zhipeng Lin:** Validation, Formal analysis, Multi-view evaluation.
+
+**Wufeng Liu:** Data curation, Investigation, Experiments.
+
+**Chao Fan:** Visualization, Validation, Ablation studies.
+
+**Junjun Pan:** Supervision, Writing — review & editing, Project
+administration.

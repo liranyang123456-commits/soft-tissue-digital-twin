@@ -1,0 +1,19 @@
+# Ablation: no energy conservation / NDF losses
+resolution: 128
+steps: 80
+lr: 0.0005
+batch_size: 2
+dataset: demo
+split: train
+group_views: true
+demo_root: data/demo_mv
+use_generative: true
+output_dir: outputs/ablation_no_phys
+loss:
+  photo: 0.5
+  diffuse: 1.5
+  cons: 0.0
+  spec_ndf: 0.0
+  mask: 0.3
+  refine: 1.0
+  smooth: 0.01

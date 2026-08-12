@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mvbrdf-shr"
+version = "0.1.0"
+description = "Multi-View BRDF Field Specular Highlight Removal"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "torch",
+  "torchvision",
+  "numpy",
+  "pillow",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+diff = ["diffusers", "transformers", "accelerate"]
+cuda = ["gsplat>=1.5"]
+render = ["imageio", "OpenEXR", "mitsuba"]
+eval = ["lpips"]
+dev = ["pytest"]
+# Digital-twin export (Phase A+B): USD, meshing, segmentation, physics estimation.
+twin = ["trimesh", "usd-core", "open3d"]
+segment = ["segment-anything"]
+isaac = ["omni-isaac-sim"]  # Usually installed via Omniverse Launcher, not pip.
+
+[tool.setuptools.packages.find]
+include = ["mvbrdf_shr*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

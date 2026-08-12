@@ -1,0 +1,5 @@
+- Endoscopic video is converted into a simulable soft-tissue digital twin.
+- A canonical Gaussian field reconstructs tissue at 36.8 dB with tool-aware masking.
+- Elasticity is inverted by differentiable simulation and validated in four stages.
+- A real phantom with compression-test truth confirms modulus contrast within 6.9%.
+- Every physical parameter is audited as measured, estimated, or assumed.

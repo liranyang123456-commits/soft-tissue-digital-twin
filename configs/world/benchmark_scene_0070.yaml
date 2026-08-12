@@ -1,0 +1,40 @@
+data_type: blender
+data_root: data/world_benchmark_v2/scenes/test/scene_0070
+transforms: transforms.json
+image_scale: 1.0
+
+n_gaussians: 384
+gaussian_init: geometry_albedo  # known geometry/albedo; specular BRDF unknown
+gaussian_prior: gaussian_brdf_gt.npz
+freeze_geometry: true
+point_color_weight: 0.0         # avoid hidden use of synthetic GT point colors
+lighting_mode: sh
+freeze_lighting: true           # benchmark supplies calibrated per-frame lights
+use_refiner: true
+refiner_base: 96
+shiq_refiner_checkpoint: outputs/world_benchmark_single/best.pt
+chunk_size: 32
+raster_backend: gsplat
+holdout_stride: 4               # views 0,4,8 are never sampled for training
+holdout_offset: 0
+
+steps: 3000
+refine_start: 1500
+scene_lr: 0.002
+light_lr: 0.001
+refiner_lr: 0.0001
+log_every: 100
+output_dir: outputs/world_benchmark_v2_scene_0070_strict
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  diffuse_gt: 1.0
+  refine_gt: 1.0
+  specular_gt: 0.5
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

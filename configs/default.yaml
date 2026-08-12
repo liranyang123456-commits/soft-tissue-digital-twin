@@ -1,0 +1,13 @@
+# Default MVBRDF-SHR config
+model:
+  name: mvbrdf_shr
+  resolution: 256
+  use_generative: true
+data:
+  toy_n_views: 4
+  shiq_root: ../data/raw/SHIQ_extracted
+  sshr_root: ../data/raw/SSHR_extracted
+train:
+  phase: a
+backend:
+  diffusion: tiny  # tiny | sdturbo

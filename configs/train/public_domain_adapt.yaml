@@ -1,0 +1,52 @@
+seed: 2026
+size: 256
+# Change this single entry to sshr, nsh, or psd; retain group-safe adapter splits.
+datasets: [sshr]
+roots:
+  sshr: null
+batch_size: 4
+eval_batch_size: 8
+workers: 4
+samples_per_epoch: 8000
+validation_size: 512
+base_channels: 48
+restorer_channels: 96
+weight_decay: 0.0001
+grad_clip: 1.0
+eval_every: 200
+phases:
+  - name: adapter
+    steps: 1000
+    lr: 0.00005
+  - name: joint
+    steps: 1000
+    lr: 0.00001
+augmentation:
+  horizontal_flip: 0.5
+  rotate_180: 0.5
+  exposure_stops: 0.4
+  gamma_range: [0.9, 1.1]
+  white_balance: 0.08
+  noise_std: 0.01
+  blur_probability: 0.1
+loss:
+  photo: 0.1
+  diffuse: 0.8
+  refine: 1.5
+  refine_mse: 4.0
+  refine_ssim: 0.5
+  refine_grad: 0.2
+  specular: 2.0
+  coarse: 1.0
+  mask_pred: 0.3
+  mask_dice: 0.2
+  hl_weight: 3.0
+  smooth: 0.001
+  decomposition_consistency: 0.5
+  uncertainty_nll: 0.1
+  uncertainty_calibration: 0.05
+  fusion_gate: 0.1
+  boundary: 0.2
+  identity: 0.2
+  texture: 0.1
+  charbonnier: 0.5

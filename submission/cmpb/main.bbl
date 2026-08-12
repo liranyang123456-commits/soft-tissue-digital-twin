@@ -1,0 +1,298 @@
+\begin{thebibliography}{37}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\undefined \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Abou-Chakra et~al.(2024)}]{physicallyembodied}
+\bibinfo{author}{Abou-Chakra\xfnm[ J.]}, et~al.
+\newblock \bibinfo{title}{Physically embodied gaussian splatting: A physically
+  grounded model for dynamics and deformation}.
+\newblock \bibinfo{journal}{arXiv preprint arXiv:240509921}
+  \bibinfo{year}{2024};.
+%Type = Article
+\bibitem[{Allan et~al.(2021)Allan, McLeod, Wang et~al.}]{allan2021}
+\bibinfo{author}{Allan\xfnm[ M.]}, \bibinfo{author}{McLeod\xfnm[ J.]},
+  \bibinfo{author}{Wang\xfnm[ C.]}, et~al.
+\newblock \bibinfo{title}{Stereo correspondence and reconstruction of
+  endoscopic data}.
+\newblock \bibinfo{journal}{IEEE Transactions on Biomedical Engineering}
+  \bibinfo{year}{2021};\bibinfo{volume}{68}(\bibinfo{number}{4}):\bibinfo{pages}{1423--1434}.
+%Type = Article
+\bibitem[{Allan et~al.(2020)}]{scared}
+\bibinfo{author}{Allan\xfnm[ M.]}, et~al.
+\newblock \bibinfo{title}{Scared: Stereo laparoscopy dataset with metric
+  depth}.
+\newblock \bibinfo{journal}{arXiv preprint arXiv:201004668}
+  \bibinfo{year}{2020};.
+%Type = Article
+\bibitem[{Cook and Torrance(1982)}]{cooktorrance}
+\bibinfo{author}{Cook\xfnm[ R.L.]}, \bibinfo{author}{Torrance\xfnm[ K.E.]}.
+\newblock \bibinfo{title}{A reflectance model for computer graphics}.
+\newblock \bibinfo{journal}{ACM Transactions on Graphics}
+  \bibinfo{year}{1982};\bibinfo{volume}{1}(\bibinfo{number}{1}):\bibinfo{pages}{7--24}.
+%Type = Misc
+\bibitem[{Dahmani et~al.(2024)Dahmani, Petit and Laporte}]{etsphantom}
+\bibinfo{author}{Dahmani\xfnm[ J.]}, \bibinfo{author}{Petit\xfnm[ A.]},
+  \bibinfo{author}{Laporte\xfnm[ C.]}.
+\newblock \bibinfo{title}{Dataset of deformed ultrasound images and signals
+  under controlled indentation}.
+\newblock \bibinfo{year}{2024}.
+\newblock \bibinfo{note}{Borealis, V1,
+  \url{https://doi.org/10.5683/SP3/ASTGWY}}.
+%Type = Article
+\bibitem[{Fuller et~al.(2020)Fuller, Fan, Day and Barlow}]{fuller2020}
+\bibinfo{author}{Fuller\xfnm[ A.]}, \bibinfo{author}{Fan\xfnm[ Z.]},
+  \bibinfo{author}{Day\xfnm[ C.]}, \bibinfo{author}{Barlow\xfnm[ C.]}.
+\newblock \bibinfo{title}{Digital twin: Enabling technologies, challenges and
+  open research}.
+\newblock \bibinfo{journal}{IEEE Access}
+  \bibinfo{year}{2020};\bibinfo{volume}{8}:\bibinfo{pages}{108952--108971}.
+%Type = Book
+\bibitem[{Fung(1993)}]{fung1993}
+\bibinfo{author}{Fung\xfnm[ Y.C.]}.
+\newblock \bibinfo{title}{Biomechanics: Mechanical Properties of Living
+  Tissues}.
+\newblock \bibinfo{edition}{2nd} ed.
+\newblock \bibinfo{publisher}{Springer}, \bibinfo{year}{1993}.
+%Type = Inproceedings
+\bibitem[{Gal and Ghahramani(2016)}]{gal2016}
+\bibinfo{author}{Gal\xfnm[ Y.]}, \bibinfo{author}{Ghahramani\xfnm[ Z.]}.
+\newblock \bibinfo{title}{Dropout as a bayesian approximation: Representing
+  model uncertainty in deep learning}.
+\newblock In: \bibinfo{booktitle}{ICML}. \bibinfo{year}{2016}. .
+%Type = Article
+\bibitem[{Gao et~al.(2023)Gao, Chun, Zhao et~al.}]{relightable3dgs}
+\bibinfo{author}{Gao\xfnm[ J.]}, \bibinfo{author}{Chun\xfnm[ C.]},
+  \bibinfo{author}{Zhao\xfnm[ Y.]}, et~al.
+\newblock \bibinfo{title}{Relightable 3d gaussian: Real-time point cloud
+  relighting with brdf decomposition and ray tracing}.
+\newblock \bibinfo{journal}{arXiv preprint arXiv:230910822}
+  \bibinfo{year}{2023};.
+%Type = Inproceedings
+\bibitem[{Hayoz et~al.(2023)}]{hayoz2023}
+\bibinfo{author}{Hayoz\xfnm[ M.]}, et~al.
+\newblock \bibinfo{title}{Learning how to robustly estimate camera pose in
+  endoscopic videos}.
+\newblock In: \bibinfo{booktitle}{IPCAI}. \bibinfo{year}{2023}. .
+%Type = Book
+\bibitem[{Holzapfel(2000)}]{holzapfel2000}
+\bibinfo{author}{Holzapfel\xfnm[ G.A.]}.
+\newblock \bibinfo{title}{Nonlinear Solid Mechanics: A Continuum Approach for
+  Engineering}.
+\newblock \bibinfo{publisher}{Wiley}, \bibinfo{year}{2000}.
+%Type = Inproceedings
+\bibitem[{Hu et~al.(2020)Hu, Anderson, Li, Sun, Carr, Ragan-Kelley and
+  Durand}]{hu2020difftaichi}
+\bibinfo{author}{Hu\xfnm[ Y.]}, \bibinfo{author}{Anderson\xfnm[ L.]},
+  \bibinfo{author}{Li\xfnm[ T.M.]}, \bibinfo{author}{Sun\xfnm[ Q.]},
+  \bibinfo{author}{Carr\xfnm[ N.]}, \bibinfo{author}{Ragan-Kelley\xfnm[ J.]},
+  \bibinfo{author}{Durand\xfnm[ F.]}.
+\newblock \bibinfo{title}{Difftaichi: Differentiable programming for physical
+  simulation}.
+\newblock In: \bibinfo{booktitle}{ICLR}. \bibinfo{year}{2020}. .
+%Type = Inproceedings
+\bibitem[{Kendall and Gal(2017)}]{kendall2017}
+\bibinfo{author}{Kendall\xfnm[ A.]}, \bibinfo{author}{Gal\xfnm[ Y.]}.
+\newblock \bibinfo{title}{What uncertainties do we need in bayesian deep
+  learning for computer vision?}
+\newblock In: \bibinfo{booktitle}{NeurIPS}. \bibinfo{year}{2017}. .
+%Type = Inproceedings
+\bibitem[{Kerbl et~al.(2023)Kerbl, Kopanas, Leimk{\"u}hler and
+  Drettakis}]{gaussiansplatting}
+\bibinfo{author}{Kerbl\xfnm[ B.]}, \bibinfo{author}{Kopanas\xfnm[ G.]},
+  \bibinfo{author}{Leimk{\"u}hler\xfnm[ T.]}, \bibinfo{author}{Drettakis\xfnm[
+  G.]}.
+\newblock \bibinfo{title}{3d gaussian splatting for real-time radiance field
+  rendering}.
+\newblock In: \bibinfo{booktitle}{SIGGRAPH}. \bibinfo{year}{2023}. .
+%Type = Inproceedings
+\bibitem[{Lakshminarayanan et~al.(2017)Lakshminarayanan, Pritzel and
+  Blundell}]{lakshminarayanan2017}
+\bibinfo{author}{Lakshminarayanan\xfnm[ B.]}, \bibinfo{author}{Pritzel\xfnm[
+  A.]}, \bibinfo{author}{Blundell\xfnm[ C.]}.
+\newblock \bibinfo{title}{Simple and scalable predictive uncertainty estimation
+  using deep ensembles}.
+\newblock In: \bibinfo{booktitle}{NeurIPS}. \bibinfo{year}{2017}. .
+%Type = Article
+\bibitem[{Lamarca et~al.(2020)Lamarca, Parashar, Bartoli and Montiel}]{defslam}
+\bibinfo{author}{Lamarca\xfnm[ J.]}, \bibinfo{author}{Parashar\xfnm[ S.]},
+  \bibinfo{author}{Bartoli\xfnm[ A.]}, \bibinfo{author}{Montiel\xfnm[ J.M.M.]}.
+\newblock \bibinfo{title}{Defslam: Tracking and mapping of deforming scenes
+  from monocular sequences}.
+\newblock \bibinfo{journal}{IEEE Transactions on Robotics}
+  \bibinfo{year}{2020};\bibinfo{volume}{37}(\bibinfo{number}{1}):\bibinfo{pages}{291--303}.
+%Type = Article
+\bibitem[{Laubenbacher et~al.(2024)Laubenbacher, Mehrad, Shmulevich and
+  Trayanova}]{laubenbacher2024}
+\bibinfo{author}{Laubenbacher\xfnm[ R.]}, \bibinfo{author}{Mehrad\xfnm[ B.]},
+  \bibinfo{author}{Shmulevich\xfnm[ I.]}, \bibinfo{author}{Trayanova\xfnm[
+  N.A.]}.
+\newblock \bibinfo{title}{Digital twins in medicine}.
+\newblock \bibinfo{journal}{Nature Computational Science}
+  \bibinfo{year}{2024};\bibinfo{volume}{4}(\bibinfo{number}{3}):\bibinfo{pages}{184--191}.
+%Type = Article
+\bibitem[{Lee et~al.(2025)}]{landig2025}
+\bibinfo{author}{Lee\xfnm[ S.H.]}, et~al.
+\newblock \bibinfo{title}{Medical digital twins: enabling precision medicine
+  and medical artificial intelligence}.
+\newblock \bibinfo{journal}{The Lancet Digital Health}
+  \bibinfo{year}{2025};\bibinfo{volume}{7}(\bibinfo{number}{7}):\bibinfo{pages}{e100864}.
+%Type = Inproceedings
+\bibitem[{Li et~al.(2024)}]{pacnerf}
+\bibinfo{author}{Li\xfnm[ X.]}, et~al.
+\newblock \bibinfo{title}{Pac-nerf: Physics augmented continuum neural radiance
+  fields for geometry-agnostic system identification}.
+\newblock In: \bibinfo{booktitle}{ICLR}. \bibinfo{year}{2024}. .
+%Type = Inproceedings
+\bibitem[{Liang et~al.(2024)Liang, Zhang, Jia, Xu, Liu, Killian
+  et~al.}]{gsir2024}
+\bibinfo{author}{Liang\xfnm[ Z.]}, \bibinfo{author}{Zhang\xfnm[ Q.]},
+  \bibinfo{author}{Jia\xfnm[ Y.]}, \bibinfo{author}{Xu\xfnm[ Y.]},
+  \bibinfo{author}{Liu\xfnm[ X.]}, \bibinfo{author}{Killian\xfnm[ T.]}, et~al.
+\newblock \bibinfo{title}{Gs-ir: 3d gaussian splatting for inverse rendering}.
+\newblock In: \bibinfo{booktitle}{CVPR}. \bibinfo{year}{2024}. .
+%Type = Inproceedings
+\bibitem[{Liu et~al.(2024)}]{endogaussian}
+\bibinfo{author}{Liu\xfnm[ Y.]}, et~al.
+\newblock \bibinfo{title}{Endogaussian: Gaussian splatting for deformable
+  surgical scene reconstruction}.
+\newblock In: \bibinfo{booktitle}{AAAI}. \bibinfo{year}{2024}. .
+%Type = Inproceedings
+\bibitem[{Mildenhall et~al.(2020)Mildenhall, Srinivasan, Tancik, Barron,
+  Ramamoorthi and Ng}]{nerf}
+\bibinfo{author}{Mildenhall\xfnm[ B.]}, \bibinfo{author}{Srinivasan\xfnm[
+  P.P.]}, \bibinfo{author}{Tancik\xfnm[ M.]}, \bibinfo{author}{Barron\xfnm[
+  J.T.]}, \bibinfo{author}{Ramamoorthi\xfnm[ R.]}, \bibinfo{author}{Ng\xfnm[
+  R.]}.
+\newblock \bibinfo{title}{Nerf: Representing scenes as neural radiance fields
+  for view synthesis}.
+\newblock In: \bibinfo{booktitle}{ECCV}. \bibinfo{year}{2020}. .
+%Type = Book
+\bibitem[{Ogden(1997)}]{ogden1997}
+\bibinfo{author}{Ogden\xfnm[ R.W.]}.
+\newblock \bibinfo{title}{Non-Linear Elastic Deformations}.
+\newblock \bibinfo{publisher}{Dover}, \bibinfo{year}{1997}.
+%Type = Article
+\bibitem[{Ophir et~al.(1991)Ophir, C{\'e}spedes, Ponnekanti, Yazdi and
+  Li}]{ophir1991}
+\bibinfo{author}{Ophir\xfnm[ J.]}, \bibinfo{author}{C{\'e}spedes\xfnm[ I.]},
+  \bibinfo{author}{Ponnekanti\xfnm[ H.]}, \bibinfo{author}{Yazdi\xfnm[ Y.]},
+  \bibinfo{author}{Li\xfnm[ X.]}.
+\newblock \bibinfo{title}{Elastography: A quantitative method for imaging the
+  elasticity of biological tissues}.
+\newblock \bibinfo{journal}{Ultrasonic Imaging}
+  \bibinfo{year}{1991};\bibinfo{volume}{13}(\bibinfo{number}{2}):\bibinfo{pages}{111--134}.
+%Type = Article
+\bibitem[{Rivlin(1948)}]{rivlin1948}
+\bibinfo{author}{Rivlin\xfnm[ R.S.]}.
+\newblock \bibinfo{title}{Large elastic deformations of isotropic materials}.
+\newblock \bibinfo{journal}{Philosophical Transactions of the Royal Society A}
+  \bibinfo{year}{1948};\bibinfo{volume}{241}(\bibinfo{number}{822}):\bibinfo{pages}{379--397}.
+%Type = Inproceedings
+\bibitem[{Sanchez-Gonzalez et~al.(2020)Sanchez-Gonzalez, Godwin, Pfaff, Ying,
+  Leskovec and Battaglia}]{sanchezgonzalez2020}
+\bibinfo{author}{Sanchez-Gonzalez\xfnm[ A.]}, \bibinfo{author}{Godwin\xfnm[
+  J.]}, \bibinfo{author}{Pfaff\xfnm[ T.]}, \bibinfo{author}{Ying\xfnm[ R.]},
+  \bibinfo{author}{Leskovec\xfnm[ J.]}, \bibinfo{author}{Battaglia\xfnm[
+  P.W.]}.
+\newblock \bibinfo{title}{Learning to simulate complex physics with graph
+  networks}.
+\newblock In: \bibinfo{booktitle}{ICML}. \bibinfo{year}{2020}. .
+%Type = Article
+\bibitem[{Sigrist et~al.(2017)Sigrist, Liau, Kaffas, Chammas and
+  Willmann}]{sigrist2017}
+\bibinfo{author}{Sigrist\xfnm[ R.M.S.]}, \bibinfo{author}{Liau\xfnm[ J.]},
+  \bibinfo{author}{Kaffas\xfnm[ A.E.]}, \bibinfo{author}{Chammas\xfnm[ M.C.]},
+  \bibinfo{author}{Willmann\xfnm[ J.K.]}.
+\newblock \bibinfo{title}{Ultrasound elastography: Review of techniques and
+  clinical applications}.
+\newblock \bibinfo{journal}{Ultrasound in Medicine \& Biology}
+  \bibinfo{year}{2017};\bibinfo{volume}{43}(\bibinfo{number}{7}):\bibinfo{pages}{1303--1329}.
+%Type = Article
+\bibitem[{Tao et~al.(2019)Tao, Zhang, Liu and Nee}]{tao2019}
+\bibinfo{author}{Tao\xfnm[ F.]}, \bibinfo{author}{Zhang\xfnm[ H.]},
+  \bibinfo{author}{Liu\xfnm[ A.]}, \bibinfo{author}{Nee\xfnm[ A.Y.C.]}.
+\newblock \bibinfo{title}{Digital twin in industry: State-of-the-art}.
+\newblock \bibinfo{journal}{CIRP Annals}
+  \bibinfo{year}{2019};\bibinfo{volume}{68}(\bibinfo{number}{1}):\bibinfo{pages}{2405--2408}.
+%Type = Article
+\bibitem[{Topol(2019)}]{topol2019}
+\bibinfo{author}{Topol\xfnm[ E.J.]}.
+\newblock \bibinfo{title}{High-performance medicine: the convergence of human
+  and artificial intelligence}.
+\newblock \bibinfo{journal}{Nature Medicine}
+  \bibinfo{year}{2019};\bibinfo{volume}{25}(\bibinfo{number}{1}):\bibinfo{pages}{44--56}.
+%Type = Inproceedings
+\bibitem[{Tran et~al.(2018)Tran, Wang, Torresani, Ray, LeCun and Paluri}]{r3d}
+\bibinfo{author}{Tran\xfnm[ D.]}, \bibinfo{author}{Wang\xfnm[ H.]},
+  \bibinfo{author}{Torresani\xfnm[ L.]}, \bibinfo{author}{Ray\xfnm[ J.]},
+  \bibinfo{author}{LeCun\xfnm[ Y.]}, \bibinfo{author}{Paluri\xfnm[ M.]}.
+\newblock \bibinfo{title}{A closer look at spatiotemporal convolutions for
+  action recognition}.
+\newblock In: \bibinfo{booktitle}{Proceedings of the IEEE Conference on
+  Computer Vision and Pattern Recognition (CVPR)}. \bibinfo{year}{2018}. p.
+  \bibinfo{pages}{6450--6459}.
+%Type = Article
+\bibitem[{Wang et~al.(2026)Wang, Rodriguez, Pfeiffer, Bodenstedt, Younis,
+  Wagner and Speidel}]{smallbowelforce}
+\bibinfo{author}{Wang\xfnm[ K.]}, \bibinfo{author}{Rodriguez\xfnm[ A.]},
+  \bibinfo{author}{Pfeiffer\xfnm[ M.]}, \bibinfo{author}{Bodenstedt\xfnm[ S.]},
+  \bibinfo{author}{Younis\xfnm[ R.]}, \bibinfo{author}{Wagner\xfnm[ M.]},
+  \bibinfo{author}{Speidel\xfnm[ S.]}.
+\newblock \bibinfo{title}{Exploring video recognition models for force
+  estimation in small bowel surgical retractions}.
+\newblock \bibinfo{journal}{Int J Comput Assist Radiol Surg}
+  \bibinfo{year}{2026};\bibinfo{note}{Dataset:
+  \url{https://doi.org/10.5281/zenodo.19370452}}.
+%Type = Inproceedings
+\bibitem[{Wang et~al.(2022)Wang, Long, Fan and Dou}]{endonerf}
+\bibinfo{author}{Wang\xfnm[ Y.]}, \bibinfo{author}{Long\xfnm[ Y.]},
+  \bibinfo{author}{Fan\xfnm[ S.H.]}, \bibinfo{author}{Dou\xfnm[ Q.]}.
+\newblock \bibinfo{title}{Endonerf: Neural radiance fields for minimally
+  invasive robotic surgery}.
+\newblock In: \bibinfo{booktitle}{MICCAI}. \bibinfo{year}{2022}. .
+%Type = Article
+\bibitem[{Wells and Liang(2011)}]{wells2011}
+\bibinfo{author}{Wells\xfnm[ P.N.T.]}, \bibinfo{author}{Liang\xfnm[ H.D.]}.
+\newblock \bibinfo{title}{Medical ultrasound: Imaging of soft tissue strain and
+  elasticity}.
+\newblock \bibinfo{journal}{Journal of the Royal Society Interface}
+  \bibinfo{year}{2011};\bibinfo{volume}{8}(\bibinfo{number}{64}):\bibinfo{pages}{1521--1549}.
+%Type = Inproceedings
+\bibitem[{Xie et~al.(2024)}]{physgaussian}
+\bibinfo{author}{Xie\xfnm[ T.]}, et~al.
+\newblock \bibinfo{title}{Physgaussian: Physics-integrated 3d gaussians for
+  generative dynamics}.
+\newblock In: \bibinfo{booktitle}{ICML}. \bibinfo{year}{2024}. .
+%Type = Inproceedings
+\bibitem[{Zha et~al.(2023)Zha, Cheng, Li, Harandi and Ge}]{endosurf}
+\bibinfo{author}{Zha\xfnm[ R.]}, \bibinfo{author}{Cheng\xfnm[ X.]},
+  \bibinfo{author}{Li\xfnm[ H.]}, \bibinfo{author}{Harandi\xfnm[ M.]},
+  \bibinfo{author}{Ge\xfnm[ Z.]}.
+\newblock \bibinfo{title}{Endosurf: Neural surface reconstruction of deformable
+  tissues with stereo endoscope videos}.
+\newblock In: \bibinfo{booktitle}{MICCAI}. \bibinfo{year}{2023}. .
+%Type = Inproceedings
+\bibitem[{Zhang et~al.(2024)}]{physdreamer}
+\bibinfo{author}{Zhang\xfnm[ T.]}, et~al.
+\newblock \bibinfo{title}{Physdreamer: Physics-based interaction with 3d
+  objects via video generation}.
+\newblock In: \bibinfo{booktitle}{ECCV}. \bibinfo{year}{2024}. .
+%Type = Article
+\bibitem[{Zhong et~al.(2024)}]{springgaus}
+\bibinfo{author}{Zhong\xfnm[ L.]}, et~al.
+\newblock \bibinfo{title}{Spring-gaus: Integrating physical priors into
+  gaussian splatting for dynamic scene reconstruction}.
+\newblock \bibinfo{journal}{arXiv preprint arXiv:240500358}
+  \bibinfo{year}{2024};.
+
+\end{thebibliography}

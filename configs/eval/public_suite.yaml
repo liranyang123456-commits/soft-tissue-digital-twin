@@ -1,0 +1,24 @@
+size: 256
+batch_size: 8
+workers: 4
+base_channels: 48
+restorer_channels: 96
+datasets: [shiq, sshr, nsh, psd]
+roots:
+  shiq: null
+  sshr: null
+  nsh: null
+  psd: null
+splits:
+  shiq: test
+  sshr: test
+  nsh: test
+  # Override with `--split psd=ft_test` only for PSD-adapted checkpoints.
+  psd: test
+metric_protocol:
+  range: [0.0, 1.0]
+  aggregation: image-wise macro average
+  psnr: RGB pixel/channel MSE
+  ssim: RGB 11x11 box window with reflect padding
+  region_metrics: highlight, non-highlight, and 5x5 mask boundary
+  perceptual_metric: not claimed; LPIPS is intentionally not mixed into legacy scores

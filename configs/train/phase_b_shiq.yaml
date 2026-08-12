@@ -1,0 +1,18 @@
+resolution: 200
+steps: 8000
+lr: 0.0002
+batch_size: 8
+dataset: shiq
+split: train
+shiq_root: ../data/raw/SHIQ_extracted
+use_generative: true
+resume: outputs/sota_pro/best.pt
+output_dir: outputs/shiq_pro
+loss:
+  photo: 0.2
+  diffuse: 0.8
+  cons: 0.02
+  spec_ndf: 0.05
+  mask: 0.3
+  refine: 2.5
+  smooth: 0.001

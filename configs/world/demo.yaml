@@ -1,0 +1,34 @@
+data_type: blender
+data_root: data/world_demo
+transforms: transforms.json
+image_scale: 1.0
+device: cpu
+
+n_gaussians: 24
+lighting_mode: sh
+use_refiner: true
+refiner_base: 32
+chunk_size: 8
+raster_backend: torch
+
+steps: 40
+refine_start: 20
+scene_lr: 0.001
+light_lr: 0.001
+refiner_lr: 0.0001
+log_every: 5
+output_dir: outputs/world_demo
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.1
+  diffuse_gt: 1.0
+  refine_gt: 0.5
+  specular_gt: 0.5
+  energy: 0.1
+  material_smooth: 0.01
+  normal_axis: 0.01
+  scale: 0.001
+  opacity_sparse: 0.0001
+  texture_consistency: 0.01
+

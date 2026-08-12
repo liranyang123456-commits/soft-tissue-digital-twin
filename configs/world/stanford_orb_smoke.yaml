@@ -1,0 +1,41 @@
+data_type: stanford_orb
+data_root: data/external/stanford_orb/blender_LDR/baking_scene001
+ground_truth_root: data/external/stanford_orb/ground_truth
+source_is_linear: false
+max_frames_per_split: 4
+image_scale: 0.125
+use_dataset_split: true
+
+n_gaussians: 256
+use_mesh_points: true
+max_init_points: 10000
+lighting_mode: sh
+linear_hdr: false
+freeze_geometry: true
+optimize_normals: true
+shadow_mode: none
+use_refiner: false
+raster_backend: auto
+
+steps: 50
+views_per_step: 2
+view_sampling: distinct_views
+scene_lr: 0.002
+light_lr: 0.0005
+log_every: 10
+output_dir: outputs/stanford_orb_baking_smoke
+
+loss:
+  photo_l1: 1.0
+  photo_ssim: 0.2
+  albedo_gt: 0.0
+  normal_gt: 0.0
+  depth_gt: 0.0
+  exposure_prior: 0.001
+  white_balance_prior: 0.001
+  energy: 0.1
+  material_smooth: 0.02
+  normal_axis: 0.02
+  scale: 0.005
+  opacity_sparse: 0.001
+  texture_consistency: 0.02

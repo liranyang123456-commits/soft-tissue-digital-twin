@@ -1,0 +1,40 @@
+# ---- large data / results (not released; see README for dataset links) ----
+data/
+outputs/
+datasets/
+*.pt
+*.pth
+*.ckpt
+*.ply
+*.npz
+
+# ---- superseded submission versions (keep only cmpb) ----
+submission/jbhi/
+submission/neurocomputing/
+submission/tmm/
+submission/tmm_latex_package/
+submission/_pkg_test/
+submission/*.zip
+
+# ---- submission build artifacts ----
+submission/**/*.aux
+submission/**/*.log
+submission/**/*.out
+submission/**/*.spl
+submission/**/*.synctex
+submission/**/*.blg
+submission/**/figures/*.aux
+submission/**/figures/*.log
+
+# ---- python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ---- os / editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea*
