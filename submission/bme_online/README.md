@@ -6,7 +6,8 @@ Journal: **BioMedical Engineering OnLine** (Springer Nature / BMC), SCIE, open a
 
 投稿：https://submission.nature.com/new-submission/12938/3
 
-题目：**Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video**
+题目：**An Audited Soft-Tissue Digital Twin from Monocular Endoscopic
+Video: Gaussian Tracking and Force-Scale-Aware Mechanics**
 
 ## 作者
 

@@ -20,26 +20,6 @@ Topol EJ.
   intelligence.
 \newblock Nature Medicine. 2019;25(1):44--56.
 
-\bibitem[\protect\citeauthoryear{Kerbl et~al.}{2023}]{gaussiansplatting}
-Kerbl B, Kopanas G, Leimk{\"u}hler T, Drettakis G.
-\newblock 3D Gaussian splatting for real-time radiance field rendering.
-\newblock In: SIGGRAPH; 2023. .
-
-\bibitem[\protect\citeauthoryear{Holzapfel}{2000}]{holzapfel2000}
-Holzapfel GA.
-\newblock Nonlinear Solid Mechanics: A Continuum Approach for Engineering.
-\newblock Wiley; 2000.
-
-\bibitem[\protect\citeauthoryear{Hu et~al.}{2020}]{hu2020difftaichi}
-Hu Y, Anderson L, Li TM, Sun Q, Carr N, Ragan-Kelley J, et~al.
-\newblock DiffTaichi: Differentiable programming for physical simulation.
-\newblock In: ICLR; 2020. .
-
-\bibitem[\protect\citeauthoryear{Cook and Torrance}{1982}]{cooktorrance}
-Cook RL, Torrance KE.
-\newblock A reflectance model for computer graphics.
-\newblock ACM Transactions on Graphics. 1982;1(1):7--24.
-
 \bibitem[\protect\citeauthoryear{Wang et~al.}{2022}]{endonerf}
 Wang Y, Long Y, Fan SH, Dou Q.
 \newblock EndoNeRF: Neural radiance fields for minimally invasive robotic
@@ -92,6 +72,11 @@ Mildenhall B, Srinivasan PP, Tancik M, Barron JT, Ramamoorthi R, Ng R.
 \newblock NeRF: Representing scenes as neural radiance fields for view
   synthesis.
 \newblock In: ECCV; 2020. .
+
+\bibitem[\protect\citeauthoryear{Kerbl et~al.}{2023}]{gaussiansplatting}
+Kerbl B, Kopanas G, Leimk{\"u}hler T, Drettakis G.
+\newblock 3D Gaussian splatting for real-time radiance field rendering.
+\newblock In: SIGGRAPH; 2023. .
 
 \bibitem[\protect\citeauthoryear{Allan et~al.}{2021}]{scared}
 Allan M, McLeod J, Wang C, Rosenthal JC, Hu Z, Gard N, et~al.
@@ -157,6 +142,11 @@ Sigrist RMS, Liau J, Kaffas AE, Chammas MC, Willmann JK.
   applications.
 \newblock Ultrasound in Medicine \& Biology. 2017;43(7):1303--1329.
 
+\bibitem[\protect\citeauthoryear{Hu et~al.}{2020}]{hu2020difftaichi}
+Hu Y, Anderson L, Li TM, Sun Q, Carr N, Ragan-Kelley J, et~al.
+\newblock DiffTaichi: Differentiable programming for physical simulation.
+\newblock In: ICLR; 2020. .
+
 \bibitem[\protect\citeauthoryear{Kendall and Gal}{2017}]{kendall2017}
 Kendall A, Gal Y.
 \newblock What uncertainties do we need in Bayesian deep learning for computer
@@ -175,6 +165,16 @@ Lakshminarayanan B, Pritzel A, Blundell C.
 \newblock Simple and scalable predictive uncertainty estimation using deep
   ensembles.
 \newblock In: NeurIPS; 2017. .
+
+\bibitem[\protect\citeauthoryear{Holzapfel}{2000}]{holzapfel2000}
+Holzapfel GA.
+\newblock Nonlinear Solid Mechanics: A Continuum Approach for Engineering.
+\newblock Wiley; 2000.
+
+\bibitem[\protect\citeauthoryear{Cook and Torrance}{1982}]{cooktorrance}
+Cook RL, Torrance KE.
+\newblock A reflectance model for computer graphics.
+\newblock ACM Transactions on Graphics. 1982;1(1):7--24.
 
 \bibitem[\protect\citeauthoryear{Dahmani et~al.}{2024}]{etsphantom}
 Dahmani J, Petit A, Laporte C.

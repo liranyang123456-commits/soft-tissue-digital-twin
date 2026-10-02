@@ -1,8 +1,9 @@
-# Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video
+# An Audited Soft-Tissue Digital Twin from Monocular Endoscopic Video
 
 Official code for the paper:
 
-> **Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video.**
+> **An Audited Soft-Tissue Digital Twin from Monocular Endoscopic Video:
+> Gaussian Tracking and Force-Scale-Aware Mechanics.**
 > Ranyang Li, Haotian Ma, Zhipeng Lin, Nan Wei.
 > Submitted to *BioMedical Engineering OnLine*, 2026.
 
@@ -110,7 +111,8 @@ If you find this work useful, please cite:
 
 ```bibtex
 @article{li2026twin,
-  title   = {Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video},
+  title   = {An Audited Soft-Tissue Digital Twin from Monocular Endoscopic
+             Video: Gaussian Tracking and Force-Scale-Aware Mechanics},
   author  = {Li, Ranyang and Ma, Haotian and Lin, Zhipeng and Wei, Nan},
   journal = {BioMedical Engineering OnLine},
   year    = {2026},

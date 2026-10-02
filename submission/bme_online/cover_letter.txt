@@ -1,11 +1,16 @@
 Dear Editors,
 
-Please consider our manuscript entitled "Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video" as a Research article in BioMedical Engineering OnLine.
+Please consider our manuscript entitled "An Audited Soft-Tissue Digital
+Twin from Monocular Endoscopic Video: Gaussian Tracking and
+Force-Scale-Aware Mechanics" as a Research article in
+BioMedical Engineering OnLine.
 
 Based on 3D Gaussian splatting and differentiable Neo-Hookean finite
 elements, the manuscript presents an audited soft-tissue digital twin from
-monocular endoscopic video. Reconstruction, deformation tracking, and
-mechanical inversion act on the same Gaussian primitives. A force-scale
+monocular endoscopic video. Reconstruction and deformation tracking act on
+the same Gaussian primitives; tracked surface displacement provides the
+interface to relative stiffness estimation and known-force finite-element
+inversion. A force-scale
 analysis separates absolute-modulus uncertainty from force-scale-invariant
 stiffness contrast, and a provenance map records whether each parameter is
 measured, estimated, or assumed. The evaluation combines public
