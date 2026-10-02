@@ -105,67 +105,62 @@ unsupported. The twin defined here therefore carries, with each parameter,
 a record of whether that parameter was measured, estimated, or assumed
 \cite{topol2019,landig2025}.
 
-The twin is the tuple
+Based on 3D Gaussian splatting \cite{gaussiansplatting} and differentiable
+Neo-Hookean finite elements \cite{holzapfel2000,hu2020difftaichi}, we
+propose an audited soft-tissue digital twin
 $\mathcal{T}=(G,\{\Delta_t\},\Theta,\mathcal{A})$
 (Fig.~\ref{fig:pipeline}, Fig.~\ref{fig:architecture}).
-$G$ is one set of anisotropic 3D Gaussians
-\cite{gaussiansplatting}. Each primitive stores a position, a covariance,
-an opacity, a unit normal, and the parameters of a Cook--Torrance
-reflectance model \cite{cooktorrance}, constrained so that diffuse
-reflectance, specular reflectance, and absorption sum to one. Images are
-formed by front-to-back alpha compositing, and the primitives are fitted
-by gradient descent on the photometric and depth residuals. The EndoNeRF
-mask marks instruments, not tissue, and instruments have no valid depth, so
-the loss is evaluated only where the depth is positive and the pixel is
-outside that mask. The same primitives then receive a displacement
-$\Delta_t$ at each later frame. Because the primitive identities do not
-change, the displacements are boundary conditions for a simulator rather
-than an independent reconstruction of each frame. The displacement is
-initialized by constant-velocity extrapolation and optimized under the
-photometric residual, a $k$-nearest-neighbor Laplacian, and a penalty on
-acceleration. A frame whose loss exceeds three times that of the previous
-frame is re-optimized at a reduced step size or replaced by the previous
-displacement. EndoNeRF, EndoSurf, and EndoGaussian
+
+We propose a canonical field of anisotropic 3D Gaussians. Each primitive
+stores a position, a covariance, an opacity, a unit normal, and a
+Cook--Torrance reflectance model \cite{cooktorrance}, constrained so that
+diffuse reflectance, specular reflectance, and absorption sum to one.
+Images are formed by front-to-back alpha compositing. The field is fitted
+by differentiable rasterization on pixels whose depth is positive and which
+lie outside the instrument mask; the EndoNeRF mask marks instruments, which
+have no valid depth. EndoNeRF, EndoSurf, and EndoGaussian
 \cite{endonerf,endosurf,endogaussian} stop once appearance and geometry
-have been reconstructed. Here the fitted primitives are the degrees of
-freedom that are subsequently displaced and assigned elastic parameters.
+have been reconstructed. The primitives proposed here are the same degrees
+of freedom that are later displaced and assigned elastic parameters, so the
+reconstruction can be loaded into a simulator.
 
-The elastic parameters $\Theta$ are recovered by requiring a
-differentiable simulator to reproduce $\{\Delta_t\}$
-\cite{hu2020difftaichi}. The tissue is treated as a quasi-static
-Neo-Hookean solid \cite{holzapfel2000}. Young's modulus is updated by
-gradient descent through the equilibrium, using the implicit-function
-theorem, with a log-normal tissue prior as regularization. For any strain
-energy that is linear in Young's modulus at fixed Poisson ratio, which
-includes this Neo-Hookean energy, scaling every regional modulus and the
-applied force by the same factor leaves the equilibrium displacement
-unchanged (Proposition~\ref{prop:forcescale}). A global error in the force
-magnitude is therefore absorbed into the modulus, while the ratio of two
-regional moduli is not. Absolute modulus is reported together with the
-uncertainty of the force; stiffness contrast is the quantity that remains
-when the force magnitude is uncertain. Where a force value is required and
-none was measured, we use the error model of a published 3D residual
-network (R3D-18) trained for retraction-force estimation
-\cite{smallbowelforce,r3d}. That network is not retrained in this work.
+We propose displacement estimation on these primitives. The displacement
+$\Delta_t$ is initialized by constant-velocity extrapolation and optimized
+under the photometric residual, a $k$-nearest-neighbor Laplacian, and a
+penalty on acceleration. A frame whose loss exceeds three times that of the
+previous frame is re-optimized at a reduced step size or replaced by the
+previous displacement. Primitive identities stay fixed, so the displacements
+are boundary conditions for the simulator.
 
-The audit $\mathcal{A}$ assigns each parameter a tag and a confidence
+We propose to recover Young's modulus by implicit differentiation of a
+quasi-static Neo-Hookean equilibrium, with a log-normal tissue prior as
+regularization. For a strain energy that is linear in Young's modulus at
+fixed Poisson ratio, scaling every regional modulus and the applied force
+by the same factor leaves the equilibrium displacement unchanged
+(Proposition~\ref{prop:forcescale}). A global force error is absorbed into
+the modulus, while the ratio of two regional moduli is unchanged. When a
+force value is required and none was measured, the error model of a
+published R3D-18 retraction-force estimator is used
+\cite{smallbowelforce,r3d}.
+
+We propose a log-normal Bayesian update that labels each parameter
+measured, estimated, or assumed, and attaches a confidence equal to the
+fractional reduction in posterior standard deviation
 (Sec.~\ref{sec:uq}). A parameter is measured when it is recovered from
-observed deformation under a known load, estimated when it is inferred
-from appearance or from deformation without a force measurement, and
-assumed when it is copied from a tissue-class table (liver, fat, muscle,
-skin, or tumor). The confidence is the fractional reduction in standard
-deviation after a Gaussian update of a log-normal prior on $\log E$. A
-Laplace approximation of the posterior is sampled through the simulator to
-produce a prediction interval. On sequences without an instrumented force,
-the reflectance parameters are measured and the modulus is assumed; a
-large posterior standard deviation on an inclusion modulus indicates that
-the inclusion was not identified.
+deformation under a known load, estimated when the evidence is appearance
+or deformation without a force measurement, and assumed when it is copied
+from a tissue-class table (liver, fat, muscle, skin, or tumor). A Laplace
+approximation of the posterior is sampled through the simulator. On
+sequences without an instrumented force, the reflectance parameters are
+measured and the modulus is assumed; a large posterior standard deviation
+on an inclusion modulus indicates that the inclusion was not identified.
 
-The shared Gaussian representation, the force-scale identity, and the
-provenance tags are evaluated together, from a synthetic closed loop,
-through an independent finite-element benchmark, to a physical ultrasound
-phantom with compression-test measurements
-(Sec.~\ref{sec:experiments}).
+We construct one patient-specific dataset, a liver mesh from 82
+de-identified abdominal CT slices. Mechanical ground truth is a
+finite-element benchmark of 60 scenarios and four load cases, of which six
+are inverted in this study. The proposals are evaluated from a synthetic
+closed loop to a physical ultrasound phantom with compression-test
+measurements (Sec.~\ref{sec:experiments}).
 
 Across two EndoNeRF scenes and the SCARED stereo dataset, reconstruction
 recovers tissue at 26.6--36.8\,dB tissue-masked
@@ -315,15 +310,13 @@ than to decorate point estimates.
 
 \subsubsection{Gaps and our response}
 \label{sec:gaps}
-Endoscopic reconstruction produces appearance and geometry but no forward
-operator; the Gaussian field defined above is tracked and inverted so that
-it can be loaded into a simulator. Physics-aware methods assign elastic
-parameters manually or recover only relative stiffness; absolute modulus is
-recovered here when the load is known, and is marked assumed when it is
-not. No prior method states whether a parameter was measured, estimated,
-or assumed. Validation runs from a synthetic closed loop to a physical
-phantom with an independent compression test, rather than in a single
-setting.
+Based on 3D Gaussian splatting, we propose a field that is tracked and
+inverted, so the reconstruction can be loaded into a simulator.
+Based on differentiable Neo-Hookean finite elements, we propose modulus
+recovery when the load is known, and an assumed label when it is not.
+We propose an explicit measured, estimated, or assumed label for every
+parameter. The proposals are tested from a synthetic closed loop to a
+physical phantom with an independent compression test.
 
 %% ===================================================================
 \section{Results}
@@ -1358,19 +1351,20 @@ audit framework is built on.
 \section{Conclusions}
 \label{sec:conclusion}
 %% ===================================================================
-A monocular endoscopic video was converted into a soft-tissue digital twin
-whose appearance, motion, and elasticity are carried by one set of 3D
-Gaussians, so the reconstruction can be driven forward in a simulator.
-For a Neo-Hookean energy that is linear in Young's modulus at fixed
-Poisson ratio, a global force error is absorbed by the modulus and leaves
-stiffness contrast unchanged. Each parameter is tagged measured,
-estimated, or assumed, with a confidence from a log-normal Bayesian
-update. The construction was evaluated on two EndoNeRF scenes, SCARED
-keyframes, an independent finite-element benchmark, a video force-error
-model, and a physical ultrasound phantom with compression-test moduli.
-Absolute modulus on real tissue requires force sensing; future work will
-add force-instrumented tools, a richer tissue reflectance model, and
-closed-loop rehearsal.
+Based on 3D Gaussian splatting and differentiable Neo-Hookean finite
+elements, we proposed an audited soft-tissue digital twin: a canonical
+Gaussian field with a Cook--Torrance reflectance model and
+instrument-excluded depth supervision; displacement estimation with
+constant-velocity initialization, a nearest-neighbor Laplacian, an
+acceleration penalty, and rejection of a diverging frame; Young's modulus
+recovered by implicit differentiation of the finite-element equilibrium;
+and a log-normal Bayesian update that labels each parameter measured,
+estimated, or assumed. A global force error is absorbed by the modulus and
+leaves stiffness contrast unchanged. We constructed a liver mesh from 82
+de-identified abdominal CT slices and inverted six of 60 finite-element
+scenarios with four load cases. Absolute modulus on real tissue requires
+force sensing. Future work will add force-instrumented tools, a richer
+tissue reflectance model, and closed-loop rehearsal.
 
 
 
