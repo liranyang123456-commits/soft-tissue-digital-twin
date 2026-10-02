@@ -23,7 +23,7 @@ Journal: **BioMedical Engineering OnLine** (Springer Nature / BMC), SCIE, open a
 | `manuscript_source.zip` | Manuscript source。内含 `main.tex`、`references.bib`、`sn-jnl.cls`、`sn-vancouver.bst`、`figures/` |
 | `cover_letter.txt` | 粘贴到 Cover letter |
 
-不要上传 `compile*.txt`、`_sn/`、`sn.zip`。系统里再填三位合作者的邮箱。稿件里只有通讯作者邮箱。代码链接已写进稿件的数据声明和投稿信。
+稿件按该刊发表论文的体例重排（2026 年计算建模类原文为范本）：结构化摘要含 **Background / Methods / Results / Conclusions**；正文顺序 **Introduction（相关工作并入）→ Results → Discussion（含 Limitations）→ Methods（含实验设置）→ Conclusions**；Results 小节标题为陈述句。摘要 309 词。不要上传 `compile*.txt`、`_sn/`、`sn.zip`。系统里再填三位合作者的邮箱。代码链接已写进稿件的数据声明和投稿信。
 
 ## 和现有方法比，没有重建 SOTA
 

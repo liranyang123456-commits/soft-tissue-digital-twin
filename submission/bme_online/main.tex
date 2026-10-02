@@ -37,15 +37,16 @@
 
 \affil[3]{\orgname{Henan Provincial People's Hospital}, \orgaddress{\city{Zhengzhou}, \postcode{450003}, \country{China}}}
 
-\abstract{\textbf{Background:} Surgical planning needs a soft-tissue model that a simulator can drive forward, but a monocular endoscopic video provides images only. Endoscopic reconstruction methods, from neural radiance fields to Gaussian splatting, recover appearance and geometry and stop there; their output cannot be loaded into a physics simulator. Physics-based inversion can identify material parameters, but it needs known applied forces and usually multi-view capture, neither of which monocular endoscopy provides. A simulator built from video is therefore fed parameters that are silently copied from a tissue table or reported as if they had been measured. Building on 3D Gaussian splatting and differentiable simulation, this study constructs a simulable soft-tissue digital twin directly from a monocular endoscopic video and attaches to every physical parameter an audit tag, measured, estimated, or assumed, with a confidence.
-\textbf{Results:} The twin is built in three stages on one canonical 3D Gaussian field, so the rendered scene, the tracked motion, and the inverted mechanics always describe the same object: tool-aware tissue supervision fits the field, a constant-velocity tracker with divergence rollback follows the deformation, and differentiable finite-element simulation recovers the elastic parameters. A force-scale analysis proves that a global force error shifts the recovered modulus one-to-one while stiffness contrast is invariant, so contrast is what video supports when force is uncertain. Tissue-masked peak signal-to-noise ratio is 36.8\,dB and 34.1\,dB on two EndoNeRF scenes and 26.6\,dB on SCARED. A uniform modulus is recovered to 0.01\% error in a closed loop, background modulus has a 4.3\% median error on a finite-element benchmark, and on a real ultrasound phantom the image-derived contrast is $3.80\times$ against a compression-test value of $3.56\times$ (6.9\% error).
-\textbf{Conclusions:} The contribution is an audited, simulable twin rather than a reconstruction record: one Gaussian field carries appearance, motion, and mechanics; the force-scale result states exactly what video can identify; and the audit makes the provenance of every parameter explicit. Absolute modulus on real tissue is not claimed without force sensing.}
+\abstract{\textbf{Background:} Surgical planning needs a soft-tissue model that a simulator can drive forward, but a monocular endoscopic video provides images only. Endoscopic reconstruction methods recover appearance and geometry and stop there; their output cannot be loaded into a physics simulator. Physics-based inversion can identify material parameters but requires known applied forces and usually multi-view capture, neither of which monocular endoscopy provides. This study constructs a simulable soft-tissue digital twin directly from a monocular endoscopic video and attaches to every physical parameter an audit tag, measured, estimated, or assumed, with a confidence.
+\textbf{Methods:} Building on 3D Gaussian splatting and differentiable simulation, the twin is built in three stages on one canonical 3D Gaussian field: tool-aware tissue supervision fits the field, a constant-velocity tracker with divergence rollback follows the deformation, and differentiable finite-element simulation recovers the elastic parameters. The pipeline is evaluated on two EndoNeRF scenes, two SCARED keyframes, a six-scenario finite-element benchmark, a force-provenance study, and a real ultrasound phantom with compression-test ground truth.
+\textbf{Results:} A force-scale analysis shows that a global force error shifts the recovered modulus one-to-one while stiffness contrast is invariant. Tissue-masked peak signal-to-noise ratio is 36.8\,dB and 34.1\,dB on the EndoNeRF scenes and 26.6\,dB on SCARED. A uniform modulus is recovered to 0.01\% error in a closed loop, background modulus has a 4.3\% median error on the benchmark, and on the phantom the image-derived contrast is $3.80\times$ against a compression-test value of $3.56\times$ (6.9\% error).
+\textbf{Conclusions:} One Gaussian field carries appearance, motion, and mechanics, so the twin is simulable; the force-scale result states what video can identify; and the audit makes the provenance of every parameter explicit. Absolute modulus on real tissue is not claimed without force sensing.}
 
 \keywords{digital twin, soft tissue, endoscopic video, elasticity inversion, parameter provenance, biomechanics}
 
 \maketitle
 
-\section{Background}
+\section{Introduction}
 \label{sec:intro}
 %% ===================================================================
 
@@ -120,6 +121,7 @@ Second, a force-scale account of what video can identify. Physics-based inversio
 
 Third, an audited twin. Prior endoscopic and physics-based methods assign or report mechanical parameters without stating where each value came from. Here every parameter carries a tag, measured, estimated, or assumed, and a confidence from a Bayesian update of a tissue-class prior (Sec.~\ref{sec:uq}), so a downstream planner can tell a measured stiffness contrast from an assumed table value.
 
+To our knowledge, this is the first study to construct a simulable soft-tissue digital twin directly from monocular endoscopic video and to attach an explicit measured, estimated, or assumed provenance to every physical parameter of the twin.
 These claims are checked on one protocol, from a synthetic closed loop to an independent finite-element benchmark and a real phantom with an independent compression test (Sec.~\ref{sec:experiments}).
 
 Across two EndoNeRF scenes and the SCARED stereo dataset, the
@@ -132,15 +134,14 @@ ultrasound phantom with independent compression-test ground truth. We claim a si
 absolute-modulus recovery on real tissue without force sensing (we show
 contrast instead), state-of-the-art reconstruction, or clinical readiness.
 
-The rest of the paper is organized as follows. Section~\ref{sec:related}
-reviews related work. Section~\ref{sec:method} presents the twin and its
-three stages, the force-scale theorem, and the audit.
-Section~\ref{sec:experiments} reports the staged validation and ablations.
-Section~\ref{sec:discussion} discusses measured versus assumed parameters,
-limits, and clinical translation. Section~\ref{sec:conclusion} concludes.
+The rest of the paper follows the journal's structure:
+Section~\ref{sec:experiments} reports the results,
+Section~\ref{sec:discussion} discusses implications and limitations,
+Section~\ref{sec:method} details the methods, and
+Section~\ref{sec:conclusion} concludes.
 
 %% ===================================================================
-\section{Related work}
+\subsection{Related work}
 \label{sec:related}
 %% ===================================================================
 
@@ -167,7 +168,7 @@ PhysGaussian \cite{physgaussian} & dynamics & MPM, manual $E$ & none & synthetic
 \end{tabular}
 \end{table*}
 
-\subsection{Medical digital twins}
+\subsubsection{Medical digital twins}
 Digital twins originated in industry, where a constantly updating virtual
 copy enables analysis, simulation, and prediction of a real-world asset
 \cite{tao2019,fuller2020}, and are increasingly studied as a route to
@@ -189,7 +190,7 @@ endoscopic video, and our synchronization loop (Sec.~\ref{sec:sync})
 follows the twin-synchronisation component of the framework of
 \cite{landig2025}.
 
-\subsection{Endoscopic scene reconstruction}
+\subsubsection{Endoscopic scene reconstruction}
 EndoNeRF \cite{endonerf} introduced neural radiance fields \cite{nerf}
 for deformable endoscopic scenes, demonstrating novel-view synthesis of
 tissue deformation by conditioning a radiance field on a learned
@@ -216,7 +217,7 @@ methods typically reconstruct the whole frame including tools, whereas we
 show that correct tissue-only supervision improves reconstruction by
 ${\sim}25$\,dB.
 
-\subsection{Physics-aware reconstruction}
+\subsubsection{Physics-aware reconstruction}
 A growing line of work couples neural reconstruction with physics.
 PAC-NeRF \cite{pacnerf} performs system identification from multi-view
 video with known forces, recovering material parameters of household
@@ -240,7 +241,7 @@ Proposition~\ref{prop:forcescale} additionally clarifies, at the level of
 theory, why the known-force requirement of PAC-NeRF is the binding
 constraint on absolute modulus.
 
-\subsection{Elastography}
+\subsubsection{Elastography}
 Quasi-static elastography recovers modulus contrast from deformation under
 a shared-stress approximation \cite{ophir1991,wells2011,sigrist2017}, and
 is clinically established for liver fibrosis staging and tumor detection.
@@ -256,7 +257,7 @@ audit reports contrast as the robust measured quantity. The \'ETS phantom
 experiment of Sec.~\ref{sec:experiments} places our video-derived contrast
 within the accuracy range expected of clinical elastography.
 
-\subsection{Differentiable simulation and uncertainty}
+\subsubsection{Differentiable simulation and uncertainty}
 Differentiable physics (differentiable FEM, MPM, and mass--spring
 solvers) enables gradient-based parameter inversion through a simulator
 \cite{pacnerf,physgaussian,hu2020difftaichi,sanchezgonzalez2020}. We use a
@@ -268,7 +269,7 @@ are standard \cite{kendall2017,gal2016,lakshminarayanan2017}; our
 contribution is to use them to \emph{flag} unidentifiable parameters rather
 than to decorate point estimates.
 
-\subsection{Gaps and our response}
+\subsubsection{Gaps and our response}
 \label{sec:gaps}
 Synthesizing the five directions, four gaps define where this work sits.
 (G1) \emph{From reconstruction to simulation}: endoscopic reconstruction
@@ -283,6 +284,589 @@ this explicit. (G4) \emph{From single-setting to staged validation}:
 mechanics papers typically validate in one setting; we validate in stages
 from synthetic to a real phantom with independent ground truth. Each
 contribution in Sec.~\ref{sec:intro} maps to one of these gaps.
+
+%% ===================================================================
+\section{Results}
+\label{sec:experiments}
+%% ===================================================================
+
+In this section we evaluate the pipeline end to end, from the optical
+reconstruction to the audited mechanics. We first present the complete
+twin result, then report each stage: reconstruction and tracking on
+endoscopic and stereo data, and a staged mechanical validation that runs
+from a synthetic closed loop to an independent FEM benchmark, a
+force-provenance study, and a real phantom. We close with uncertainty,
+comparison to related approaches, and ablations. Limitations are discussed
+together with the clinical implications in the Discussion.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_twin_complete.png}
+\caption{The soft-tissue digital twin, end to end. \emph{Top (building the
+twin):} from an input endoscopic frame, the pipeline reconstructs the
+canonical Gaussian field, tracks the deformation field on it, and attaches a
+mechanical parameter map. \emph{Bottom (using the twin):} the twin is then
+driven forward in the simulator to rehearsal poses, produces a strain
+prediction, and reports a provenance audit that tags every parameter as
+measured, estimated, or assumed. This is the complete
+input$\to$twin$\to$output result that the subsequent sections present stage
+by stage.}
+\label{fig:twin_complete}
+\end{figure*}
+
+In this section we evaluate the pipeline end to end, from the optical
+reconstruction to the audited mechanics. We first present the complete
+twin result, then report each stage: reconstruction and tracking on
+endoscopic and stereo data, and a staged mechanical validation that
+runs from a synthetic closed loop to an independent FEM benchmark, a
+force-provenance study, and a real phantom. We close with uncertainty,
+comparison to related approaches, and ablations. Limitations are
+discussed together with the clinical implications in the Discussion.
+
+\subsection{The canonical field reconstructs tissue at 26.6--36.8\,dB}
+\begin{table}[htbp]
+\centering
+\caption{Reconstruction (tissue-masked PSNR).}
+\label{tab:tier1}
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+Scene & Frames used & Tissue coverage & Gaussians & Tissue PSNR (dB) \\
+\midrule
+EndoNeRF pulling & 16--24 & 70.7\% & 6498 & \textbf{36.79} \\
+EndoNeRF cutting & 16--24 & 74.1\% & 6824 & \textbf{34.09} \\
+SCARED keyframe\_1 & 1 & 78.4\% & 7221 & 26.99 \\
+SCARED keyframe\_2 & 1 & 83.1\% & 7676 & 26.17 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Reconstruction protocols. Novel-view numbers from
+EndoNeRF \cite{endonerf}, EndoSurf \cite{endosurf}, and
+EndoGaussian \cite{endogaussian} are not copied here, because this paper
+did not re-run that split and the public reports do not all quote the same
+aggregate. The two rows below are tissue-masked fits of the canonical
+field, not held-out novel views.}
+\label{tab:recon_compare}
+\small
+\begin{tabular}{lcc}
+\toprule
+Method & Protocol & PSNR (dB) \\
+\midrule
+EndoNeRF, EndoSurf, EndoGaussian & NVS, held-out views & not re-run \\
+Prior work (our NVS line) & NVS, 14-frame train & 24.80 \\
+\midrule
+\textbf{Ours (pulling)} & canonical, tissue-masked & \textbf{36.79} \\
+\textbf{Ours (cutting)} & canonical, tissue-masked & \textbf{34.09} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All-image PSNR is lower by design because tools are masked out and not
+reconstructed; we report tissue-masked PSNR throughout.
+Table~\ref{tab:tier1} reports the per-scene reconstruction quality and
+Fig.~\ref{fig:tier1} shows the reconstruction on both EndoNeRF scenes. The
+pulling scene reconstructs better than cutting because its tissue occupies
+a larger, more uniformly lit fraction of the frame and its deformation is
+slower. The dominant error in both scenes is at the tool--tissue boundary.
+The SCARED result is lower because it uses a single view per keyframe with
+moving-camera stereo and no multi-frame supervision, but it confirms
+portability across anatomy, camera, and metric scale
+(Fig.~\ref{fig:tier1}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_recon_grid.png}
+\caption{Qualitative reconstruction. Rows are EndoNeRF pulling, EndoNeRF
+cutting, and SCARED keyframes. Columns are input, reconstruction, tissue
+only, and an error map. Tissue-masked PSNR is reported in
+Table~\ref{tab:tier1} for the two EndoNeRF scenes and SCARED keyframes 1
+and 2. The remaining SCARED rows are shown only as a visual check; they
+are not given a separate PSNR in this paper.}
+\label{fig:tier1}
+\end{figure}
+
+\subsection{The tracker follows deformation where naive tracking diverges}
+\begin{table}[htbp]
+\centering
+\caption{Temporal-model ablation (pulling scene).}
+\label{tab:tier2}
+\small
+\begin{tabular}{lcc}
+\toprule
+Tracker & Worst-frame loss & Behaviour \\
+\midrule
+Inertia-only & 37.23 & frame 5 divergence \\
+Const-vel + rollback & 1.55 & frame 5 rolled back \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Fig.~\ref{fig:tier2} shows the tracked deformation field; displacement
+concentrates at the tool contact region. Table~\ref{tab:tier2} ablates the
+temporal model: the inertia-only baseline fails on
+frame 5 of the pulling scene because that frame contains a fast, partially
+occluded retraction in which the photometric gradient is locally
+uninformative; the constant-velocity initialization and acceleration prior
+track it without divergence, and the rollback prevents a single bad frame
+from corrupting the sequence. On the cutting scene the same tracker runs
+six frames without divergence (loss 0.52--0.71).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_deform_4x4.png}
+\caption{Deformation on EndoNeRF pulling, four frames (columns)
+$\times$ four aspects (rows): quiver overlay, displacement-magnitude
+heatmap, deformed-field render, and photometric error map. The tracked
+displacement grows and localizes at the tool contact, and the deformed
+render matches the observed frame.}
+\label{fig:tier2}
+\end{figure}
+
+\subsection{Elastic parameters hold from synthetic loop to real phantom}
+Table~\ref{tab:ladder} summarizes the four-stage validation.
+
+\begin{table*}[htbp]
+\centering
+\caption{Mechanical-inversion staged validation. The four main stages are
+the synthetic closed loop, the independent FEM benchmark, the
+force-provenance study, and the real phantom; the remaining rows are
+sub-experiments of the FEM stage.}
+\label{tab:ladder}
+\small
+\begin{tabular}{@{}p{0.27\linewidth}p{0.32\linewidth}p{0.29\linewidth}@{}}
+\toprule
+Stage & Evidence & Result \\
+\midrule
+Synthetic closed loop (mass--spring) & uniform $E$ & 0.01\% error \\
+Synthetic inclusion (mass--spring) & $4.0\times$ contrast, surface-only & $3.19\times$ \\
+Independent FEM benchmark & $E_{bg}$, measured force + noise & \textbf{median 4.3\% error (6 scen.)} \\
+Held-out load case (FEM) & press\_left $\rightarrow$ other cases & within 4.1\% of oracle \\
+Noise robustness (FEM) & +0.5 / +1.0\,mm noise & $E_{bg}$ err 13--20\% / 9--23\% \\
+Surrogate cross-check & mass--spring vs FEM & 82\% error $\Rightarrow$ FEM needed \\
+UQ honesty & Laplace posterior & inclusion flagged unidentified \\
+Force provenance & video-force error $\rightarrow$ $E$ & $E_{bg}$ 4.1$\pm$4.0\%; contrast immune \\
+\textbf{Real phantom (\'ETS)} & contrast vs Bose truth & \textbf{6.9\% error, CI covers truth} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\paragraph{Synthetic closed loop}
+Uniform modulus is recovered to 0.01\% error; a $4\times$ stiff inclusion
+is recovered at $3.19\times$ contrast from surface-only observations with
+two load cases (Fig.~\ref{fig:tier3}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.49\linewidth]{fig_tier3_uniform.png}
+\includegraphics[width=0.49\linewidth]{fig_tier3_inclusion.png}
+\caption{Synthetic closed loop: (left) uniform $E$ converges to the
+8.0\,kPa ground truth; (right) stiff-inclusion contrast $4.0\times$ $\to$
+$3.19\times$.}
+\label{fig:tier3}
+\end{figure}
+
+\paragraph{Independent FEM benchmark}
+With measured forces (5\% calibrated error) and noisy surface motion, the
+background modulus is recovered to a median error of 4.3\% (mean 9.4\%)
+across six representative scenarios drawn from the 60-scenario benchmark
+(per-scenario values in
+Table~\ref{tab:perscenario}). Accuracy is regime-dependent: it is below 6\%
+on stiff backgrounds ($E_{bg} \ge 3.8$\,kPa) but reaches 17--27\% on the
+two softest ($E_{bg} \approx 2.6$\,kPa), where the small absolute
+displacements degrade the signal-to-noise ratio of the deformation
+observation. The inclusion contrast is recovered to a mean of $1.90\times$
+against a ground-truth mean of $2.41\times$. Material inverted on
+\texttt{press\_left} predicts unseen load cases with displacement error
+11.1\% (\texttt{press\_right}), 3.7\% (\texttt{shear\_x}), and 14.9\%
+(\texttt{shear\_y}), against oracle-material errors of 9.6\%, 7.2\%, and
+10.9\% respectively (Fig.~\ref{fig:fem_perscenario},
+Fig.~\ref{fig:fem_dist}, and the robustness summary in
+Fig.~\ref{fig:robustness}).
+
+\begin{table}[htbp]
+\centering
+\caption{Per-scenario FEM-benchmark background-modulus inversion.}
+\label{tab:perscenario}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Scenario & $E_{bg}^{gt}$ (kPa) & $E_{bg}^{est}$ (kPa) & Error (\%) & Contrast est/gt \\
+\midrule
+000 & 7.35 & 7.24 & 1.6 & $2.26\times / 1.71\times$ \\
+001 & 2.61 & 2.17 & 17.1 & $2.09\times / 2.79\times$ \\
+002 & 3.81 & 3.90 & 2.3 & $1.34\times / 3.66\times$ \\
+003 & 7.78 & 7.54 & 3.1 & $1.30\times / 1.00\times$ \\
+004 & 2.81 & 2.05 & 26.9 & $2.00\times / 1.30\times$ \\
+005 & 4.57 & 4.82 & 5.5 & $2.38\times / 3.99\times$ \\
+\midrule
+\multicolumn{3}{l}{median / mean error} & 4.3 / 9.4 & mean $1.90\times / 2.41\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_fem_perscenario.png}
+\caption{Per-scenario FEM-benchmark inversion. (a) Background modulus,
+recovered vs ground truth, with the relative error annotated (green $<10\%$,
+red $>10\%$). (b) Inclusion contrast, recovered vs ground truth. The two
+softest backgrounds (sc.\ 001, 004) are the hardest, consistent with the
+regime-dependence analysis.}
+\label{fig:fem_perscenario}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\linewidth]{fig_fem_distribution.png}
+\caption{FEM-benchmark inversion across six scenarios. (a) Background-modulus
+error vs ground-truth stiffness: accuracy is regime-dependent, degrading on
+the two softest backgrounds. (b) Recovered inclusion contrast vs ground
+truth (dashed identity).}
+\label{fig:fem_dist}
+\end{figure}
+
+\paragraph{Force provenance}
+\label{sec:force}
+We extract the empirical error model of a real video-based force estimator
+(small-bowel retraction benchmark, 3D-ResNet, 6373 samples / 50 recordings:
+MAE 0.295\,N, systematic scale factor $0.949 \pm 0.140$)
+\cite{smallbowelforce} and transport it onto the FEM benchmark. A
+systematic sweep (force scale 0.80--1.20, recovered $E_{bg}$ ratio
+0.846--1.110) follows Proposition~\ref{prop:forcescale} in direction but
+is not an exact one-to-one map, as Remark~\ref{rem:nonlinear} states.
+With the full empirical model, the
+$E_{bg}$ error is 4.1\,$\pm$\,4.0\% and the stiffness contrast stays
+2.22--2.27$\times$ regardless of force error, consistent with the
+scale-invariance of the contrast ratio.
+
+\paragraph{Real phantom}
+On the \'ETS indentation phantom (6 acquisitions), the image-derived
+modulus contrast reaches a median of $3.80\times$ (bootstrap 95\% CI
+[3.16, 4.34]) against compression-test truth $3.56\times$ (background
+$31.0 \pm 1.87$\,kPa, inclusion $8.71 \pm 3.80$\,kPa), a 6.9\% relative
+error, stable across 9 sensitivity configurations (3.5--9.3\%). Posterior
+intervals contain both ground-truth moduli. The estimate is a contrast, not
+an absolute modulus, and Proposition~\ref{prop:forcescale} explains why
+this ratio is the trustworthy quantity; the posterior intervals are
+calibrated, containing both ground-truth moduli.
+Fig.~\ref{fig:ets} shows the per-acquisition estimates.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{fig_ets.png}
+\caption{\'ETS phantom: per-acquisition image-derived modulus contrast vs
+the compression-test truth (dashed), with the bootstrap 95\% CI band and
+median. The video-derived contrast is consistent across all six
+acquisitions.}
+\label{fig:ets}
+\end{figure}
+
+\paragraph{Hospital CT validation}
+To validate the tissue classification on independent clinical data, we
+reconstruct the liver from an abdominal CT scan of a patient from Henan
+Provincial People's Hospital (Fig.~\ref{fig:hospital_ct}). A
+right-upper-quadrant liver region is segmented on 82 axial slices and
+meshed into a patient-specific liver geometry (178k vertices). The CT
+confirms the anatomy is liver, which is consistent with the optical tissue
+classification produced by the twin's classifier on endoscopic video
+(liver). The CT-derived mesh is a patient-specific geometry source for the
+twin; the absolute volume is not reported because the slices carry no
+spacing metadata.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_hospital_ct.png}
+\caption{Hospital CT liver geometry (Henan Provincial People's Hospital).
+Top two rows: six axial CT slices with the segmented liver region (green).
+Bottom: the patient-specific liver mesh reconstructed from the segmentation
+(178k vertices). The CT-confirmed liver anatomy is consistent with the
+twin's optical tissue classification (liver).}
+\label{fig:hospital_ct}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_robustness.png}
+\caption{Mechanical-inversion robustness. (a) Force-scale sweep: the
+recovered $E_{bg}$ ratio tracks the theoretical one-to-one propagation of
+Proposition~\ref{prop:forcescale}. (b) Noise robustness: the $E_{bg}$ error
+grows gracefully with added motion noise. (c) Held-out load-case
+prediction: the inverted material matches the oracle material across three
+unseen load cases.}
+\label{fig:robustness}
+\end{figure}
+
+\paragraph{Mechanics comparison}
+Table~\ref{tab:mech_compare} places the mechanical results against the
+closest settings in the literature and our own ablations. Because the
+settings differ (known force vs.\ force-free, absolute modulus vs.\
+contrast), the comparison is by setting, not by a single leaderboard
+number; the consistent observation is that the audit reports the quantity
+each setting can support.
+
+\begin{table*}[htbp]
+\centering
+\caption{Mechanics comparison by setting. ``Abs.\ $E$'' is absolute-modulus
+recovery; ``contrast'' is stiffness-contrast recovery.}
+\label{tab:mech_compare}
+\small
+\begin{tabular}{@{}p{0.20\linewidth}p{0.24\linewidth}p{0.18\linewidth}p{0.24\linewidth}@{}}
+\toprule
+Method & Setting & Force & Result \\
+\midrule
+PAC-NeRF \cite{pacnerf} & system ID, multi-view & known & abs.\ $E$, object-dependent \\
+PhysDreamer \cite{physdreamer} & video prior, static & none & relative stiffness only \\
+PhysGaussian \cite{physgaussian} & MPM dynamics & manual $E$ & parameters assigned \\
+Prior TMI-line (our group) & image + force joint inv. & measured & abs.\ $E$ err 21--30\% (60 scen.) \\
+\midrule
+Ours (synthetic closed loop) & uniform $E$ & known & abs.\ $E$ to 0.01\% error \\
+Ours (FEM benchmark) & 2-region, surface-only & measured (5\% err) & abs.\ $E_{bg}$ median 4.3\% err \\
+Ours (force provenance) & 2-region & video-estimated & $E_{bg}$ 4.1$\pm$4.0\%; contrast invariant \\
+Ours (real phantom) & strain ratio & none & contrast 6.9\% err, CI covers truth \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\paragraph{Material recovery}
+Beyond geometry and motion, the twin recovers the tissue's optical and
+mechanical material. Fig.~\ref{fig:material} shows the recovered albedo and
+roughness maps from the canonical field (reconstruction) alongside the mechanical
+parameters with their audit tags (inversion): the tissue classifies as liver
+(Neo-Hookean), and because no force is instrumented, the Young's modulus,
+Poisson ratio, density, viscosity, and friction are all honestly tagged
+\emph{assumed\_table}, while the optical parameters are \emph{measured}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_material_4x4.png}
+\caption{Soft-tissue material recovery across four scenes (rows: EndoNeRF
+pulling, EndoNeRF cutting, SCARED keyframe\_1, SCARED keyframe\_2).
+Columns: input $|$ recovered albedo $|$ recovered roughness $|$ recovered
+specular. The optical material is measured; the mechanical parameters are
+tagged \emph{assumed} (no force instrumented).}
+\label{fig:material}
+\end{figure}
+
+\subsection{The posterior flags the unidentifiable inclusion}
+\label{sec:uq_exp}
+The Laplace posterior reports a small $\mathrm{std}(\log E_{bg}) = 1.17$
+but a much larger $\mathrm{std}(\log E_{incl}) = 21.2$: the data do not
+constrain the deep inclusion modulus, consistent with its 30\% estimation
+error. The 95\% prediction interval covers 100\% of held-out surface nodes
+but is dominated by the unidentified inclusion direction, so the
+uncertainty estimate flags the inclusion as unidentifiable rather than
+reporting overconfidence.
+
+\subsection{Comparison with related approaches}
+\label{sec:comparison}
+Table~\ref{tab:position} positions the pipeline against representative
+methods. Three distinctions are salient. First, the output is a simulable
+twin rather than a reconstruction: EndoNeRF, EndoSurf, and EndoGaussian
+produce appearance and geometry but no forward operator $\mathcal{S}$.
+Second, the mechanics are recovered rather than assigned: PhysGaussian
+requires manually supplied parameters, and PhysDreamer recovers only
+relative stiffness, whereas we recover absolute modulus where identifiable
+and mark the rest as assumed. Third, the provenance is explicit: no prior
+method tags each parameter as measured, estimated, or assumed. The closest
+in spirit is PAC-NeRF, which performs system identification with known
+forces, but it targets household objects with multi-view capture and does
+not audit provenance; our force-provenance study additionally quantifies
+how imperfect video-based force estimates bound absolute-modulus accuracy.
+
+\subsection{Component-wise comparison}
+\label{sec:componentwise}
+Because no prior method builds an audited soft-tissue twin from endoscopic
+video, a single end-to-end leaderboard comparison is impossible. We
+therefore compare each component against the closest state of the art
+(Table~\ref{tab:componentwise}). The reconstruction component is comparable
+to the endoscopic novel-view-synthesis methods; the mechanical component is
+comparable to the physics-aware system-identification methods; and the
+audit component has no direct counterpart.
+
+\begin{table*}[htbp]
+\centering
+\caption{Component-wise comparison to the closest state of the art.}
+\label{tab:componentwise}
+\small
+\begin{tabular}{@{}p{0.16\linewidth}p{0.24\linewidth}p{0.24\linewidth}p{0.24\linewidth}@{}}
+\toprule
+Component & Closest SOTA & Their result & Ours \\
+\midrule
+Reconstruction & EndoGaussian \cite{endogaussian} (NVS) & NVS protocol, not re-run & 36.79\,dB (canonical, tissue-masked) \\
+ & Prior NVS line (our group) & 24.80\,dB & \textbf{+12\,dB} \\
+Deformation tracking & DefSLAM \cite{defslam} & monocular deforming tracking & fixed-topology + rollback, no divergence \\
+Mechanics (abs.\ $E$) & PAC-NeRF \cite{pacnerf} & object-dependent, known force & median 4.3\% err (measured force) \\
+ & Prior TMI-line (our group) & 21--30\% err (60 scen.) & \textbf{4.3\% median err} \\
+Mechanics (contrast) & PhysDreamer \cite{physdreamer} & relative only & contrast 6.9\% err + CI (phantom) \\
+Provenance audit & none & n/a & \textbf{explicit measured / estimated / assumed} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+These rows are not one leaderboard. The reconstruction numbers use
+different protocols, so 36.79\,dB is not a win over a novel-view number.
+The tracking and mask rows are same-protocol ablations and do improve on
+their own baselines. The FEM median of 4.3\% is on six scenarios and is
+not a replacement for the 60-scenario prior result. The audit is a
+statement about each parameter, not a metric on which a prior method was
+beaten. Fig.~\ref{fig:taskcmp} and Table~\ref{tab:taskcmp} keep that
+distinction.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig_task_comparison.png}
+\caption{Task comparison. Each row names the metric, the closest published
+number or baseline, the number from this paper, and whether the two share
+a protocol. Green marks a same-protocol improvement. Blue marks a result
+that has no matched published number. Amber marks a different protocol
+that must not be ranked. Red marks a task that is still open. No row is a
+claim to have surpassed endoscopic novel-view reconstruction.}
+\label{fig:taskcmp}
+\end{figure}
+
+\begin{table*}[htbp]
+\centering
+\caption{What this paper establishes. A published number is placed next to
+ours only as context. ``Same protocol'' is the only case in which the
+comparison is a result rather than a positioning statement.}
+\label{tab:taskcmp}
+\footnotesize
+\begin{tabular}{@{}p{0.18\linewidth}p{0.16\linewidth}p{0.22\linewidth}p{0.20\linewidth}p{0.14\linewidth}@{}}
+\toprule
+Task & Metric & Closest number & This paper & Reading \\
+\midrule
+EndoNeRF novel views & held-out PSNR & EndoGaussian, NVS, not re-run & not measured & different protocol \\
+Canonical fit & tissue-masked PSNR & none on this mask & 36.79 / 34.09\,dB & reported \\
+SCARED keyframes 1--2 & tissue-masked PSNR & none matched & 26.99 / 26.17\,dB & reported \\
+Tracking & worst-frame loss & inertia-only 37.23 & 1.55 & same protocol \\
+Tissue mask & tissue-masked PSNR & tool mask 11.13\,dB & 36.79\,dB & same protocol \\
+Uniform modulus & relative error & none on this loop & 0.01\% & closed loop \\
+FEM $E_{bg}$ & median relative error & prior 60 scenes, 21.3\% median & 4.3\% on 6 scenes & different set \\
+Phantom contrast & vs.\ compression test & none on this split & 6.9\% & reported \\
+Absolute $E$, real endoscopy, no force & relative error & not available & not claimed & open \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Ablations}
+\begin{table}[htbp]
+\centering
+\caption{Ablations.}
+\label{tab:ablation}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+Ablation & Variant & Metric \\
+\midrule
+Mask supervision & tool mask (mistaken) & 11.13\,dB \\
+Mask supervision & tissue $=$ depth$>$0 (correct) & \textbf{36.79\,dB} \\
+Reconstruction \#Gaussians & 4000 / 6498 / 10000 & 35.31 / 36.86 / \textbf{38.21}\,dB \\
+Temporal-model & inertia-only & 37.23 (divergence) \\
+Temporal-model & const-vel + rollback & \textbf{1.55} \\
+Parameterization & per-node field & contrast $1.69\times$ \\
+Parameterization & 2-region & \textbf{$3.19\times$} \\
+Forward model & mass--spring surrogate & contrast $4.19\times$ (GT $1.71\times$) \\
+Forward model & FEM-in-the-loop & \textbf{$2.26\times$} (GT $1.71\times$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ===================================================================
+\section{Discussion}
+\label{sec:discussion}
+%% ===================================================================
+
+Geometry and appearance are reconstructed; $E$ is estimated only when
+deformation and loading are observed, and is otherwise a prior. The
+force-provenance study (Sec.~\ref{sec:force}) quantifies the implication:
+absolute $E$ is bounded by the force estimator's systematic accuracy, while
+stiffness contrast is robust to it. The twin should therefore report
+contrast as the reliable measured quantity and absolute $E$ with wide,
+calibrated intervals. This is not a limitation to hide but the central
+design principle: a twin that exposes the provenance of its parameters
+degrades gracefully and supports safer decisions than one that presents
+every number as measured.
+
+\paragraph{A worked example}
+On the pulling scene, the audit reads as follows. The albedo and roughness
+are \emph{measured} (reconstructed from multi-frame photometry with tight
+posterior). The tissue class is \emph{estimated} (the optical heuristic
+selects liver, with the PBR signature as evidence). The Young's modulus is
+\emph{assumed} (liver prior, median 6\,kPa, 95\% CI [2.3, 16.0]) because no
+force is instrumented; the stiffness \emph{contrast} between regions is
+\emph{estimated} from the tracked deformation (relative, force-free). The
+Poisson ratio and viscosity are \emph{assumed} (table values). A planner
+reading this audit knows immediately that the geometry and the contrast are
+trustworthy, the absolute modulus is a prior, and the rehearsal should be
+run with the modulus sampled over its interval rather than at a point
+value.
+
+The mass--spring surrogate is not accurate enough for absolute mechanics
+(82\% forward error), so FEM-in-the-loop is necessary; absolute $E$ on real
+data needs force sensing or calibrated excitation; the single fixed
+EndoNeRF camera limits parallax; and the two softest FEM backgrounds remain
+challenging. Three failure modes bound the current reach: when the tissue is
+nearly stationary, the mechanical-inversion stage falls back to the prior; when the
+tool or contact region is out of view, only contrast is reported; and when
+the camera moves substantially, the tracker must be re-anchored. Each
+failure mode maps to a specific audit tag, so the twin degrades gracefully
+by reporting lower confidence rather than wrong values. Clinical deployment
+additionally requires patient-specific force-instrumented tooling and
+regulatory validation.
+
+The intended use is pre-operative rehearsal and intra-operative guidance in
+robot-assisted surgery. A practical pathway is: reconstruct the twin from
+the intra-operative feed, report stiffness contrast as the reliable
+measured quantity (e.g., to localize a stiff tumor margin), and drive a
+simulator with the audited parameters for rehearsal. Each of these steps is
+supported by a stage of the staged validation. Clinical elastography is the
+closest deployed technology \cite{ophir1991}: it reports a stiffness
+contrast from a dedicated ultrasound probe, whereas we recover a spatially
+resolved field on the reconstructed geometry from the endoscopic video that
+is already present, and our twin can additionally be driven forward in a
+simulator. The \'ETS phantom result (6.9\% contrast error) places the
+video-based contrast within the accuracy range expected of elastography,
+suggesting the two could be used together.
+
+A soft-tissue twin that informs surgery is a medical device component and
+must be governed accordingly. The twin's predictions should be presented
+with their audit confidence, and any clinical action should be gated on the
+measured parameters meeting a confidence threshold. Because absolute
+modulus currently requires force sensing, claims should be limited to
+contrast until force-instrumented validation is available; overstating
+absolute accuracy would be a governance failure. Patient data used to build
+the twin must follow the consent and privacy rules of the deploying
+institution. The audit framework supports all three by making the evidence
+behind each parameter explicit and reviewable.
+
+\paragraph{Reproducibility.}\label{sec:repro}
+To support independent verification, we release the complete source code,
+evaluation scripts, and data-split definitions. Every numerical result
+reported in this paper is produced by these released end-to-end scripts,
+which cover the three-stage pipeline on EndoNeRF and SCARED, the FEM
+benchmark inversion, the force-provenance analysis, and the phantom audit;
+each script writes a machine-readable summary and the corresponding
+figures, from which every number in the paper is drawn.
+
+\subsection{Limitations}
+Several limitations should be acknowledged in the present study.
+\label{sec:threats}
+Several threats qualify the results. (i) \emph{Protocol mismatch}: the
+reconstruction PSNRs are tissue-masked and not directly comparable to the
+novel-view-synthesis numbers reported by EndoNeRF-family methods, which use
+held-out views and full-image metrics. (ii) \emph{Dataset scale}: the FEM
+benchmark is synthetic and six scenarios are used for the main inversion;
+the regime-dependence we report is therefore an observed tendency, not a
+population statistic. (iii) \emph{Modality gap}: the \'ETS phantom is
+ultrasound, not endoscopic RGB, so it validates the mechanics but not the
+optical stage. (iv) \emph{Forward-model mismatch}: the real-data relative
+stiffness uses a mass--spring surrogate whose absolute accuracy is limited
+(82\% forward error), so only contrast is reported there. We mitigate each
+threat by reporting the corresponding confidence and by validating on
+independent ground truth where available.
 
 %% ===================================================================
 \section{Methods}
@@ -301,8 +885,10 @@ for rehearsal. The provenance audit tags every parameter.}
 \label{fig:architecture}
 \end{figure*}
 
-This section defines the twin and its construction. We first formalize the
-soft-tissue digital twin and the notation (Sec.~\ref{sec:twin}), then present
+This section details the construction evaluated above. The experimental
+setup (datasets, metrics, comparison methods, implementation) is described
+first (Sec.~\ref{sec:setup}). We then formalize the
+soft-tissue digital twin and the notation (Sec.~\ref{sec:twin}), and present
 the three stages that build it on a shared canonical field: reconstruction
 (Sec.~\ref{sec:tier1}), deformation tracking (Sec.~\ref{sec:tier2}), and
 mechanical inversion (Sec.~\ref{sec:tier3}). We then establish the
@@ -311,6 +897,70 @@ force-scale propagation result that determines what is knowable from video
 loading prior (Sec.~\ref{sec:forceest}), and define the provenance audit
 (Sec.~\ref{sec:uq}) and how the twin is synchronized and used
 (Sec.~\ref{sec:sync}).
+
+\subsection{Experimental setup}
+\label{sec:setup}
+
+\paragraph{Datasets.}
+Table~\ref{tab:datasets} summarizes the four datasets, which span
+increasingly realistic validation settings.
+
+\begin{table*}[htbp]
+\centering
+\caption{Datasets. ``GT'' indicates the ground truth used for evaluation.}
+\label{tab:datasets}
+\small
+\begin{tabular}{@{}p{0.17\linewidth}p{0.20\linewidth}p{0.14\linewidth}p{0.20\linewidth}p{0.15\linewidth}@{}}
+\toprule
+Dataset & Modality & Scale & GT used & Used for \\
+\midrule
+EndoNeRF (2 scenes) & monocular endoscopic video + depth + tool masks & 63 / 156 frames & depth, tool masks & reconstruction and tracking \\
+SCARED & stereo laparoscopy + metric depth & 2 keyframes & metric depth (mm) & reconstruction (portability) \\
+FEM benchmark & synthetic FEM (Neo-Hookean tets) & 60 scen.\ $\times$ 4 loads & $E_{bg}$, $E_{incl}$, forces & mechanical inversion (closed loop) \\
+\'ETS phantom & ultrasound + force & 6 acquisitions & compression-test $E$ & mechanical inversion (real phantom) \\
+Hospital CT & abdominal CT (1 patient) & 82 slices & CT anatomy & classification validation \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+EndoNeRF frames are loaded at $0.5\times$ scale, with depth used both for
+the canonical point cloud and for the tissue mask $\Omega$ of
+\eqref{eq:mask} \cite{endonerf}; SCARED keyframes at $0.5\times$ scale with intrinsics from
+the calibration file \cite{scared}; the FEM benchmark is used with the measured (not
+true) forces and the noisy (not true) surface motion as inversion inputs;
+and the \'ETS phantom is used at the frame level with synchronized force \cite{etsphantom}.
+
+\paragraph{Evaluation metrics.}
+Reconstruction quality is reported as tissue-masked PSNR on
+$\Omega$ (all-image metrics are lower by design because tools are masked
+out). Tracking quality is measured by the per-frame and worst-frame
+photometric loss. Mechanical accuracy is measured by (i) the relative error
+of the recovered modulus, $|E^{est} - E^{gt}| / E^{gt}$; (ii) the
+inclusion-contrast ratio $E_{incl}/E_{bg}$ against ground truth; (iii) the
+held-out load-case displacement error
+$\|u(E^{est}) - u^{obs}\| / \mathrm{mean}\|u^{obs}\|$; and (iv) the 95\%
+prediction-interval coverage of held-out surface nodes.
+
+\paragraph{Comparison methods.}
+For reconstruction we compare against the published novel-view-synthesis
+numbers of EndoNeRF \cite{endonerf}, EndoSurf \cite{endosurf}, and
+EndoGaussian \cite{endogaussian}, noting that these use a different
+protocol (held-out views, full image) and are therefore indicative rather
+than strictly comparable (Table~\ref{tab:recon_compare}). For mechanics we
+compare against the system-identification setting of PAC-NeRF
+\cite{pacnerf}, the relative-stiffness setting of PhysDreamer
+\cite{physdreamer}, and our own ablations (per-node field vs.\ 2-region,
+mass--spring surrogate vs.\ FEM-in-the-loop). Entries marked ``our group''
+or ``our NVS line'' are the authors' own prior internal implementations
+(not published baselines); they are included for context and are
+reproducible from the released scripts.
+
+\paragraph{Implementation.}
+The reconstruction stage uses 800--1000 Adam steps with ${\sim}6.5$--$7.7$k Gaussians on an
+RTX 5090 (gsplat backend, ${\sim}21$\,s per scene); the tracking stage uses 40--50
+steps per frame; the mechanical-inversion stage uses 200--400 inversion iterations (a 6-scenario
+FEM sweep takes ${\sim}80$\,min). All numbers are produced by released
+end-to-end scripts (Sec.~\ref{sec:repro}).
 
 \subsection{The soft-tissue digital twin}
 \label{sec:twin}
@@ -659,643 +1309,6 @@ design is deliberate: it keeps the twin interpretable, requires no training
 data, and makes every parameter physically meaningful, which is what the
 audit framework is built on.
 \end{remark}
-
-%% ===================================================================
-\section{Results}
-\label{sec:experiments}
-%% ===================================================================
-
-We evaluate the pipeline end to end, from the optical reconstruction to the
-audited mechanics. After describing the setup (Sec.~\ref{sec:setup}), we
-present the complete twin result and then report each stage: reconstruction
-and tracking on endoscopic and stereo data, and a staged mechanical
-validation that runs from a synthetic closed loop to an independent FEM
-benchmark, a force-provenance study, and a real phantom. We close with
-uncertainty-honesty, comparison to related approaches, threats to validity,
-and ablations.
-
-\subsection{Experimental setup}
-\label{sec:setup}
-
-\paragraph{Datasets.}
-Table~\ref{tab:datasets} summarizes the four datasets, which span
-increasingly realistic validation settings.
-
-\begin{table*}[htbp]
-\centering
-\caption{Datasets. ``GT'' indicates the ground truth used for evaluation.}
-\label{tab:datasets}
-\small
-\begin{tabular}{@{}p{0.17\linewidth}p{0.20\linewidth}p{0.14\linewidth}p{0.20\linewidth}p{0.15\linewidth}@{}}
-\toprule
-Dataset & Modality & Scale & GT used & Used for \\
-\midrule
-EndoNeRF (2 scenes) & monocular endoscopic video + depth + tool masks & 63 / 156 frames & depth, tool masks & reconstruction and tracking \\
-SCARED & stereo laparoscopy + metric depth & 2 keyframes & metric depth (mm) & reconstruction (portability) \\
-FEM benchmark & synthetic FEM (Neo-Hookean tets) & 60 scen.\ $\times$ 4 loads & $E_{bg}$, $E_{incl}$, forces & mechanical inversion (closed loop) \\
-\'ETS phantom & ultrasound + force & 6 acquisitions & compression-test $E$ & mechanical inversion (real phantom) \\
-Hospital CT & abdominal CT (1 patient) & 82 slices & CT anatomy & classification validation \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-EndoNeRF frames are loaded at $0.5\times$ scale, with depth used both for
-the canonical point cloud and for the tissue mask $\Omega$ of
-\eqref{eq:mask} \cite{endonerf}; SCARED keyframes at $0.5\times$ scale with intrinsics from
-the calibration file \cite{scared}; the FEM benchmark is used with the measured (not
-true) forces and the noisy (not true) surface motion as inversion inputs;
-and the \'ETS phantom is used at the frame level with synchronized force \cite{etsphantom}.
-
-\paragraph{Evaluation metrics.}
-Reconstruction quality is reported as tissue-masked PSNR on
-$\Omega$ (all-image metrics are lower by design because tools are masked
-out). Tracking quality is measured by the per-frame and worst-frame
-photometric loss. Mechanical accuracy is measured by (i) the relative error
-of the recovered modulus, $|E^{est} - E^{gt}| / E^{gt}$; (ii) the
-inclusion-contrast ratio $E_{incl}/E_{bg}$ against ground truth; (iii) the
-held-out load-case displacement error
-$\|u(E^{est}) - u^{obs}\| / \mathrm{mean}\|u^{obs}\|$; and (iv) the 95\%
-prediction-interval coverage of held-out surface nodes.
-
-\paragraph{Comparison methods.}
-For reconstruction we compare against the published novel-view-synthesis
-numbers of EndoNeRF \cite{endonerf}, EndoSurf \cite{endosurf}, and
-EndoGaussian \cite{endogaussian}, noting that these use a different
-protocol (held-out views, full image) and are therefore indicative rather
-than strictly comparable (Table~\ref{tab:recon_compare}). For mechanics we
-compare against the system-identification setting of PAC-NeRF
-\cite{pacnerf}, the relative-stiffness setting of PhysDreamer
-\cite{physdreamer}, and our own ablations (per-node field vs.\ 2-region,
-mass--spring surrogate vs.\ FEM-in-the-loop). Entries marked ``our group''
-or ``our NVS line'' are the authors' own prior internal implementations
-(not published baselines); they are included for context and are
-reproducible from the released scripts.
-
-\paragraph{Implementation.}
-The reconstruction stage uses 800--1000 Adam steps with ${\sim}6.5$--$7.7$k Gaussians on an
-RTX 5090 (gsplat backend, ${\sim}21$\,s per scene); the tracking stage uses 40--50
-steps per frame; the mechanical-inversion stage uses 200--400 inversion iterations (a 6-scenario
-FEM sweep takes ${\sim}80$\,min). All numbers are produced by released
-end-to-end scripts (Sec.~\ref{sec:repro}).
-
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=\textwidth]{fig_twin_complete.png}
-\caption{The soft-tissue digital twin, end to end. \emph{Top (building the
-twin):} from an input endoscopic frame, the pipeline reconstructs the
-canonical Gaussian field, tracks the deformation field on it, and attaches a
-mechanical parameter map. \emph{Bottom (using the twin):} the twin is then
-driven forward in the simulator to rehearsal poses, produces a strain
-prediction, and reports a provenance audit that tags every parameter as
-measured, estimated, or assumed. This is the complete
-input$\to$twin$\to$output result that the subsequent sections present stage
-by stage.}
-\label{fig:twin_complete}
-\end{figure*}
-
-\subsection{Canonical scene reconstruction}
-\begin{table}[htbp]
-\centering
-\caption{Reconstruction (tissue-masked PSNR).}
-\label{tab:tier1}
-\footnotesize
-\begin{tabular}{lcccc}
-\toprule
-Scene & Frames used & Tissue coverage & Gaussians & Tissue PSNR (dB) \\
-\midrule
-EndoNeRF pulling & 16--24 & 70.7\% & 6498 & \textbf{36.79} \\
-EndoNeRF cutting & 16--24 & 74.1\% & 6824 & \textbf{34.09} \\
-SCARED keyframe\_1 & 1 & 78.4\% & 7221 & 26.99 \\
-SCARED keyframe\_2 & 1 & 83.1\% & 7676 & 26.17 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\caption{Reconstruction protocols. Novel-view numbers from
-EndoNeRF \cite{endonerf}, EndoSurf \cite{endosurf}, and
-EndoGaussian \cite{endogaussian} are not copied here, because this paper
-did not re-run that split and the public reports do not all quote the same
-aggregate. The two rows below are tissue-masked fits of the canonical
-field, not held-out novel views.}
-\label{tab:recon_compare}
-\small
-\begin{tabular}{lcc}
-\toprule
-Method & Protocol & PSNR (dB) \\
-\midrule
-EndoNeRF, EndoSurf, EndoGaussian & NVS, held-out views & not re-run \\
-Prior work (our NVS line) & NVS, 14-frame train & 24.80 \\
-\midrule
-\textbf{Ours (pulling)} & canonical, tissue-masked & \textbf{36.79} \\
-\textbf{Ours (cutting)} & canonical, tissue-masked & \textbf{34.09} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-All-image PSNR is lower by design because tools are masked out and not
-reconstructed; we report tissue-masked PSNR throughout.
-Table~\ref{tab:tier1} reports the per-scene reconstruction quality and
-Fig.~\ref{fig:tier1} shows the reconstruction on both EndoNeRF scenes. The
-pulling scene reconstructs better than cutting because its tissue occupies
-a larger, more uniformly lit fraction of the frame and its deformation is
-slower. The dominant error in both scenes is at the tool--tissue boundary.
-The SCARED result is lower because it uses a single view per keyframe with
-moving-camera stereo and no multi-frame supervision, but it confirms
-portability across anatomy, camera, and metric scale
-(Fig.~\ref{fig:tier1}).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_recon_grid.png}
-\caption{Qualitative reconstruction. Rows are EndoNeRF pulling, EndoNeRF
-cutting, and SCARED keyframes. Columns are input, reconstruction, tissue
-only, and an error map. Tissue-masked PSNR is reported in
-Table~\ref{tab:tier1} for the two EndoNeRF scenes and SCARED keyframes 1
-and 2. The remaining SCARED rows are shown only as a visual check; they
-are not given a separate PSNR in this paper.}
-\label{fig:tier1}
-\end{figure}
-
-\subsection{Deformation tracking}
-\begin{table}[htbp]
-\centering
-\caption{Temporal-model ablation (pulling scene).}
-\label{tab:tier2}
-\small
-\begin{tabular}{lcc}
-\toprule
-Tracker & Worst-frame loss & Behaviour \\
-\midrule
-Inertia-only & 37.23 & frame 5 divergence \\
-Const-vel + rollback & 1.55 & frame 5 rolled back \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Fig.~\ref{fig:tier2} shows the tracked deformation field; displacement
-concentrates at the tool contact region. Table~\ref{tab:tier2} ablates the
-temporal model: the inertia-only baseline fails on
-frame 5 of the pulling scene because that frame contains a fast, partially
-occluded retraction in which the photometric gradient is locally
-uninformative; the constant-velocity initialization and acceleration prior
-track it without divergence, and the rollback prevents a single bad frame
-from corrupting the sequence. On the cutting scene the same tracker runs
-six frames without divergence (loss 0.52--0.71).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_deform_4x4.png}
-\caption{Deformation on EndoNeRF pulling, four frames (columns)
-$\times$ four aspects (rows): quiver overlay, displacement-magnitude
-heatmap, deformed-field render, and photometric error map. The tracked
-displacement grows and localizes at the tool contact, and the deformed
-render matches the observed frame.}
-\label{fig:tier2}
-\end{figure}
-
-\subsection{Mechanical parameter inversion}
-Table~\ref{tab:ladder} summarizes the four-stage validation.
-
-\begin{table*}[htbp]
-\centering
-\caption{Mechanical-inversion staged validation. The four main stages are
-the synthetic closed loop, the independent FEM benchmark, the
-force-provenance study, and the real phantom; the remaining rows are
-sub-experiments of the FEM stage.}
-\label{tab:ladder}
-\small
-\begin{tabular}{@{}p{0.27\linewidth}p{0.32\linewidth}p{0.29\linewidth}@{}}
-\toprule
-Stage & Evidence & Result \\
-\midrule
-Synthetic closed loop (mass--spring) & uniform $E$ & 0.01\% error \\
-Synthetic inclusion (mass--spring) & $4.0\times$ contrast, surface-only & $3.19\times$ \\
-Independent FEM benchmark & $E_{bg}$, measured force + noise & \textbf{median 4.3\% error (6 scen.)} \\
-Held-out load case (FEM) & press\_left $\rightarrow$ other cases & within 4.1\% of oracle \\
-Noise robustness (FEM) & +0.5 / +1.0\,mm noise & $E_{bg}$ err 13--20\% / 9--23\% \\
-Surrogate cross-check & mass--spring vs FEM & 82\% error $\Rightarrow$ FEM needed \\
-UQ honesty & Laplace posterior & inclusion flagged unidentified \\
-Force provenance & video-force error $\rightarrow$ $E$ & $E_{bg}$ 4.1$\pm$4.0\%; contrast immune \\
-\textbf{Real phantom (\'ETS)} & contrast vs Bose truth & \textbf{6.9\% error, CI covers truth} \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\paragraph{Synthetic closed loop}
-Uniform modulus is recovered to 0.01\% error; a $4\times$ stiff inclusion
-is recovered at $3.19\times$ contrast from surface-only observations with
-two load cases (Fig.~\ref{fig:tier3}).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.49\linewidth]{fig_tier3_uniform.png}
-\includegraphics[width=0.49\linewidth]{fig_tier3_inclusion.png}
-\caption{Synthetic closed loop: (left) uniform $E$ converges to the
-8.0\,kPa ground truth; (right) stiff-inclusion contrast $4.0\times$ $\to$
-$3.19\times$.}
-\label{fig:tier3}
-\end{figure}
-
-\paragraph{Independent FEM benchmark}
-With measured forces (5\% calibrated error) and noisy surface motion, the
-background modulus is recovered to a median error of 4.3\% (mean 9.4\%)
-across six representative scenarios drawn from the 60-scenario benchmark
-(per-scenario values in
-Table~\ref{tab:perscenario}). Accuracy is regime-dependent: it is below 6\%
-on stiff backgrounds ($E_{bg} \ge 3.8$\,kPa) but reaches 17--27\% on the
-two softest ($E_{bg} \approx 2.6$\,kPa), where the small absolute
-displacements degrade the signal-to-noise ratio of the deformation
-observation. The inclusion contrast is recovered to a mean of $1.90\times$
-against a ground-truth mean of $2.41\times$. Material inverted on
-\texttt{press\_left} predicts unseen load cases with displacement error
-11.1\% (\texttt{press\_right}), 3.7\% (\texttt{shear\_x}), and 14.9\%
-(\texttt{shear\_y}), against oracle-material errors of 9.6\%, 7.2\%, and
-10.9\% respectively (Fig.~\ref{fig:fem_perscenario},
-Fig.~\ref{fig:fem_dist}, and the robustness summary in
-Fig.~\ref{fig:robustness}).
-
-\begin{table}[htbp]
-\centering
-\caption{Per-scenario FEM-benchmark background-modulus inversion.}
-\label{tab:perscenario}
-\small
-\begin{tabular}{lcccc}
-\toprule
-Scenario & $E_{bg}^{gt}$ (kPa) & $E_{bg}^{est}$ (kPa) & Error (\%) & Contrast est/gt \\
-\midrule
-000 & 7.35 & 7.24 & 1.6 & $2.26\times / 1.71\times$ \\
-001 & 2.61 & 2.17 & 17.1 & $2.09\times / 2.79\times$ \\
-002 & 3.81 & 3.90 & 2.3 & $1.34\times / 3.66\times$ \\
-003 & 7.78 & 7.54 & 3.1 & $1.30\times / 1.00\times$ \\
-004 & 2.81 & 2.05 & 26.9 & $2.00\times / 1.30\times$ \\
-005 & 4.57 & 4.82 & 5.5 & $2.38\times / 3.99\times$ \\
-\midrule
-\multicolumn{3}{l}{median / mean error} & 4.3 / 9.4 & mean $1.90\times / 2.41\times$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_fem_perscenario.png}
-\caption{Per-scenario FEM-benchmark inversion. (a) Background modulus,
-recovered vs ground truth, with the relative error annotated (green $<10\%$,
-red $>10\%$). (b) Inclusion contrast, recovered vs ground truth. The two
-softest backgrounds (sc.\ 001, 004) are the hardest, consistent with the
-regime-dependence analysis.}
-\label{fig:fem_perscenario}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\linewidth]{fig_fem_distribution.png}
-\caption{FEM-benchmark inversion across six scenarios. (a) Background-modulus
-error vs ground-truth stiffness: accuracy is regime-dependent, degrading on
-the two softest backgrounds. (b) Recovered inclusion contrast vs ground
-truth (dashed identity).}
-\label{fig:fem_dist}
-\end{figure}
-
-\paragraph{Force provenance}
-\label{sec:force}
-We extract the empirical error model of a real video-based force estimator
-(small-bowel retraction benchmark, 3D-ResNet, 6373 samples / 50 recordings:
-MAE 0.295\,N, systematic scale factor $0.949 \pm 0.140$)
-\cite{smallbowelforce} and transport it onto the FEM benchmark. A
-systematic sweep (force scale 0.80--1.20, recovered $E_{bg}$ ratio
-0.846--1.110) follows Proposition~\ref{prop:forcescale} in direction but
-is not an exact one-to-one map, as Remark~\ref{rem:nonlinear} states.
-With the full empirical model, the
-$E_{bg}$ error is 4.1\,$\pm$\,4.0\% and the stiffness contrast stays
-2.22--2.27$\times$ regardless of force error, consistent with the
-scale-invariance of the contrast ratio.
-
-\paragraph{Real phantom}
-On the \'ETS indentation phantom (6 acquisitions), the image-derived
-modulus contrast reaches a median of $3.80\times$ (bootstrap 95\% CI
-[3.16, 4.34]) against compression-test truth $3.56\times$ (background
-$31.0 \pm 1.87$\,kPa, inclusion $8.71 \pm 3.80$\,kPa), a 6.9\% relative
-error, stable across 9 sensitivity configurations (3.5--9.3\%). Posterior
-intervals contain both ground-truth moduli. The estimate is a contrast, not
-an absolute modulus, and Proposition~\ref{prop:forcescale} explains why
-this ratio is the trustworthy quantity; the posterior intervals are
-calibrated, containing both ground-truth moduli.
-Fig.~\ref{fig:ets} shows the per-acquisition estimates.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.7\linewidth]{fig_ets.png}
-\caption{\'ETS phantom: per-acquisition image-derived modulus contrast vs
-the compression-test truth (dashed), with the bootstrap 95\% CI band and
-median. The video-derived contrast is consistent across all six
-acquisitions.}
-\label{fig:ets}
-\end{figure}
-
-\paragraph{Hospital CT validation}
-To validate the tissue classification on independent clinical data, we
-reconstruct the liver from an abdominal CT scan of a patient from Henan
-Provincial People's Hospital (Fig.~\ref{fig:hospital_ct}). A
-right-upper-quadrant liver region is segmented on 82 axial slices and
-meshed into a patient-specific liver geometry (178k vertices). The CT
-confirms the anatomy is liver, which is consistent with the optical tissue
-classification produced by the twin's classifier on endoscopic video
-(liver). The CT-derived mesh is a patient-specific geometry source for the
-twin; the absolute volume is not reported because the slices carry no
-spacing metadata.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_hospital_ct.png}
-\caption{Hospital CT liver geometry (Henan Provincial People's Hospital).
-Top two rows: six axial CT slices with the segmented liver region (green).
-Bottom: the patient-specific liver mesh reconstructed from the segmentation
-(178k vertices). The CT-confirmed liver anatomy is consistent with the
-twin's optical tissue classification (liver).}
-\label{fig:hospital_ct}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_robustness.png}
-\caption{Mechanical-inversion robustness. (a) Force-scale sweep: the
-recovered $E_{bg}$ ratio tracks the theoretical one-to-one propagation of
-Proposition~\ref{prop:forcescale}. (b) Noise robustness: the $E_{bg}$ error
-grows gracefully with added motion noise. (c) Held-out load-case
-prediction: the inverted material matches the oracle material across three
-unseen load cases.}
-\label{fig:robustness}
-\end{figure}
-
-\paragraph{Mechanics comparison}
-Table~\ref{tab:mech_compare} places the mechanical results against the
-closest settings in the literature and our own ablations. Because the
-settings differ (known force vs.\ force-free, absolute modulus vs.\
-contrast), the comparison is by setting, not by a single leaderboard
-number; the consistent observation is that the audit reports the quantity
-each setting can support.
-
-\begin{table*}[htbp]
-\centering
-\caption{Mechanics comparison by setting. ``Abs.\ $E$'' is absolute-modulus
-recovery; ``contrast'' is stiffness-contrast recovery.}
-\label{tab:mech_compare}
-\small
-\begin{tabular}{@{}p{0.20\linewidth}p{0.24\linewidth}p{0.18\linewidth}p{0.24\linewidth}@{}}
-\toprule
-Method & Setting & Force & Result \\
-\midrule
-PAC-NeRF \cite{pacnerf} & system ID, multi-view & known & abs.\ $E$, object-dependent \\
-PhysDreamer \cite{physdreamer} & video prior, static & none & relative stiffness only \\
-PhysGaussian \cite{physgaussian} & MPM dynamics & manual $E$ & parameters assigned \\
-Prior TMI-line (our group) & image + force joint inv. & measured & abs.\ $E$ err 21--30\% (60 scen.) \\
-\midrule
-Ours (synthetic closed loop) & uniform $E$ & known & abs.\ $E$ to 0.01\% error \\
-Ours (FEM benchmark) & 2-region, surface-only & measured (5\% err) & abs.\ $E_{bg}$ median 4.3\% err \\
-Ours (force provenance) & 2-region & video-estimated & $E_{bg}$ 4.1$\pm$4.0\%; contrast invariant \\
-Ours (real phantom) & strain ratio & none & contrast 6.9\% err, CI covers truth \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\paragraph{Material recovery}
-Beyond geometry and motion, the twin recovers the tissue's optical and
-mechanical material. Fig.~\ref{fig:material} shows the recovered albedo and
-roughness maps from the canonical field (reconstruction) alongside the mechanical
-parameters with their audit tags (inversion): the tissue classifies as liver
-(Neo-Hookean), and because no force is instrumented, the Young's modulus,
-Poisson ratio, density, viscosity, and friction are all honestly tagged
-\emph{assumed\_table}, while the optical parameters are \emph{measured}.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_material_4x4.png}
-\caption{Soft-tissue material recovery across four scenes (rows: EndoNeRF
-pulling, EndoNeRF cutting, SCARED keyframe\_1, SCARED keyframe\_2).
-Columns: input $|$ recovered albedo $|$ recovered roughness $|$ recovered
-specular. The optical material is measured; the mechanical parameters are
-tagged \emph{assumed} (no force instrumented).}
-\label{fig:material}
-\end{figure}
-
-\subsection{Uncertainty honesty}
-\label{sec:uq_exp}
-The Laplace posterior reports a small $\mathrm{std}(\log E_{bg}) = 1.17$
-but a much larger $\mathrm{std}(\log E_{incl}) = 21.2$: the data do not
-constrain the deep inclusion modulus, consistent with its 30\% estimation
-error. The 95\% prediction interval covers 100\% of held-out surface nodes
-but is dominated by the unidentified inclusion direction, so the
-uncertainty estimate flags the inclusion as unidentifiable rather than
-reporting overconfidence.
-
-\subsection{Comparison with related approaches}
-\label{sec:comparison}
-Table~\ref{tab:position} positions the pipeline against representative
-methods. Three distinctions are salient. First, the output is a simulable
-twin rather than a reconstruction: EndoNeRF, EndoSurf, and EndoGaussian
-produce appearance and geometry but no forward operator $\mathcal{S}$.
-Second, the mechanics are recovered rather than assigned: PhysGaussian
-requires manually supplied parameters, and PhysDreamer recovers only
-relative stiffness, whereas we recover absolute modulus where identifiable
-and mark the rest as assumed. Third, the provenance is explicit: no prior
-method tags each parameter as measured, estimated, or assumed. The closest
-in spirit is PAC-NeRF, which performs system identification with known
-forces, but it targets household objects with multi-view capture and does
-not audit provenance; our force-provenance study additionally quantifies
-how imperfect video-based force estimates bound absolute-modulus accuracy.
-
-\subsection{Component-wise comparison}
-\label{sec:componentwise}
-Because no prior method builds an audited soft-tissue twin from endoscopic
-video, a single end-to-end leaderboard comparison is impossible. We
-therefore compare each component against the closest state of the art
-(Table~\ref{tab:componentwise}). The reconstruction component is comparable
-to the endoscopic novel-view-synthesis methods; the mechanical component is
-comparable to the physics-aware system-identification methods; and the
-audit component has no direct counterpart.
-
-\begin{table*}[htbp]
-\centering
-\caption{Component-wise comparison to the closest state of the art.}
-\label{tab:componentwise}
-\small
-\begin{tabular}{@{}p{0.16\linewidth}p{0.24\linewidth}p{0.24\linewidth}p{0.24\linewidth}@{}}
-\toprule
-Component & Closest SOTA & Their result & Ours \\
-\midrule
-Reconstruction & EndoGaussian \cite{endogaussian} (NVS) & NVS protocol, not re-run & 36.79\,dB (canonical, tissue-masked) \\
- & Prior NVS line (our group) & 24.80\,dB & \textbf{+12\,dB} \\
-Deformation tracking & DefSLAM \cite{defslam} & monocular deforming tracking & fixed-topology + rollback, no divergence \\
-Mechanics (abs.\ $E$) & PAC-NeRF \cite{pacnerf} & object-dependent, known force & median 4.3\% err (measured force) \\
- & Prior TMI-line (our group) & 21--30\% err (60 scen.) & \textbf{4.3\% median err} \\
-Mechanics (contrast) & PhysDreamer \cite{physdreamer} & relative only & contrast 6.9\% err + CI (phantom) \\
-Provenance audit & none & n/a & \textbf{explicit measured / estimated / assumed} \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-These rows are not one leaderboard. The reconstruction numbers use
-different protocols, so 36.79\,dB is not a win over a novel-view number.
-The tracking and mask rows are same-protocol ablations and do improve on
-their own baselines. The FEM median of 4.3\% is on six scenarios and is
-not a replacement for the 60-scenario prior result. The audit is a
-statement about each parameter, not a metric on which a prior method was
-beaten. Fig.~\ref{fig:taskcmp} and Table~\ref{tab:taskcmp} keep that
-distinction.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_task_comparison.png}
-\caption{Task comparison. Each row names the metric, the closest published
-number or baseline, the number from this paper, and whether the two share
-a protocol. Green marks a same-protocol improvement. Blue marks a result
-that has no matched published number. Amber marks a different protocol
-that must not be ranked. Red marks a task that is still open. No row is a
-claim to have surpassed endoscopic novel-view reconstruction.}
-\label{fig:taskcmp}
-\end{figure}
-
-\begin{table*}[htbp]
-\centering
-\caption{What this paper establishes. A published number is placed next to
-ours only as context. ``Same protocol'' is the only case in which the
-comparison is a result rather than a positioning statement.}
-\label{tab:taskcmp}
-\footnotesize
-\begin{tabular}{@{}p{0.18\linewidth}p{0.16\linewidth}p{0.22\linewidth}p{0.20\linewidth}p{0.14\linewidth}@{}}
-\toprule
-Task & Metric & Closest number & This paper & Reading \\
-\midrule
-EndoNeRF novel views & held-out PSNR & EndoGaussian, NVS, not re-run & not measured & different protocol \\
-Canonical fit & tissue-masked PSNR & none on this mask & 36.79 / 34.09\,dB & reported \\
-SCARED keyframes 1--2 & tissue-masked PSNR & none matched & 26.99 / 26.17\,dB & reported \\
-Tracking & worst-frame loss & inertia-only 37.23 & 1.55 & same protocol \\
-Tissue mask & tissue-masked PSNR & tool mask 11.13\,dB & 36.79\,dB & same protocol \\
-Uniform modulus & relative error & none on this loop & 0.01\% & closed loop \\
-FEM $E_{bg}$ & median relative error & prior 60 scenes, 21.3\% median & 4.3\% on 6 scenes & different set \\
-Phantom contrast & vs.\ compression test & none on this split & 6.9\% & reported \\
-Absolute $E$, real endoscopy, no force & relative error & not available & not claimed & open \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\subsection{Threats to validity}
-\label{sec:threats}
-Several threats qualify the results. (i) \emph{Protocol mismatch}: the
-reconstruction PSNRs are tissue-masked and not directly comparable to the
-novel-view-synthesis numbers reported by EndoNeRF-family methods, which use
-held-out views and full-image metrics. (ii) \emph{Dataset scale}: the FEM
-benchmark is synthetic and six scenarios are used for the main inversion;
-the regime-dependence we report is therefore an observed tendency, not a
-population statistic. (iii) \emph{Modality gap}: the \'ETS phantom is
-ultrasound, not endoscopic RGB, so it validates the mechanics but not the
-optical stage. (iv) \emph{Forward-model mismatch}: the real-data relative
-stiffness uses a mass--spring surrogate whose absolute accuracy is limited
-(82\% forward error), so only contrast is reported there. We mitigate each
-threat by reporting the corresponding confidence and by validating on
-independent ground truth where available.
-
-\subsection{Ablations}
-\begin{table}[htbp]
-\centering
-\caption{Ablations.}
-\label{tab:ablation}
-\footnotesize
-\begin{tabular}{lll}
-\toprule
-Ablation & Variant & Metric \\
-\midrule
-Mask supervision & tool mask (mistaken) & 11.13\,dB \\
-Mask supervision & tissue $=$ depth$>$0 (correct) & \textbf{36.79\,dB} \\
-Reconstruction \#Gaussians & 4000 / 6498 / 10000 & 35.31 / 36.86 / \textbf{38.21}\,dB \\
-Temporal-model & inertia-only & 37.23 (divergence) \\
-Temporal-model & const-vel + rollback & \textbf{1.55} \\
-Parameterization & per-node field & contrast $1.69\times$ \\
-Parameterization & 2-region & \textbf{$3.19\times$} \\
-Forward model & mass--spring surrogate & contrast $4.19\times$ (GT $1.71\times$) \\
-Forward model & FEM-in-the-loop & \textbf{$2.26\times$} (GT $1.71\times$) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-%% ===================================================================
-\section{Discussion}
-\label{sec:discussion}
-%% ===================================================================
-
-Geometry and appearance are reconstructed; $E$ is estimated only when
-deformation and loading are observed, and is otherwise a prior. The
-force-provenance study (Sec.~\ref{sec:force}) quantifies the implication:
-absolute $E$ is bounded by the force estimator's systematic accuracy, while
-stiffness contrast is robust to it. The twin should therefore report
-contrast as the reliable measured quantity and absolute $E$ with wide,
-calibrated intervals. This is not a limitation to hide but the central
-design principle: a twin that exposes the provenance of its parameters
-degrades gracefully and supports safer decisions than one that presents
-every number as measured.
-
-\paragraph{A worked example}
-On the pulling scene, the audit reads as follows. The albedo and roughness
-are \emph{measured} (reconstructed from multi-frame photometry with tight
-posterior). The tissue class is \emph{estimated} (the optical heuristic
-selects liver, with the PBR signature as evidence). The Young's modulus is
-\emph{assumed} (liver prior, median 6\,kPa, 95\% CI [2.3, 16.0]) because no
-force is instrumented; the stiffness \emph{contrast} between regions is
-\emph{estimated} from the tracked deformation (relative, force-free). The
-Poisson ratio and viscosity are \emph{assumed} (table values). A planner
-reading this audit knows immediately that the geometry and the contrast are
-trustworthy, the absolute modulus is a prior, and the rehearsal should be
-run with the modulus sampled over its interval rather than at a point
-value.
-
-The mass--spring surrogate is not accurate enough for absolute mechanics
-(82\% forward error), so FEM-in-the-loop is necessary; absolute $E$ on real
-data needs force sensing or calibrated excitation; the single fixed
-EndoNeRF camera limits parallax; and the two softest FEM backgrounds remain
-challenging. Three failure modes bound the current reach: when the tissue is
-nearly stationary, the mechanical-inversion stage falls back to the prior; when the
-tool or contact region is out of view, only contrast is reported; and when
-the camera moves substantially, the tracker must be re-anchored. Each
-failure mode maps to a specific audit tag, so the twin degrades gracefully
-by reporting lower confidence rather than wrong values. Clinical deployment
-additionally requires patient-specific force-instrumented tooling and
-regulatory validation.
-
-The intended use is pre-operative rehearsal and intra-operative guidance in
-robot-assisted surgery. A practical pathway is: reconstruct the twin from
-the intra-operative feed, report stiffness contrast as the reliable
-measured quantity (e.g., to localize a stiff tumor margin), and drive a
-simulator with the audited parameters for rehearsal. Each of these steps is
-supported by a stage of the staged validation. Clinical elastography is the
-closest deployed technology \cite{ophir1991}: it reports a stiffness
-contrast from a dedicated ultrasound probe, whereas we recover a spatially
-resolved field on the reconstructed geometry from the endoscopic video that
-is already present, and our twin can additionally be driven forward in a
-simulator. The \'ETS phantom result (6.9\% contrast error) places the
-video-based contrast within the accuracy range expected of elastography,
-suggesting the two could be used together.
-
-A soft-tissue twin that informs surgery is a medical device component and
-must be governed accordingly. The twin's predictions should be presented
-with their audit confidence, and any clinical action should be gated on the
-measured parameters meeting a confidence threshold. Because absolute
-modulus currently requires force sensing, claims should be limited to
-contrast until force-instrumented validation is available; overstating
-absolute accuracy would be a governance failure. Patient data used to build
-the twin must follow the consent and privacy rules of the deploying
-institution. The audit framework supports all three by making the evidence
-behind each parameter explicit and reviewable.
-
-\paragraph{Reproducibility.}\label{sec:repro}
-To support independent verification, we release the complete source code,
-evaluation scripts, and data-split definitions. Every numerical result
-reported in this paper is produced by these released end-to-end scripts,
-which cover the three-stage pipeline on EndoNeRF and SCARED, the FEM
-benchmark inversion, the force-provenance analysis, and the phantom audit;
-each script writes a machine-readable summary and the corresponding
-figures, from which every number in the paper is drawn.
 
 %% ===================================================================
 \section{Conclusions}
