@@ -1,8 +1,6 @@
-"""Fair task-comparison figure for the soft-tissue twin paper.
+"""Protocol-aware task-comparison figure for the soft-tissue twin paper.
 
-Rows are tasks. A published number is placed beside ours only when the
-protocol is the same. Different protocols are marked not comparable, and
-no row is scored as beating reconstruction SOTA.
+Rows distinguish matched, unmatched, and unevaluated protocols.
 """
 from __future__ import annotations
 
@@ -32,33 +30,33 @@ ROWS = [
     ["Reconstruction\n(EndoNeRF NVS)", "held-out-view PSNR",
      "EndoGaussian reports NVS PSNR\n(not re-run here)",
      "not measured\non this split", "not comparable", "diff"],
-    ["Reconstruction\n(our canonical fit)", "tissue-masked PSNR",
+    ["Reconstruction\n(canonical fit)", "tissue-masked PSNR",
      "no published number\non this mask",
-     "36.79 / 34.09 dB\npulling / cutting", "reported only", "own"],
+     "36.79 / 34.09 dB\npulling / cutting", "no matched reference", "own"],
     ["SCARED portability", "tissue-masked PSNR,\nsingle keyframe",
      "no matched published number",
-     "26.99 / 26.17 dB\nkf1 / kf2", "reported only", "own"],
+     "26.99 / 26.17 dB\nkf1 / kf2", "no matched reference", "own"],
     ["Tracking ablation", "worst-frame loss,\nsame sequence",
      "inertia-only 37.23\n(diverges)",
-     "const-vel + rollback\n1.55", "same protocol,\nbetter", "same"],
+     "constant velocity +\nrollback 1.55", "matched protocol", "same"],
     ["Mask ablation", "tissue-masked PSNR,\nsame frames",
      "tool-mask supervision\n11.13 dB",
-     "depth>0 tissue mask\n36.79 dB", "same protocol,\nbetter", "same"],
+     "depth-valid tissue mask\n36.79 dB", "matched protocol", "same"],
     ["Uniform modulus", "relative error,\nclosed loop",
      "no external method\non this loop",
-     "0.01%", "sanity check", "own"],
+     "0.01%", "closed-loop verification", "own"],
     ["FEM background E", "median relative error",
-     "prior 60-scene line:\n21.3% median",
-     "4.3% median\n(6 of 60 scenarios)", "not the same set", "diff"],
+     "no matched published result",
+     "4.3% median\n(6 of 60 scenarios)", "no matched reference", "own"],
     ["Phantom contrast", "error vs compression test",
      "no published run\non this phantom split",
-     "3.80x vs 3.56x\n(6.9%)", "reported only", "own"],
+     "3.80x vs 3.56x\n(6.9%)", "no matched reference", "own"],
     ["Provenance audit", "measured / estimated\n/ assumed",
      "no prior method\nstates this tag",
-     "explicit tag\non every parameter", "new statement,\nnot a metric win", "own"],
-    ["Official NVS SOTA\nand in-vivo absolute E", "held-out PSNR;\nforce-free E",
+     "explicit tag\non every parameter", "no direct comparator", "own"],
+    ["Held-out NVS and\nreal-tissue absolute E", "held-out PSNR;\nforce-free E",
      "EndoGaussian NVS;\nno force-free absolute E",
-     "not done", "still open", "open"],
+     "not evaluated", "unevaluated", "open"],
 ]
 
 
@@ -69,11 +67,11 @@ def main():
     ax.set_ylim(0, len(ROWS) + 1.35)
     ax.axis("off")
     ax.set_title(
-        "Task comparison. Green: same protocol. Blue: our measurement, no matched published number.\n"
-        "Amber: protocols differ, do not rank. Red: not done. No row claims a reconstruction-SOTA win.",
+        "Protocol-aware task comparison. Green: matched protocol; blue: no matched reference;\n"
+        "amber: unmatched protocol or sample; red: unevaluated setting.",
         loc="left", fontsize=11, pad=8, color="#222",
     )
-    headers = ["Task", "Metric", "Closest published or baseline", "This paper", "How to read it"]
+    headers = ["Task", "Metric", "Reference or comparator", "Present study", "Protocol status"]
     xs = [0.15, 2.35, 4.55, 7.55, 10.15]
     ws = [2.1, 2.1, 2.9, 2.5, 2.1]
     y0 = len(ROWS) + 0.15

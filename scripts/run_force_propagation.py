@@ -1,14 +1,12 @@
-"""Option A: force-provenance error propagation (video -> force -> E).
+"""Propagate video-force uncertainty to Young's-modulus inversion.
 
-Answers the reviewer's inevitable question "where does the force come from?"
-by transporting the EMPIRICAL force-estimation error model — measured on
-real endoscopic video (small-bowel retraction benchmark, 3D-ResNet,
-R^2 0.88) — onto the FEM mechanics benchmark where E ground truth exists.
+The empirical error model of an unpublished R3D-18 force estimator is
+applied to the FEM mechanics benchmark, for which modulus ground truth is
+available. The small-bowel force data do not contain modulus, mesh, or
+deformation ground truth and are therefore not used as stiffness evidence.
 
-Design (honest by construction):
-- The small-bowel dataset has force labels but NO E truth, NO mesh, NO
-  deformation GT (its README forbids using it as stiffness truth). So we do
-  NOT invert E on bowel video. Instead:
+Procedure:
+
   1. Extract the estimator's empirical error model from the benchmark's
      per-sample predictions (per-recording scale factor + residual noise).
   2. On the FEM benchmark (ion_ct_synthetic_mechanics60, known E), invert E
@@ -38,6 +36,7 @@ from scripts.run_fem_validation_suite import (  # noqa: E402
 )
 
 SB_RESULTS = Path(r"E:\Diff_Rending_Re_3D\results\small_bowel_force")
+FORCE_MODEL_SUMMARY = ROOT / "configs" / "force_error_model_summary.json"
 OUT = ROOT / "outputs" / "force_propagation"
 
 
@@ -54,7 +53,12 @@ def extract_force_error_model(protocol: str = "camera", window: int = 30) -> dic
     """
     folds = sorted(SB_RESULTS.glob(f"{protocol}_fold*_{'w' + str(window)}.json"))
     if not folds:
-        raise FileNotFoundError(f"no folds matching {protocol}_fold*_{'w'+str(window)}")
+        if FORCE_MODEL_SUMMARY.exists():
+            return json.loads(FORCE_MODEL_SUMMARY.read_text(encoding="utf-8"))
+        raise FileNotFoundError(
+            f"no folds matching {protocol}_fold*_{'w'+str(window)} and "
+            f"no aggregate summary at {FORCE_MODEL_SUMMARY}"
+        )
     per_rec: dict[int, dict[str, list]] = {}
     all_err: list[float] = []
     all_tgt: list[float] = []
@@ -152,15 +156,11 @@ def main():
     print("[1/3] Force-estimation error model (real small-bowel video benchmark)")
     model = extract_force_error_model()
     summary["force_error_model"] = model
-    print(f"  {model['n_samples']} samples / {model['n_recordings']} recordings "
-          f"({model['n_folds']} folds, {model['protocol']} w{model['window']})")
-    print(f"  MAE {model['mae_n']:.3f} N, RMSE {model['rmse_n']:.3f} N, "
+    print(f"  {model['n_samples']} samples / {model['n_recordings']} recordings")
+    print(f"  MAE {model['mae_n']:.3f} N, "
           f"residual std {model['residual_std_n']:.3f} N")
     print(f"  systematic scale factor: mean {model['scale_factor_mean']:.3f}, "
-          f"std {model['scale_factor_std']:.3f}, "
-          f"[p05 {model['scale_factor_p05']:.3f}, p95 {model['scale_factor_p95']:.3f}]")
-    print(f"  per-recording bias: mean {model['bias_mean_n']:.4f} N, "
-          f"std {model['bias_std_n']:.4f} N")
+          f"std {model['scale_factor_std']:.3f}")
 
     # --- Step 2: systematic force-scale sweep (theory check) ---------------
     scenarios = scenario_dirs(2)

@@ -177,9 +177,11 @@ Lakshminarayanan B, Pritzel A, Blundell C.
 \newblock In: NeurIPS; 2017. .
 
 \bibitem[\protect\citeauthoryear{Dahmani et~al.}{2024}]{etsphantom}
-Dahmani J, Petit A, Laporte C.: Dataset of deformed ultrasound images and
-  signals under controlled indentation.
-\newblock Borealis, V1, \url{https://doi.org/10.5683/SP3/ASTGWY}.
+Dahmani J, Petit A, Laporte C.
+\newblock Dataset of deformed ultrasound images and signals under controlled
+  indentation.
+\newblock Borealis. 2024;V1:Dataset.
+\newblock \doi{10.5683/SP3/ASTGWY}.
 
 \bibitem[\protect\citeauthoryear{Ogden}{1997}]{ogden1997}
 Ogden RW.

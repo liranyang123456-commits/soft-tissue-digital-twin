@@ -1,4 +1,4 @@
-# Soft-Tissue Digital Twins from Endoscopic Video with Audited Parameter Provenance
+# Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video
 
 Official code for the paper:
 
@@ -22,16 +22,16 @@ A twin is `T = (G, {Δ_t}, Θ, A)`:
 
 | Symbol | Meaning | Provenance |
 |---|---|---|
-| `G` | canonical Gaussian BRDF field (geometry + appearance) | measured |
-| `{Δ_t}` | deformation sequence on the fixed topology | measured |
-| `Θ` | elastic / viscous / inertial parameters | measured / estimated / assumed |
+| `G` | canonical Gaussian BRDF field (geometry + appearance) | estimated from image/depth measurements |
+| `{Δ_t}` | deformation sequence on the fixed topology | estimated from image observations |
+| `Θ` | elastic / viscous / inertial parameters | measured inputs / estimated / assumed |
 | `A` | audit map: a provenance tag + confidence per parameter | — |
 
 ## Installation
 
 ```bash
 git clone https://github.com/liranyang123456-commits/soft-tissue-digital-twin.git
-cd mvbrdf_shr_next
+cd soft-tissue-digital-twin
 pip install -e .
 # CUDA rasterizer (recommended; falls back to a PyTorch reference otherwise)
 pip install -e ".[cuda]"
@@ -120,8 +120,10 @@ If you find this work useful, please cite:
 
 ## License
 
-[MIT](LICENSE). The force estimator used as a prior in the force-provenance
-study is prior work and is not part of this contribution.
+[MIT](LICENSE). The unpublished R3D-18 force estimator used to define the
+force-error model is external to the twin and is not part of this
+contribution. Aggregate error parameters needed for propagation are
+provided in `configs/force_error_model_summary.json`.
 
 ---
 

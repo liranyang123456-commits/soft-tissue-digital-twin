@@ -23,7 +23,22 @@ Journal: **BioMedical Engineering OnLine** (Springer Nature / BMC), SCIE, open a
 | `manuscript_source.zip` | Manuscript source。内含 `main.tex`、`references.bib`、`sn-jnl.cls`、`sn-vancouver.bst`、`figures/` |
 | `cover_letter.txt` | 粘贴到 Cover letter |
 
-稿件按该刊发表论文的体例重排（2026 年计算建模类原文为范本）：结构化摘要含 **Background / Methods / Results / Conclusions**；正文顺序 **Introduction（相关工作并入）→ Results → Discussion（含 Limitations）→ Methods（含实验设置）→ Conclusions**；Results 小节标题为陈述句。摘要 309 词。不要上传 `compile*.txt`、`_sn/`、`sn.zip`。系统里再填三位合作者的邮箱。代码链接已写进稿件的数据声明和投稿信。
+稿件以该刊官方 Research 作者指南为准：结构化摘要仅含
+**Background / Results / Conclusions**，正文为
+**Background（含相关工作）→ Results → Discussion（含 Limitations）→
+Methods → Conclusion**；文末包含缩略语和全部 Declarations。Methods
+中按照该刊要求披露了 AI 辅助英文编辑。不要上传 `compile*.txt`、
+`_sn/`、`sn.zip`。系统里还需填写三位合作者的邮箱。代码链接已写进
+数据声明和投稿信。
+
+## 提交前必须人工确认
+
+- 按官方指南，人类影像数据即使获得豁免，也应写出作出豁免决定的
+  伦理委员会名称及适用的批准号或豁免号。当前稿件只有伦理和知情同意
+  获得豁免的事实，没有委员会名称和编号；请在提交前向河南省人民医院
+  确认后补入。
+- 确认医院 CT 的“可向通讯作者合理申请”与原始机构许可一致。
+- 在投稿系统中补齐 Haotian Ma、Zhipeng Lin 和 Nan Wei 的邮箱。
 
 ## 和现有方法比，没有重建 SOTA
 

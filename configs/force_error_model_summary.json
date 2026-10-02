@@ -1,0 +1,11 @@
+{
+  "source": "aggregate statistics from unpublished R3D-18 force-estimation experiments",
+  "protocol": "camera",
+  "window": 30,
+  "n_samples": 6373,
+  "n_recordings": 50,
+  "mae_n": 0.295,
+  "residual_std_n": 0.418,
+  "scale_factor_mean": 0.949,
+  "scale_factor_std": 0.14
+}
