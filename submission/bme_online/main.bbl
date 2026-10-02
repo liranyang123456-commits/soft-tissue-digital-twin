@@ -197,4 +197,10 @@ Rivlin RS.
 \newblock Philosophical Transactions of the Royal Society A.
   1948;241(822):379--397.
 
+\bibitem[\protect\citeauthoryear{Tran et~al.}{2018}]{r3d}
+Tran D, Wang H, Torresani L, Ray J, LeCun Y, Paluri M.
+\newblock A closer look at spatiotemporal convolutions for action recognition.
+\newblock In: Proceedings of the IEEE Conference on Computer Vision and Pattern
+  Recognition (CVPR); 2018. p. 6450--6459.
+
 \end{thebibliography}
