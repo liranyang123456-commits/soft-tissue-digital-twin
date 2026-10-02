@@ -138,10 +138,7 @@ regularization. For a strain energy that is linear in Young's modulus at
 fixed Poisson ratio, scaling every regional modulus and the applied force
 by the same factor leaves the equilibrium displacement unchanged
 (Proposition~\ref{prop:forcescale}). A global force error is absorbed into
-the modulus, while the ratio of two regional moduli is unchanged. When a
-force value is required and none was measured, the error model of a
-published R3D-18 retraction-force estimator is used
-\cite{smallbowelforce,r3d}.
+the modulus, while the ratio of two regional moduli is unchanged.
 
 We propose a log-normal Bayesian update that labels each parameter
 measured, estimated, or assumed, and attaches a confidence equal to the
@@ -472,7 +469,7 @@ Held-out load case (FEM) & press\_left $\rightarrow$ other cases & within 4.1\% 
 Noise robustness (FEM) & +0.5 / +1.0\,mm noise & $E_{bg}$ err 13--20\% / 9--23\% \\
 Surrogate cross-check & mass--spring vs FEM & 82\% error $\Rightarrow$ FEM needed \\
 Posterior width & Laplace approximation & inclusion flagged unidentified \\
-Force provenance & video-force error $\rightarrow$ $E$ & $E_{bg}$ 4.1$\pm$4.0\%; contrast immune \\
+Force provenance & force scale 0.80--1.20 & $E_{bg}$ ratio 0.846--1.110; contrast 2.22--2.27$\times$ \\
 \textbf{Real phantom (\'ETS)} & contrast vs Bose truth & \textbf{6.9\% error, CI covers truth} \\
 \bottomrule
 \end{tabular}
@@ -555,17 +552,12 @@ truth (dashed identity).}
 
 \paragraph{Force provenance}
 \label{sec:force}
-We extract the empirical error model of a real video-based force estimator
-(small-bowel retraction benchmark, 3D-ResNet, 6373 samples / 50 recordings:
-MAE 0.295\,N, systematic scale factor $0.949 \pm 0.140$)
-\cite{smallbowelforce} and transport it onto the FEM benchmark. A
-systematic sweep (force scale 0.80--1.20, recovered $E_{bg}$ ratio
-0.846--1.110) follows Proposition~\ref{prop:forcescale} in direction but
-is not an exact one-to-one map, as Remark~\ref{rem:nonlinear} states.
-With the full empirical model, the
-$E_{bg}$ error is 4.1\,$\pm$\,4.0\% and the stiffness contrast stays
-2.22--2.27$\times$ regardless of force error, consistent with the
-scale-invariance of the contrast ratio.
+On the finite-element benchmark we scale the applied force by
+0.80--1.20 and re-invert the background modulus. The recovered $E_{bg}$
+ratio moves to 0.846--1.110. The change follows
+Proposition~\ref{prop:forcescale} in direction and is not an exact
+one-to-one map, as Remark~\ref{rem:nonlinear} states. Over the same sweep
+the stiffness contrast stays within 2.22--2.27$\times$.
 
 \paragraph{Real phantom}
 On the \'ETS indentation phantom (6 acquisitions), the image-derived
@@ -649,7 +641,7 @@ Prior TMI-line (our group) & image + force joint inv. & measured & abs.\ $E$ err
 \midrule
 Ours (synthetic closed loop) & uniform $E$ & known & abs.\ $E$ to 0.01\% error \\
 Ours (FEM benchmark) & 2-region, surface-only & measured (5\% err) & abs.\ $E_{bg}$ median 4.3\% err \\
-Ours (force provenance) & 2-region & video-estimated & $E_{bg}$ 4.1$\pm$4.0\%; contrast invariant \\
+Ours (force provenance) & 2-region & scaled 0.80--1.20 & $E_{bg}$ ratio 0.846--1.110; contrast unchanged \\
 Ours (real phantom) & strain ratio & none & contrast 6.9\% err, CI covers truth \\
 \bottomrule
 \end{tabular}
@@ -803,10 +795,11 @@ Forward model & FEM-in-the-loop & \textbf{$2.26\times$} (GT $1.71\times$) \\
 
 The same Gaussians that render the endoscopic scenes are the ones whose
 displacements are tracked and whose modulus is inverted. Background modulus
-has a median error of 4.3\% when the force is measured, 4.1\,$\pm$\,4.0\%
-when the force comes from the video estimator, and is replaced by stiffness
-contrast (6.9\% error, interval covering the compression-test value) when
-no force is available, in agreement with
+has a median error of 4.3\% when the force is measured. Under a force
+scale of 0.80--1.20 the recovered modulus ratio is 0.846--1.110 and the
+stiffness contrast stays within 2.22--2.27$\times$. When no force is
+available, the reported quantity is stiffness contrast (6.9\% error,
+interval covering the compression-test value), in agreement with
 Proposition~\ref{prop:forcescale}. The Laplace posterior marks the
 inclusion modulus as unidentified, and parameters copied from the tissue
 table are tagged assumed.
@@ -819,7 +812,7 @@ table are tagged assumed.
 Geometry and appearance are reconstructed; $E$ is estimated only when
 deformation and loading are observed, and is otherwise a prior. The
 force-provenance study (Sec.~\ref{sec:force}) quantifies the implication:
-absolute $E$ is bounded by the force estimator's systematic accuracy, while
+absolute $E$ moves with the force scale, while
 stiffness contrast is robust to it. The twin should therefore report
 contrast as the reliable measured quantity and absolute $E$ with wide,
 calibrated intervals. This is not a limitation to hide but the central
@@ -930,8 +923,7 @@ reconstruction (Sec.~\ref{sec:tier1}), deformation tracking
 (Sec.~\ref{sec:tier2}), and mechanical inversion (Sec.~\ref{sec:tier3})
 on that field. We then establish the
 force-scale propagation result that determines what is knowable from video
-(Sec.~\ref{sec:forcescale}), describe the force estimator that supplies the
-loading prior (Sec.~\ref{sec:forceest}), and define the provenance audit
+(Sec.~\ref{sec:forcescale}), and define the provenance audit
 (Sec.~\ref{sec:uq}) and how the twin is synchronized and used
 (Sec.~\ref{sec:sync}).
 
@@ -1059,7 +1051,6 @@ $F, J$ & deformation gradient and $J=\det F$ \\
 $\mu, \lambda$ & Lam\'e parameters at fixed $\nu$ \\
 $\beta$ & global force or modulus scale \\
 $K, \tilde{K}$ & stiffness matrix and its modulus-free factor \\
-$\hat{f}, g_\phi, \phi$ & estimated force, force network, backbone feature \\
 $\tau(\theta), c(\theta)$ & provenance tag and confidence of parameter $\theta$ \\
 \bottomrule
 \end{tabular}
@@ -1243,48 +1234,6 @@ force scale is uncertain, while the contrast, which cancels $\beta$, is
 the quantity the audit treats as stable.
 \end{remark}
 
-\paragraph{The force estimator}
-\label{sec:forceest}
-The force $f$ that drives the mechanical inversion is provided by a
-video-based force estimator (prior work \cite{smallbowelforce}, not our
-contribution), whose architecture is shown in
-Fig.~\ref{fig:forcenet}. It maps a short endoscopic video window
-$V \in \mathbb{R}^{3 \times T \times H \times W}$ ($T$ frames of
-$H \times W$ RGB) to a scalar interaction force $\hat{f}$. A 3D-ResNet
-(R3D-18 \cite{r3d}, pretrained on Kinetics-400) extracts a spatiotemporal
-feature, and a two-layer perceptron head regresses the force:
-\begin{equation}
-\hat{f} = g_{\phi}(V) = w_{2}^{\top}\,\sigma\!\left(W_{1}\,\phi(V) + b_{1}\right) + b_{2},
-\label{eq:forcenet}
-\end{equation}
-where $\phi(V) \in \mathbb{R}^{512}$ is the R3D-18 backbone feature (global
-average-pooled), $\sigma$ is ReLU, $W_{1} \in \mathbb{R}^{512 \times 512}$,
-and $w_{2} \in \mathbb{R}^{512}$. The backbone is frozen except for the last
-two residual stages, which are fine-tuned. The estimator is trained with an
-$\ell_{2}$ regression loss against instrumented force measurements
-$f^{\star}$:
-\begin{equation}
-\mathcal{L}_{\text{force}} = \frac{1}{N}\sum_{i=1}^{N}\left\lVert g_{\phi}(V_{i}) - f^{\star}_{i}\right\rVert_{2}^{2}.
-\label{eq:forceloss}
-\end{equation}
-We do not retrain this estimator; we use only its empirical error model
-(a systematic scale factor $0.949 \pm 0.140$ and MAE $0.295$\,N measured on
-the small-bowel retraction benchmark), which
-Proposition~\ref{prop:forcescale} transports onto the modulus estimate.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{fig_forcenet.pdf}
-\caption{Architecture of the video-based force estimator
-(Eq.~\ref{eq:forcenet}, prior work \cite{smallbowelforce}). A 3D-ResNet
-(R3D-18) backbone processes the video clip $3 \times T \times H \times W$
-through a 3D-convolution stem and four residual stages (only the last two
-are fine-tuned), followed by global average pooling and a two-layer
-regressor head (Eq.~\ref{eq:forceloss}) that outputs the scalar force
-$\hat{f}$.}
-\label{fig:forcenet}
-\end{figure}
-
 \subsection{The provenance audit}
 \label{sec:uq}
 \begin{definition}[Parameter provenance]
@@ -1338,13 +1287,11 @@ The core of the method is physics-based optimization, not a learned neural
 network: the Gaussian field is a set of per-primitive physical parameters
 optimized in place, the renderer is a differentiable rasterizer, and the
 mechanical inversion is gradient descent on physical parameters through a
-differentiable simulator. The only learned component is the video-based
-force estimator used as a prior in the force-provenance study
-(Sec.~\ref{sec:force}), which is taken from prior work
-\cite{smallbowelforce} and is not our contribution. This network-free
-design is deliberate: it keeps the twin interpretable, requires no training
-data, and makes every parameter physically meaningful, which is what the
-audit framework is built on.
+differentiable simulator. The inversion uses the applied force when it is
+measured, and a prescribed force scale when the sensitivity of the modulus
+is being tested (Sec.~\ref{sec:force}). This design keeps the twin
+interpretable, requires no training data, and makes every parameter
+physically meaningful, which is what the audit is built on.
 \end{remark}
 
 %% ===================================================================
@@ -1388,7 +1335,7 @@ Operating system(s): Platform independent.
 
 Programming language: Python.
 
-License: MIT for the released pipeline code. The video force estimator used as a prior is prior work and is not part of this contribution.
+License: MIT for the released pipeline code.
 
 The code, evaluation scripts, data-split definitions, and a README that generate the reported figures and tables are available in that repository. EndoNeRF, SCARED, the finite-element benchmark, and the \'ETS phantom are public datasets cited in this article. The de-identified hospital computed-tomography images are not publicly available because institutional consent restricts redistribution, but they are available from the corresponding author on reasonable request.
 
