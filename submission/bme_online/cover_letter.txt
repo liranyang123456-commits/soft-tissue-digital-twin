@@ -6,6 +6,8 @@ The manuscript presents an engineering pipeline that converts a monocular endosc
 
 The manuscript is original, is not under consideration elsewhere, and has not been published. All authors have approved this submission.
 
+Code, evaluation scripts, and the data-split definitions are available at https://github.com/liranyang123456-commits/soft-tissue-digital-twin. The de-identified hospital computed-tomography images are available from the corresponding author on reasonable request.
+
 Corresponding author: Ranyang Li, Henan University of Technology, lry@haut.edu.cn.
 Authors: Ranyang Li, Haotian Ma, Zhipeng Lin, and Nan Wei.
 

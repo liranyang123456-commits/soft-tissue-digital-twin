@@ -15,15 +15,15 @@ Journal: **BioMedical Engineering OnLine** (Springer Nature / BMC), SCIE, open a
 3. Zhipeng Lin（北京航空航天大学）— 博士在读
 4. Nan Wei（河南省人民医院）— 博士，2021 年 6 月毕业于郑州大学
 
-## 上传
+## 上传（只传这三份）
 
-| 文件 | 用途 |
+| 文件 | 系统里放哪里 |
 |---|---|
-| `main.pdf` | 稿件 PDF（Springer Nature 模板，双倍行距，行号） |
-| `manuscript_source.zip` | `main.tex`、`sn-jnl.cls`、`sn-vancouver.bst`、`references.bib`、`figures/` |
-| `cover_letter.txt` | 投稿信 |
+| `main.pdf` | Manuscript |
+| `manuscript_source.zip` | Manuscript source。内含 `main.tex`、`references.bib`、`sn-jnl.cls`、`sn-vancouver.bst`、`figures/` |
+| `cover_letter.txt` | 粘贴到 Cover letter |
 
-系统里再填三位合作者的邮箱。只有通讯作者邮箱写进了稿件。
+不要上传 `compile*.txt`、`_sn/`、`sn.zip`。系统里再填三位合作者的邮箱。稿件里只有通讯作者邮箱。代码链接已写进稿件的数据声明和投稿信。
 
 ## 和现有方法比，没有重建 SOTA
 
