@@ -20,11 +20,11 @@ RECONSTRUCTION = [
     # method, venue, protocol, PSNR, SSIM, source
     ("EndoNeRF", "MICCAI'22", "NVS (per-scene, 2 held-out views)", 37.61, 0.955, "Wang et al. 2022, Tab.1 (mean of 2 scenes)"),
     ("EndoSurf", "MICCAI'23", "NVS (per-scene)", 37.24, 0.958, "Zha et al. 2023, Tab.1"),
-    ("EndoGaussian", "AAAI'24", "NVS (per-scene)", 37.89, 0.962, "Liu et al. 2024, Tab.1"),
+    ("EndoGaussian", "arXiv:2401.12561", "NVS (per-scene)", None, None, "not re-run; do not quote an unverified aggregate"),
     ("LGS", "IROS'24", "NVS (per-scene)", 37.42, 0.959, "Zhu et al. 2024"),
     ("Prior work (Diff_Rending_Re_3D)", "—", "NVS (EndoNeRF, 14-frame train)", 24.80, 0.762, "results/FINAL_REPORT.md (mean of 2 scenes)"),
     ("Ours Tier-1 (pulling)", "—", "canonical fit, tissue-masked", 36.79, None, "outputs/soft_tissue_twin"),
-    ("Ours Tier-1 (cutting)", "—", "canonical fit, tissue-masked", 34.93, None, "outputs/soft_tissue_twin_cutting"),
+    ("Ours Tier-1 (cutting)", "—", "canonical fit, tissue-masked", 34.09, None, "outputs/soft_tissue_twin_cutting_seeded"),
 ]
 
 MECHANICS = [

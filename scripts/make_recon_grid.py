@@ -27,9 +27,10 @@ ROWS = [
     ("EndoNeRF cutting", FIG / "fig_tier1_cutting.png", "34.1"),
     ("SCARED kf1", FIG / "fig_scared_kf1.png", "27.0"),
     ("SCARED kf2", FIG / "fig_scared_kf2.png", "26.2"),
-    ("SCARED kf3", FIG / "fig_scared_kf3.png", "25.3"),
-    ("SCARED kf4", FIG / "fig_scared_kf4.png", "26.7"),
-    ("SCARED kf5", FIG / "fig_scared_kf5.png", "29.6"),
+    # kf3--kf5 have no checked summary json. Do not print a PSNR for them.
+    ("SCARED kf3", FIG / "fig_scared_kf3.png", ""),
+    ("SCARED kf4", FIG / "fig_scared_kf4.png", ""),
+    ("SCARED kf5", FIG / "fig_scared_kf5.png", ""),
 ]
 
 

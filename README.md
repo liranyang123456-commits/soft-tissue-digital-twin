@@ -1,12 +1,10 @@
-# Physics-Audited Soft-Tissue Digital Twins from Endoscopic Video
+# Soft-Tissue Digital Twins from Endoscopic Video with Audited Parameter Provenance
 
 Official code for the paper:
 
-> **Physics-Audited Soft-Tissue Digital Twins from Endoscopic Video:
-> Canonical Gaussian Fields, Simulation-in-the-Loop Elasticity Inversion,
-> and Parameter Provenance.**
-> Ranyang Li, Nan Wei, Zhipeng Lin, Wufeng Liu, Chao Fan, Junjun Pan.
-> *Computer Methods and Programs in Biomedicine* (under review), 2026.
+> **Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video.**
+> Ranyang Li, Haotian Ma, Zhipeng Lin, Nan Wei.
+> Submitted to *BioMedical Engineering OnLine*, 2026.
 
 The pipeline converts a monocular endoscopic video into a **physically
 simulable soft-tissue digital twin** in which every physical parameter
@@ -70,7 +68,14 @@ python scripts/run_hospital_ct_liver.py
 ```
 
 Figures are assembled by the `scripts/make_*.py` scripts into
-`submission/cmpb/figures/`.
+`submission/bme_online/figures/`.
+
+The task comparison in the manuscript is not a reconstruction leaderboard.
+Same-protocol gains are the tracking ablation (worst-frame loss 37.23 to
+1.55) and the tissue-mask ablation (11.13 dB to 36.79 dB). Tissue-masked
+PSNR, the six-scenario FEM median, and the phantom contrast are reported
+on their own protocols. Official EndoNeRF novel-view synthesis and
+force-free absolute modulus on real endoscopy are not claimed.
 
 ## Datasets
 
@@ -95,7 +100,7 @@ mvbrdf_shr/            Python package
     tissue_db.py       soft-tissue material priors
 scripts/               end-to-end reproduction + figure scripts
 configs/               experiment configs
-submission/cmpb/       the manuscript (LaTeX) and figures
+submission/bme_online/ the BioMedical Engineering OnLine manuscript
 tests/                 unit tests
 ```
 
@@ -105,14 +110,11 @@ If you find this work useful, please cite:
 
 ```bibtex
 @article{li2026twin,
-  title   = {Physics-Audited Soft-Tissue Digital Twins from Endoscopic Video:
-             Canonical Gaussian Fields, Simulation-in-the-Loop Elasticity
-             Inversion, and Parameter Provenance},
-  author  = {Li, Ranyang and Wei, Nan and Lin, Zhipeng and Liu, Wufeng and
-             Fan, Chao and Pan, Junjun},
-  journal = {Computer Methods and Programs in Biomedicine},
+  title   = {Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video},
+  author  = {Li, Ranyang and Ma, Haotian and Lin, Zhipeng and Wei, Nan},
+  journal = {BioMedical Engineering OnLine},
   year    = {2026},
-  note    = {under review}
+  note    = {submitted}
 }
 ```
 

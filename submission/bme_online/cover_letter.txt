@@ -1,0 +1,13 @@
+Dear Editors,
+
+Please consider our manuscript entitled "Audited Soft-Tissue Digital Twins from Monocular Endoscopic Video" as a Research article in BioMedical Engineering OnLine.
+
+The manuscript presents an engineering pipeline that converts a monocular endoscopic video into a simulable soft-tissue digital twin and labels every physical parameter as measured, estimated, or assumed. A force-scale result shows that stiffness contrast remains reliable when the absolute force scale is uncertain. The study uses de-identified clinical computed-tomography images from Henan Provincial People's Hospital, a physical ultrasound phantom with independent compression-test measurements, and public endoscopic and finite-element datasets.
+
+The manuscript is original, is not under consideration elsewhere, and has not been published. All authors have approved this submission.
+
+Corresponding author: Ranyang Li, Henan University of Technology, lry@haut.edu.cn.
+Authors: Ranyang Li, Haotian Ma, Zhipeng Lin, and Nan Wei.
+
+Sincerely,
+Ranyang Li
