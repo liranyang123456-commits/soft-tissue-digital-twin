@@ -38,7 +38,17 @@
 \affil[3]{\orgname{Henan Provincial People's Hospital}, \orgaddress{\city{Zhengzhou}, \postcode{450003}, \country{China}}}
 
 \abstract{\textbf{Background:} Surgical planning needs a soft-tissue model that a simulator can drive forward, but a monocular endoscopic video provides images only. Endoscopic reconstruction methods recover appearance and geometry and stop there; their output cannot be loaded into a physics simulator. Physics-based inversion can identify material parameters but requires known applied forces and usually multi-view capture, neither of which monocular endoscopy provides. This study constructs a simulable soft-tissue digital twin directly from a monocular endoscopic video and attaches to every physical parameter an audit tag, measured, estimated, or assumed, with a confidence.
-\textbf{Methods:} Building on 3D Gaussian splatting and differentiable simulation, the twin is built in three stages on one canonical 3D Gaussian field: tool-aware tissue supervision fits the field, a constant-velocity tracker with divergence rollback follows the deformation, and differentiable finite-element simulation recovers the elastic parameters. The pipeline is evaluated on two EndoNeRF scenes, two SCARED keyframes, a six-scenario finite-element benchmark, a force-provenance study, and a real ultrasound phantom with compression-test ground truth.
+\textbf{Methods:} The framework consists of an input (monocular video
+with per-frame depth and tool masks), three stages on one canonical 3D
+Gaussian field, and an audit layer. Stage~1 reconstructs the field with
+tool-aware tissue supervision; Stage~2 tracks the deformation with
+constant-velocity prediction and divergence rollback; Stage~3 recovers the
+elastic parameters by differentiable finite-element simulation; the audit
+tags every parameter as measured, estimated, or assumed, with a
+confidence. Building on 3D Gaussian splatting and differentiable
+simulation, the pipeline is evaluated on two EndoNeRF scenes, two SCARED
+keyframes, a six-scenario finite-element benchmark, a force-provenance
+study, and a real ultrasound phantom with compression-test ground truth.
 \textbf{Results:} A force-scale analysis shows that a global force error shifts the recovered modulus one-to-one while stiffness contrast is invariant. Tissue-masked peak signal-to-noise ratio is 36.8\,dB and 34.1\,dB on the EndoNeRF scenes and 26.6\,dB on SCARED. A uniform modulus is recovered to 0.01\% error in a closed loop, background modulus has a 4.3\% median error on the benchmark, and on the phantom the image-derived contrast is $3.80\times$ against a compression-test value of $3.56\times$ (6.9\% error).
 \textbf{Conclusions:} One Gaussian field carries appearance, motion, and mechanics, so the twin is simulable; the force-scale result states what video can identify; and the audit makes the provenance of every parameter explicit. Absolute modulus on real tissue is not claimed without force sensing.}
 
@@ -113,16 +123,61 @@ that clinical models must expose what is measured versus assumed
 
 Practically, the endoscopic video already recorded in a procedure becomes a rehearsal asset: the next interaction can be simulated, and a stiffness-contrast map can be inspected.
 
-The pipeline stands on two established tools, 3D Gaussian splatting \cite{gaussiansplatting} for reconstruction and differentiable simulation \cite{hu2020difftaichi} for mechanics, and improves on the state of the art in three ways.
+The proposed framework takes a monocular endoscopic video with per-frame
+depth and tool masks as input and outputs a simulable twin
+$\mathcal{T} = (G, \{\Delta_t\}, \Theta, \mathcal{A})$
+(Fig.~\ref{fig:pipeline} and Fig.~\ref{fig:architecture}). It is
+implemented as three stages on one canonical 3D Gaussian field plus an
+audit layer. Stage~1 (reconstruction) fits the field $G$ from the video.
+Stage~2 (tracking) estimates the deformation sequence $\{\Delta_t\}$ on
+the fixed topology. Stage~3 (mechanical inversion) recovers the elastic
+parameters $\Theta$ and the forward operator $\mathcal{S}$ by
+differentiable simulation. The audit $\mathcal{A}$ then tags every
+parameter in $\Theta$ with its provenance and a confidence. The
+implementation stands on two established tools, 3D Gaussian splatting
+\cite{gaussiansplatting} and differentiable simulation
+\cite{hu2020difftaichi}; what is new is the following.
 
-First, one field instead of three representations. Endoscopic reconstruction methods \cite{endonerf,endosurf,endogaussian} recover appearance and geometry and stop; their output cannot be loaded into a simulator, and a twin built on them would need its mechanics rebuilt by hand. We run reconstruction, tracking, and mechanical inversion on one canonical Gaussian field, so the rendered scene, the tracked motion, and the inverted parameters always describe the same object. Two adaptations make the shared field usable on real sequences: tool-aware tissue supervision improves reconstruction by about 25\,dB over tool-mask supervision, and a rollback tracker stays stable where inertia-only tracking diverges (worst-frame loss 1.55 against 37.23; Sec.~\ref{sec:experiments}).
+\begin{enumerate}
+\item \textbf{One canonical field for appearance, motion, and mechanics
+(framework; Stages~1--2).} We propose to run reconstruction, tracking, and
+inversion on the same per-primitive parameters instead of stitching
+separate representations. This solves the problem that endoscopic
+reconstruction output cannot be loaded into a physics simulator and that
+per-frame rebuilds destroy correspondences. It is realized with two
+adaptations: tool-aware tissue supervision improves reconstruction by
+about 25\,dB over the mistaken tool mask, and a rollback tracker stays
+stable where inertia-only tracking diverges (worst-frame loss 1.55 against
+37.23; Sec.~\ref{sec:experiments}).
 
-Second, a force-scale account of what video can identify. Physics-based inversion \cite{pacnerf} reports an absolute modulus, which is valid only when the applied force is measured. We prove (Proposition~\ref{prop:forcescale}) that a global force error maps one-to-one into the recovered modulus while stiffness contrast is invariant. The audit therefore reports contrast as the video-supported quantity and absolute modulus only as an interval. This reading applies to our own finite-element results as well.
+\item \textbf{A force-scale invariance result (theory;
+Proposition~\ref{prop:forcescale}).} We propose an exact statement of what
+video-based inversion can identify: at fixed Poisson ratio, a global force
+scale error $\beta$ shifts the recovered modulus one-to-one, while the
+stiffness contrast is invariant to $\beta$. This solves the silent
+assumption, in prior video-based mechanics, that the force scale is known.
+It is realized as a reporting rule: absolute modulus is an interval
+(4.1\,$\pm$\,4.0\% under video-estimated force), contrast is the measured
+quantity (6.9\% error against a compression test).
 
-Third, an audited twin. Prior endoscopic and physics-based methods assign or report mechanical parameters without stating where each value came from. Here every parameter carries a tag, measured, estimated, or assumed, and a confidence from a Bayesian update of a tissue-class prior (Sec.~\ref{sec:uq}), so a downstream planner can tell a measured stiffness contrast from an assumed table value.
+\item \textbf{A provenance audit attached to the twin (audit layer).} We
+propose that every physical parameter carry a tag, measured, estimated, or
+assumed, and a confidence from a Bayesian update of a tissue-class prior
+(Sec.~\ref{sec:uq}). This solves the problem that prior endoscopic and
+physics-based methods assign or report mechanical parameters without
+stating where each value came from. It is realized on the twin itself:
+the posterior flags the unidentifiable inclusion modulus, and a downstream
+planner can tell a measured stiffness contrast from an assumed table
+value.
+\end{enumerate}
 
-To our knowledge, this is the first study to construct a simulable soft-tissue digital twin directly from monocular endoscopic video and to attach an explicit measured, estimated, or assumed provenance to every physical parameter of the twin.
-These claims are checked on one protocol, from a synthetic closed loop to an independent finite-element benchmark and a real phantom with an independent compression test (Sec.~\ref{sec:experiments}).
+To our knowledge, this is the first study to construct a
+simulable soft-tissue digital twin directly from monocular endoscopic
+video and to attach an explicit measured, estimated, or assumed provenance
+to every physical parameter of the twin.
+These claims are checked on one protocol, from a synthetic closed loop to
+an independent finite-element benchmark and a real phantom with an
+independent compression test (Sec.~\ref{sec:experiments}).
 
 Across two EndoNeRF scenes and the SCARED stereo dataset, the
 reconstruction stage recovers tissue at 26.6--36.8\,dB tissue-masked
@@ -290,14 +345,13 @@ contribution in Sec.~\ref{sec:intro} maps to one of these gaps.
 \label{sec:experiments}
 %% ===================================================================
 
-In this section we evaluate the pipeline end to end, from the optical
-reconstruction to the audited mechanics. We first present the complete
-twin result, then report each stage: reconstruction and tracking on
-endoscopic and stereo data, and a staged mechanical validation that runs
-from a synthetic closed loop to an independent FEM benchmark, a
-force-provenance study, and a real phantom. We close with uncertainty,
-comparison to related approaches, and ablations. Limitations are discussed
-together with the clinical implications in the Discussion.
+The validation is designed so that each contribution is checked at
+increasing realism. Reconstruction and tracking on real endoscopic and
+stereo data test Contribution~1 (the shared field). The force-provenance
+study tests Contribution~2 (the force-scale result). The synthetic closed
+loop, the FEM benchmark, and the phantom test Contribution~3 (the audited
+mechanics), from known forces to no forces at all. Limitations are
+discussed together with the clinical implications in the Discussion.
 
 \begin{figure*}[htbp]
 \centering
@@ -324,6 +378,9 @@ comparison to related approaches, and ablations. Limitations are
 discussed together with the clinical implications in the Discussion.
 
 \subsection{The canonical field reconstructs tissue at 26.6--36.8\,dB}
+This subsection tests Contribution~1 on real data: does one shared Gaussian
+field recover tissue faithfully enough to serve as the substrate for
+tracking and inversion?
 \begin{table}[htbp]
 \centering
 \caption{Reconstruction (tissue-masked PSNR).}
@@ -389,6 +446,10 @@ are not given a separate PSNR in this paper.}
 \end{figure}
 
 \subsection{The tracker follows deformation where naive tracking diverges}
+This subsection completes the test of Contribution~1 on motion: the fixed
+correspondences that tracking adds to the static field are what make the
+sequence a boundary condition for the simulator rather than a set of
+per-frame rebuilds.
 \begin{table}[htbp]
 \centering
 \caption{Temporal-model ablation (pulling scene).}
@@ -412,7 +473,9 @@ occluded retraction in which the photometric gradient is locally
 uninformative; the constant-velocity initialization and acceleration prior
 track it without divergence, and the rollback prevents a single bad frame
 from corrupting the sequence. On the cutting scene the same tracker runs
-six frames without divergence (loss 0.52--0.71).
+six frames without divergence (loss 0.52--0.71). The takeaway is that the
+tracked sequence is stable enough to be replayed into the mechanical stage
+as observed deformation.
 
 \begin{figure}[htbp]
 \centering
@@ -426,7 +489,11 @@ render matches the observed frame.}
 \end{figure}
 
 \subsection{Elastic parameters hold from synthetic loop to real phantom}
-Table~\ref{tab:ladder} summarizes the four-stage validation.
+This subsection tests Contribution~3 with Contribution~2 as the reading
+key: the mechanical stage must recover what is identifiable, state what is
+not, and remain honest as the force evidence degrades from measured, to
+video-estimated, to absent. Table~\ref{tab:ladder} summarizes the
+four-stage validation.
 
 \begin{table*}[htbp]
 \centering
@@ -652,7 +719,10 @@ tagged \emph{assumed} (no force instrumented).}
 
 \subsection{The posterior flags the unidentifiable inclusion}
 \label{sec:uq_exp}
-The Laplace posterior reports a small $\mathrm{std}(\log E_{bg}) = 1.17$
+This subsection tests the audit layer of the framework: when the data
+cannot constrain a parameter, the audit must say so instead of reporting
+overconfidence. The Laplace posterior reports a small
+$\mathrm{std}(\log E_{bg}) = 1.17$
 but a much larger $\mathrm{std}(\log E_{incl}) = 21.2$: the data do not
 constrain the deep inclusion modulus, consistent with its 30\% estimation
 error. The 95\% prediction interval covers 100\% of held-out surface nodes
@@ -773,6 +843,21 @@ Forward model & FEM-in-the-loop & \textbf{$2.26\times$} (GT $1.71\times$) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\paragraph{What the experiments establish}
+Taken together, the experiments establish three things. (i) The shared
+field is real: the same canonical Gaussians that render the scenes at
+26.6--36.8\,dB are the ones tracked (worst-frame loss 1.55) and inverted,
+so the twin is one object rather than three stitched representations.
+(ii) The mechanics are honest: absolute background modulus is recoverable
+to 4.3\% median error when force is measured, degrades to
+4.1\,$\pm$\,4.0\% when force comes from video, and is reported only as
+contrast (6.9\% error, CI covering truth) when no force is instrumented --
+exactly as Proposition~\ref{prop:forcescale} requires. (iii) The audit is
+load-bearing: the posterior flags the unidentifiable inclusion, the
+task-comparison table separates same-protocol gains from positioning, and
+every assumed parameter is visible as such. These are the properties a
+downstream planner needs before trusting a rehearsal prediction.
 
 %% ===================================================================
 \section{Discussion}
