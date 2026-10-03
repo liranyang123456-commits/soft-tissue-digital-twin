@@ -1,0 +1,49 @@
+{
+  "patient": "case_002",
+  "ct_slices": 82,
+  "coordinate_units": "CT voxel-index units; physical spacing unavailable",
+  "cross_subject_mapping": true,
+  "gaussian_checkpoint": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\soft_tissue_twin_seeded\\tier1_reconstruction\\canonical_field.pt",
+  "gaussians": 6498,
+  "volume_nodes": 28523,
+  "tetrahedra": 149028,
+  "boundary_nodes": 7111,
+  "mapped_boundary_nodes": 2755,
+  "boundary_coverage": 0.38742792856138375,
+  "coverage_threshold": 17.46339027795004,
+  "similarity_transform": {
+    "scale": 3.35263740394253,
+    "rotation": [
+      [
+        -0.05642076507399169,
+        0.9615266951455521,
+        0.26885518739822933
+      ],
+      [
+        0.8357733949946929,
+        0.19279460138235802,
+        -0.5141138724999175
+      ],
+      [
+        -0.5461680414373485,
+        0.19569531471215446,
+        -0.8144960492919538
+      ]
+    ],
+    "translation": [
+      253.33636921706065,
+      109.23212767634699,
+      -154.838640756996
+    ]
+  },
+  "alignment": {
+    "iterations": 1,
+    "trim_fraction": 0.7,
+    "trimmed_rmse": 7.376042881663474,
+    "median_distance": 8.28870860965199,
+    "p95_distance": 48.064456611752405,
+    "target_diagonal": 349.2678055590008,
+    "normalized_median_distance": 0.02373167087755474
+  },
+  "interpretation": "Computational mapping demonstration only. The endoscopic and CT surfaces are from different subjects and are not anatomical correspondences or a clinical validation."
+}
