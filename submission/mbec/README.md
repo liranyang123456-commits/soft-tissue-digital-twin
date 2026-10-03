@@ -13,10 +13,17 @@ Official Original Research requirements:
 
 ## Build status
 
-- `main_full.tex` is the uncondensed source used only to verify the MBEC
-  Springer template; it is not a submission file.
+- `main.tex` uses the journal's official MBEC macro package:
+  `svjour3` with the one-column `smallextended` layout.
+- `main_full.tex` is retained only as the uncondensed scientific source;
+  it is not a submission file.
 - `main.tex` is generated from verified experiment summaries by
   `scripts/build_mbec_submission.py`.
+- The generated manuscript is 18 pages with a 192-word abstract, five
+  consolidated figures, and three quantitative tables.
+- The former framework and R3D-18 architecture figures are consolidated
+  into `fig_overall_framework.png`; the auxiliary force estimator is
+  visually separated from the core digital twin.
 - The 60-scenario FEM campaign, strict EndoGaussian holdout, and
   Gaussian-to-volume mapping are complete.
 - Tissue SSIM uses the local SSIM map averaged only over tissue pixels;
