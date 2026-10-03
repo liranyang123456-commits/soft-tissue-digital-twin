@@ -78,6 +78,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, default=Path(r"E:\third_party\EndoNeRF"))
     parser.add_argument("--conda-env", default="endogaussian-cu128")
+    parser.add_argument(
+        "--python",
+        type=Path,
+        help="Direct baseline interpreter; bypasses conda run when provided.",
+    )
     parser.add_argument("--scene-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--iterations", type=int, default=100000)
@@ -97,7 +102,11 @@ def main() -> None:
         experiment,
         args.iterations,
     )
-    prefix = ["conda", "run", "-n", args.conda_env, "python", "run_endonerf.py"]
+    prefix = (
+        [str(args.python.resolve()), "run_endonerf.py"]
+        if args.python is not None
+        else ["conda", "run", "-n", args.conda_env, "python", "run_endonerf.py"]
+    )
     if not args.skip_train:
         _run(prefix + ["--config", str(config.resolve())], args.repo, log)
     if not args.skip_render:

@@ -47,6 +47,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, default=Path(r"E:\third_party\EndoGaussian"))
     parser.add_argument("--conda-env", default="endogaussian-cu128")
+    parser.add_argument(
+        "--python",
+        type=Path,
+        help="Direct baseline interpreter; bypasses conda run when provided.",
+    )
     parser.add_argument("--scene-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--port", type=int, default=6017)
@@ -62,15 +67,16 @@ def main() -> None:
     model = args.output / "model"
     log = args.output / "endogaussian.log"
     args.output.mkdir(parents=True, exist_ok=True)
+    python_prefix = (
+        [str(args.python.resolve())]
+        if args.python is not None
+        else ["conda", "run", "-n", args.conda_env, "python"]
+    )
 
     if not args.skip_train:
         _run(
             [
-                "conda",
-                "run",
-                "-n",
-                args.conda_env,
-                "python",
+                *python_prefix,
                 "train.py",
                 "-s",
                 str(args.scene_root.resolve()),
@@ -87,11 +93,7 @@ def main() -> None:
     if not args.skip_render:
         _run(
             [
-                "conda",
-                "run",
-                "-n",
-                args.conda_env,
-                "python",
+                *python_prefix,
                 "render.py",
                 "--model_path",
                 str(model.resolve()),
