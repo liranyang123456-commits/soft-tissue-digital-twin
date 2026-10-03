@@ -9,10 +9,10 @@ def replace_once(path: Path, old: str, new: str) -> bool:
     text = path.read_text(encoding="utf-8")
     if new in text:
         return False
-    if old not in text:
-        raise RuntimeError(f"expected text not found in {path}: {old!r}")
-    path.write_text(text.replace(old, new), encoding="utf-8")
-    return True
+    if old in text:
+        path.write_text(text.replace(old, new), encoding="utf-8")
+        return True
+    raise RuntimeError(f"expected text not found in {path}: {old!r}")
 
 
 def main() -> None:
@@ -45,6 +45,14 @@ except ImportError:
         return result"""
     if replace_once(helper, old_import, new_import):
         changed.append(str(helper))
+    loader = args.repo / "load_llff.py"
+    loader_text = loader.read_text(encoding="utf-8")
+    if ", ignoregamma=True" in loader_text:
+        loader.write_text(
+            loader_text.replace(", ignoregamma=True", ""),
+            encoding="utf-8",
+        )
+        changed.append(str(loader))
     print("patched" if changed else "already patched", *changed)
 
 
