@@ -23,8 +23,7 @@ stiffness contrast for uninstrumented video and surface observations for
 known-force finite-element inversion. Parameter provenance is recorded as
 measured, estimated, or assumed. Under a strict one-in-eight holdout on two EndoNeRF sequences,
 tissue-masked peak signal-to-noise ratio was 16.7 dB for the present method
-and 36.6 dB for official EndoGaussian. A 60-scenario finite-element
-campaign uses a frozen inversion protocol. A cross-subject
+and 36.6 dB for official EndoGaussian. __FEM_ABSTRACT__ A cross-subject
 mapping to a patient-specific liver volume produced 28,523 nodes and
 149,028 tetrahedra, with 38.7\% boundary coverage. Phantom stiffness
 contrast was $3.80\times$ versus $3.56\times$ by compression testing
@@ -113,13 +112,26 @@ def reorder_sections(text: str) -> str:
 
 def main() -> None:
     text = SOURCE.read_text(encoding="utf-8")
+    fem_path = ROOT / "outputs" / "fem_validation_60" / "fem60_summary.json"
+    fem = json.loads(fem_path.read_text(encoding="utf-8")) if fem_path.exists() else {}
+    fem_complete = bool(fem.get("complete"))
+    if fem_complete:
+        bg = fem["E_bg_rel_err"]
+        fem_abstract = (
+            f"Across 60 finite-element scenarios, median background-modulus "
+            f"error was {100*bg['median']:.1f}\\% "
+            f"(mean {100*bg['mean']:.1f}\\%)."
+        )
+    else:
+        fem_abstract = "A 60-scenario finite-element campaign uses a frozen inversion protocol."
+    abstract = ABSTRACT.replace("__FEM_ABSTRACT__", fem_abstract)
     text = text.replace(
         "pdflatex,lineno,referee,sn-vancouver,Numbered",
         "pdflatex,lineno,iicol,sn-mathphys,Numbered",
     )
     text = re.sub(
         r"\\abstract\{.*?\}\s*\n\s*\\keywords",
-        lambda _: ABSTRACT + "\n\n\\keywords",
+        lambda _: abstract + "\n\n\\keywords",
         text,
         count=1,
         flags=re.DOTALL,
@@ -288,6 +300,51 @@ it does not match the specialized dynamic reconstruction baseline.}}
                 common_holdout_table + "\n" + r"\subsection{Canonical reconstruction}",
                 1,
             )
+    if fem_complete:
+        bg = fem["E_bg_rel_err"]
+        incl = fem["E_incl_rel_err"]
+        contrast = fem["contrast_rel_err"]
+        text = text.replace(
+            r"Independent FEM benchmark & $E_{bg}$, measured force; noisy motion & \\textbf{median 4.3\\% error (6 scenarios)} \\\\",
+            rf"Independent FEM benchmark & $E_{{bg}}$, measured force; noisy motion & \\textbf{{median {100*bg['median']:.1f}\\% error (60 scenarios)}} \\\\",
+        )
+        old_start = text.find("With measured forces (5\\% calibrated error) and noisy surface motion")
+        old_end = text.find("The inclusion contrast is recovered", old_start)
+        if old_start >= 0 and old_end >= 0:
+            paragraph = (
+                f"With measured forces (5\\% calibration error) and noisy surface "
+                f"motion, all 60 scenarios were inverted using the frozen 20-iteration "
+                f"protocol. Background-modulus relative error had median "
+                f"{100*bg['median']:.1f}\\% and mean {100*bg['mean']:.1f}\\%; "
+                f"inclusion-modulus error had median {100*incl['median']:.1f}\\%; "
+                f"contrast error had median {100*contrast['median']:.1f}\\%. "
+            )
+            text = text[:old_start] + paragraph + text[old_end:]
+        text = text.replace(
+            "The principal FEM\nanalysis uses six selected scenarios from a synthetic 60-scenario\nbenchmark; the observed dependence on background stiffness is therefore\ndescriptive rather than a population-level estimate. ",
+            "The complete FEM campaign covers all 60 predefined scenarios. ",
+        )
+        text = text.replace(
+            "background\nmodulus has a median error of 4.3\\% when the force is measured",
+            f"background modulus has a median error of {100*bg['median']:.1f}\\% "
+            "when the force is measured",
+        )
+        fem60_figure_block = r"""
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fem60_summary.png}
+\caption{Complete 60-scenario FEM inversion campaign. The panels report
+estimated versus true background modulus, error distributions for
+background modulus, inclusion modulus, and contrast, error versus true
+stiffness, and the cumulative background-modulus success curve.}
+\label{fig:fem60}
+\end{figure*}
+"""
+        text = text.replace(
+            r"\subsection{Mechanical inversion}",
+            r"\subsection{Mechanical inversion}" + "\n" + fem60_figure_block,
+            1,
+        )
     text = reorder_sections(text)
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -300,6 +357,9 @@ it does not match the specialized dynamic reconstruction baseline.}}
         ROOT / "docs" / "experiments" / "endonerf_common_comparison.png",
         OUTPUT.parent / "figures" / "endonerf_common_comparison.png",
     )
+    fem_figure = ROOT / "outputs" / "fem_validation_60" / "fem60_summary.png"
+    if fem_figure.exists():
+        shutil.copy2(fem_figure, OUTPUT.parent / "figures" / "fem60_summary.png")
     print(OUTPUT)
 
 
