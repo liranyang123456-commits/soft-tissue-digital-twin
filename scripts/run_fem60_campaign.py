@@ -219,7 +219,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--iters", type=int, default=40)
+    parser.add_argument(
+        "--iters",
+        type=int,
+        default=20,
+        help="Frozen inversion protocol used by the original six-scenario run.",
+    )
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--max-scenarios", type=int)
