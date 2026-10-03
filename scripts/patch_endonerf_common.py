@@ -29,6 +29,16 @@ def main() -> None:
         "# strict common holdout",
     ):
         changed.append(str(training))
+    training_text = training.read_text(encoding="utf-8")
+    if "torch.load(ckpt_path)" in training_text:
+        training.write_text(
+            training_text.replace(
+                "torch.load(ckpt_path)",
+                "torch.load(ckpt_path, weights_only=False)",
+            ),
+            encoding="utf-8",
+        )
+        changed.append(str(training))
 
     helper = args.repo / "run_endonerf_helpers.py"
     old_import = "from torchsearchsorted import searchsorted"
