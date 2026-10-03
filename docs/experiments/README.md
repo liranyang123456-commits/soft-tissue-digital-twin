@@ -24,9 +24,11 @@ python scripts/aggregate_endonerf_common.py
 ```
 
 Metrics are full-image and tissue-masked PSNR/SSIM on identical frame IDs.
-Current present-method aggregate: 28 held-out frames, tissue PSNR
-16.714 dB, tissue SSIM 0.7026. External baseline rows are added only after
-the official implementation completes.
+Across 28 held-out frames, the present method obtains tissue PSNR
+16.714 dB and tissue SSIM 0.7026. Official EndoGaussian (commit
+`8d12793838a1595b299df0696c8149c07329e980`, original 3000-iteration
+configs) obtains tissue PSNR 36.589 dB and tissue SSIM 0.9636. These
+numbers use the same frames, source masks, and evaluator.
 
 ## FEM60
 

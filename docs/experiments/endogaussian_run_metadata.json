@@ -1,0 +1,9 @@
+﻿{
+  "method": "EndoGaussian",
+  "official_repository": "https://github.com/CUHK-AIM-Group/EndoGaussian",
+  "commit": "8d12793838a1595b299df0696c8149c07329e980",
+  "environment": "WSL2, PyTorch 2.7.1+cu128, official 3000-iteration scene configs",
+  "split": "(frame_id - 1) % 8 == 0",
+  "scenes": ["pulling_soft_tissues", "cutting_tissues_twice"],
+  "holdout_images_used_for_training": false
+}

@@ -2,6 +2,17 @@
   "per_run": [
     {
       "scene": "cutting_tissues_twice",
+      "method": "EndoGaussian",
+      "n": 20,
+      "full_psnr": 16.370253801345825,
+      "full_ssim": 0.8030337403217953,
+      "tissue_psnr": 37.036841011047365,
+      "tissue_ssim": 0.9674217323462168,
+      "tissue_fraction": 0.7202949494123458,
+      "path": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\endonerf_common\\cutting\\endogaussian_wsl\\evaluation\\metrics.json"
+    },
+    {
+      "scene": "cutting_tissues_twice",
       "method": "present",
       "n": 20,
       "full_psnr": 12.183474731445312,
@@ -10,6 +21,17 @@
       "tissue_ssim": 0.7164550224939983,
       "tissue_fraction": 0.7202949494123458,
       "path": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\endonerf_common\\cutting\\present\\evaluation\\metrics.json"
+    },
+    {
+      "scene": "pulling_soft_tissues",
+      "method": "EndoGaussian",
+      "n": 8,
+      "full_psnr": 17.211225152015686,
+      "full_ssim": 0.7844499597946804,
+      "tissue_psnr": 35.46855401992798,
+      "tissue_ssim": 0.9539693221449852,
+      "tissue_fraction": 0.664800263941288,
+      "path": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\endonerf_common\\pulling\\endogaussian_wsl\\evaluation\\metrics.json"
     },
     {
       "scene": "pulling_soft_tissues",
@@ -24,6 +46,14 @@
     }
   ],
   "per_method": {
+    "EndoGaussian": {
+      "scenes": 2,
+      "frames": 28,
+      "full_psnr": 16.610531330108643,
+      "full_ssim": 0.7977240887426197,
+      "tissue_psnr": 36.588759013584685,
+      "tissue_ssim": 0.9635781865744363
+    },
     "present": {
       "scenes": 2,
       "frames": 28,
