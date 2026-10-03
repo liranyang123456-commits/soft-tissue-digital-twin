@@ -10,6 +10,7 @@ from mvbrdf_shr.world.endonerf_protocol import (
     masked_psnr,
 )
 from scripts.run_endonerf_holdout_twin import interpolate_displacement
+from scripts.aggregate_endonerf_common import aggregate as aggregate_runs
 
 
 def test_holdout_matches_endogaussian_rule():
@@ -51,3 +52,29 @@ def test_displacement_interpolation_uses_adjacent_training_frames():
     }
     result = interpolate_displacement(1, history)
     assert result == pytest.approx(torch.ones(2, 3).numpy())
+
+
+def test_common_summary_is_frame_weighted():
+    rows = [
+        {
+            "method": "m",
+            "scene": "a",
+            "n": 1,
+            "full_psnr": 10.0,
+            "full_ssim": 0.2,
+            "tissue_psnr": 20.0,
+            "tissue_ssim": 0.4,
+        },
+        {
+            "method": "m",
+            "scene": "b",
+            "n": 3,
+            "full_psnr": 30.0,
+            "full_ssim": 0.6,
+            "tissue_psnr": 40.0,
+            "tissue_ssim": 0.8,
+        },
+    ]
+    summary = aggregate_runs(rows)["per_method"]["m"]
+    assert summary["full_psnr"] == pytest.approx(25.0)
+    assert summary["frames"] == 4

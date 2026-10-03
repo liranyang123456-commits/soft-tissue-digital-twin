@@ -1,0 +1,36 @@
+{
+  "per_run": [
+    {
+      "scene": "cutting_tissues_twice",
+      "method": "present",
+      "n": 20,
+      "full_psnr": 12.183474731445312,
+      "full_ssim": 0.4586754625042279,
+      "tissue_psnr": 17.91999521255493,
+      "tissue_ssim": 0.7164550224939983,
+      "tissue_fraction": 0.7202949494123458,
+      "path": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\endonerf_common\\cutting\\present\\evaluation\\metrics.json"
+    },
+    {
+      "scene": "pulling_soft_tissues",
+      "method": "present",
+      "n": 8,
+      "full_psnr": 10.51451551914215,
+      "full_ssim": 0.378421638160944,
+      "tissue_psnr": 13.699190735816956,
+      "tissue_ssim": 0.6681023786465327,
+      "tissue_fraction": 0.664800263941288,
+      "path": "E:\\Digital twin of soft tissue\\mvbrdf_shr_next\\outputs\\endonerf_common\\pulling\\present\\evaluation\\metrics.json"
+    }
+  ],
+  "per_method": {
+    "present": {
+      "scenes": 2,
+      "frames": 28,
+      "full_psnr": 11.706629242215838,
+      "full_ssim": 0.4357457984061468,
+      "tissue_psnr": 16.71405107634408,
+      "tissue_ssim": 0.7026399813947224
+    }
+  }
+}
