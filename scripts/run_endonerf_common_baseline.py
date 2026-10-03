@@ -59,7 +59,7 @@ no_batching = True
 not_zero_canonical = False
 i_print = 200
 i_testset = {iterations}
-i_weights = 4000
+i_weights = {min(4000, iterations)}
 i_video = {iterations + 1}
 video_fps = 10
 """,
@@ -68,7 +68,7 @@ video_fps = 10
 
 
 def _render_directory(log_root: Path, experiment: str) -> Path:
-    candidates = sorted((log_root / experiment).glob("renderonly_path_fixidentity_*/estim"))
+    candidates = sorted((log_root / experiment).glob("renderonly_test_*/estim"))
     if not candidates:
         raise FileNotFoundError("EndoNeRF render-only output was not found")
     return candidates[-1]
@@ -111,7 +111,13 @@ def main() -> None:
         _run(prefix + ["--config", str(config.resolve())], args.repo, log)
     if not args.skip_render:
         _run(
-            prefix + ["--config", str(config.resolve()), "--render_only"],
+            prefix
+            + [
+                "--config",
+                str(config.resolve()),
+                "--render_only",
+                "--render_test",
+            ],
             args.repo,
             log,
         )
