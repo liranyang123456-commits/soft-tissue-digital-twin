@@ -169,9 +169,9 @@
   "metrics": {
     "n": 20,
     "full_psnr": 12.183474731445312,
-    "full_ssim": 0.4586754625042279,
-    "tissue_psnr": 17.91999521255493,
-    "tissue_ssim": 0.7164550224939983,
+    "full_ssim": 0.45867544412612915,
+    "tissue_psnr": 17.919995403289796,
+    "tissue_ssim": 0.5903952956199646,
     "tissue_fraction": 0.7202949494123458
   },
   "per_frame": [
@@ -179,54 +179,54 @@
       "frame_id": 1,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000001.png",
       "full_psnr": 11.972508430480957,
-      "full_ssim": 0.5883166591326395,
+      "full_ssim": 0.5883167386054993,
       "tissue_psnr": 17.395313262939453,
-      "tissue_ssim": 0.8365386923154196,
+      "tissue_ssim": 0.7709117531776428,
       "tissue_fraction": 0.7443176507949829
     },
     {
       "frame_id": 9,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000009.png",
       "full_psnr": 12.400221824645996,
-      "full_ssim": 0.4804411729176839,
+      "full_ssim": 0.4804411828517914,
       "tissue_psnr": 17.5761775970459,
-      "tissue_ssim": 0.7210011879603068,
+      "tissue_ssim": 0.6163827776908875,
       "tissue_fraction": 0.7504638433456421
     },
     {
       "frame_id": 17,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000017.png",
       "full_psnr": 12.578286170959473,
-      "full_ssim": 0.4715014199415843,
+      "full_ssim": 0.4715014100074768,
       "tissue_psnr": 17.628841400146484,
-      "tissue_ssim": 0.7167412042617798,
+      "tissue_ssim": 0.6033321619033813,
       "tissue_fraction": 0.7400451898574829
     },
     {
       "frame_id": 25,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000025.png",
       "full_psnr": 12.921627044677734,
-      "full_ssim": 0.47387027740478516,
+      "full_ssim": 0.47387009859085083,
       "tissue_psnr": 18.184001922607422,
-      "tissue_ssim": 0.7134177088737488,
+      "tissue_ssim": 0.5976400375366211,
       "tissue_fraction": 0.7390777468681335
     },
     {
       "frame_id": 33,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000033.png",
       "full_psnr": 12.590733528137207,
-      "full_ssim": 0.4585292140642802,
+      "full_ssim": 0.4585292935371399,
       "tissue_psnr": 17.963714599609375,
-      "tissue_ssim": 0.7107892433802286,
+      "tissue_ssim": 0.5835350155830383,
       "tissue_fraction": 0.7240203619003296
     },
     {
       "frame_id": 41,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000041.png",
       "full_psnr": 12.906588554382324,
-      "full_ssim": 0.4736059804757436,
+      "full_ssim": 0.4736059606075287,
       "tissue_psnr": 18.027074813842773,
-      "tissue_ssim": 0.6998764475186666,
+      "tissue_ssim": 0.5919386744499207,
       "tissue_fraction": 0.7503875494003296
     },
     {
@@ -235,124 +235,124 @@
       "full_psnr": 12.703181266784668,
       "full_ssim": 0.4508444368839264,
       "tissue_psnr": 17.748470306396484,
-      "tissue_ssim": 0.692680279413859,
+      "tissue_ssim": 0.5662060976028442,
       "tissue_fraction": 0.7333892583847046
     },
     {
       "frame_id": 57,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000057.png",
       "full_psnr": 12.331623077392578,
-      "full_ssim": 0.4493217170238495,
-      "tissue_psnr": 17.877546310424805,
-      "tissue_ssim": 0.7065201997756958,
+      "full_ssim": 0.4493216574192047,
+      "tissue_psnr": 17.877548217773438,
+      "tissue_ssim": 0.5810739994049072,
       "tissue_fraction": 0.7273467779159546
     },
     {
       "frame_id": 65,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000065.png",
       "full_psnr": 11.979775428771973,
-      "full_ssim": 0.4536041021347046,
+      "full_ssim": 0.45360398292541504,
       "tissue_psnr": 17.907573699951172,
-      "tissue_ssim": 0.7151058713595072,
+      "tissue_ssim": 0.5842908620834351,
       "tissue_fraction": 0.7026764154434204
     },
     {
       "frame_id": 73,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000073.png",
       "full_psnr": 11.39832878112793,
-      "full_ssim": 0.45223458607991535,
+      "full_ssim": 0.4522346556186676,
       "tissue_psnr": 18.21504783630371,
-      "tissue_ssim": 0.7532231211662292,
+      "tissue_ssim": 0.59473717212677,
       "tissue_fraction": 0.657379150390625
     },
     {
       "frame_id": 81,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000081.png",
       "full_psnr": 11.650039672851562,
-      "full_ssim": 0.44157199064890545,
+      "full_ssim": 0.4415719509124756,
       "tissue_psnr": 18.223098754882812,
-      "tissue_ssim": 0.709183951218923,
+      "tissue_ssim": 0.5691176056861877,
       "tissue_fraction": 0.6967193484306335
     },
     {
       "frame_id": 89,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000089.png",
       "full_psnr": 12.400960922241211,
-      "full_ssim": 0.44923750559488934,
+      "full_ssim": 0.44923749566078186,
       "tissue_psnr": 18.364585876464844,
-      "tissue_ssim": 0.710705578327179,
+      "tissue_ssim": 0.5771470665931702,
       "tissue_fraction": 0.7144225835800171
     },
     {
       "frame_id": 97,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000097.png",
       "full_psnr": 12.627721786499023,
-      "full_ssim": 0.45382019877433777,
+      "full_ssim": 0.453820139169693,
       "tissue_psnr": 18.14521598815918,
-      "tissue_ssim": 0.6976819435755411,
+      "tissue_ssim": 0.5731868147850037,
       "tissue_fraction": 0.7333618402481079
     },
     {
       "frame_id": 105,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000105.png",
       "full_psnr": 12.158920288085938,
-      "full_ssim": 0.4450047512849172,
+      "full_ssim": 0.4450046420097351,
       "tissue_psnr": 17.952417373657227,
-      "tissue_ssim": 0.7018035650253296,
+      "tissue_ssim": 0.5749818682670593,
       "tissue_fraction": 0.7271057367324829
     },
     {
       "frame_id": 113,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000113.png",
       "full_psnr": 12.326098442077637,
-      "full_ssim": 0.4501338203748067,
+      "full_ssim": 0.4501338005065918,
       "tissue_psnr": 18.03785514831543,
-      "tissue_ssim": 0.708948532740275,
+      "tissue_ssim": 0.578728973865509,
       "tissue_fraction": 0.720471203327179
     },
     {
       "frame_id": 121,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000121.png",
-      "full_psnr": 12.467330932617188,
-      "full_ssim": 0.4397221306959788,
+      "full_psnr": 12.467331886291504,
+      "full_ssim": 0.4397222101688385,
       "tissue_psnr": 17.740856170654297,
-      "tissue_ssim": 0.6860878268877665,
+      "tissue_ssim": 0.5588905215263367,
       "tissue_fraction": 0.7347351312637329
     },
     {
       "frame_id": 129,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000129.png",
-      "full_psnr": 11.933030128479004,
-      "full_ssim": 0.4389534592628479,
+      "full_psnr": 11.93303108215332,
+      "full_ssim": 0.4389534890651703,
       "tissue_psnr": 17.532913208007812,
-      "tissue_ssim": 0.7014127771059672,
+      "tissue_ssim": 0.5700440406799316,
       "tissue_fraction": 0.7252105474472046
     },
     {
       "frame_id": 137,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000137.png",
-      "full_psnr": 11.786903381347656,
-      "full_ssim": 0.438487450281779,
-      "tissue_psnr": 17.970481872558594,
-      "tissue_ssim": 0.7129813234011332,
+      "full_psnr": 11.786901473999023,
+      "full_ssim": 0.4384874403476715,
+      "tissue_psnr": 17.970483779907227,
+      "tissue_ssim": 0.5739947557449341,
       "tissue_fraction": 0.706927478313446
     },
     {
       "frame_id": 145,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000145.png",
       "full_psnr": 11.2168607711792,
-      "full_ssim": 0.4284200568993886,
+      "full_ssim": 0.4284200668334961,
       "tissue_psnr": 18.242935180664062,
-      "tissue_ssim": 0.7294634779294332,
+      "tissue_ssim": 0.5709194540977478,
       "tissue_fraction": 0.6681884527206421
     },
     {
       "frame_id": 153,
       "prediction": "outputs\\endonerf_common\\cutting\\present\\predictions\\000153.png",
       "full_psnr": 11.318754196166992,
-      "full_ssim": 0.4358883202075958,
+      "full_ssim": 0.43588823080062866,
       "tissue_psnr": 17.665782928466797,
-      "tissue_ssim": 0.7049375176429749,
+      "tissue_ssim": 0.5708462595939636,
       "tissue_fraction": 0.7096527218818665
     }
   ]

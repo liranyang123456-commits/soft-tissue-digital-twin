@@ -1,9 +1,11 @@
 """Propagate video-force uncertainty to Young's-modulus inversion.
 
-The empirical error model of an unpublished R3D-18 force estimator is
-applied to the FEM mechanics benchmark, for which modulus ground truth is
-available. The small-bowel force data do not contain modulus, mesh, or
-deformation ground truth and are therefore not used as stiffness evidence.
+The empirical error model of an auxiliary in-house R3D-18 force estimator
+is applied to the FEM mechanics benchmark, for which modulus ground truth
+is available. The estimator is external to the core digital-twin
+framework and is not claimed as a contribution. The small-bowel force data
+do not contain modulus, mesh, or deformation ground truth and are
+therefore not used as stiffness evidence.
 
 Procedure:
 

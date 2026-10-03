@@ -111,10 +111,11 @@ If you find this work useful, please cite:
 
 ```bibtex
 @article{li2026twin,
-  title   = {An Audited Soft-Tissue Digital Twin from Monocular Endoscopic
-             Video: Gaussian Tracking and Force-Scale-Aware Mechanics},
+  title   = {From Endoscopic Image Sequences to a Simulable Soft-Tissue
+             Digital Twin: Gaussian Surface Tracking and Force-Scale-Aware
+             Mechanical Inversion},
   author  = {Li, Ranyang and Ma, Haotian and Lin, Zhipeng and Wei, Nan},
-  journal = {BioMedical Engineering OnLine},
+  journal = {Medical \& Biological Engineering \& Computing},
   year    = {2026},
   note    = {submitted}
 }
@@ -122,8 +123,8 @@ If you find this work useful, please cite:
 
 ## License
 
-[MIT](LICENSE). The unpublished R3D-18 force estimator used to define the
-force-error model is external to the twin and is not part of this
+[MIT](LICENSE). The auxiliary in-house R3D-18 force estimator used to
+define the force-error model is external to the twin and is not part of this
 contribution. Aggregate error parameters needed for propagation are
 provided in `configs/force_error_model_summary.json`.
 

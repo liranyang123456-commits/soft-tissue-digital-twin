@@ -45,6 +45,16 @@ def test_image_metrics_and_aggregation():
     assert summary["tissue_psnr"] == pytest.approx(20.0, rel=1e-5)
 
 
+def test_tissue_ssim_is_averaged_only_over_selected_pixels():
+    target = torch.zeros(3, 24, 24)
+    prediction = target.clone()
+    prediction[:, 8:16, 8:16] = 0.5
+    mask = torch.zeros(24, 24)
+    mask[8:16, 8:16] = 1.0
+    row = image_metrics(prediction, target, mask)
+    assert row["tissue_ssim"] < row["full_ssim"]
+
+
 def test_displacement_interpolation_uses_adjacent_training_frames():
     history = {
         0: torch.zeros(2, 3).numpy(),

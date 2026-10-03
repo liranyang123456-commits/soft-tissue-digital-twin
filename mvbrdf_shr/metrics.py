@@ -14,11 +14,11 @@ def psnr_torch(pred: torch.Tensor, gt: torch.Tensor) -> float:
     return float(20.0 * np.log10(1.0 / np.sqrt(mse)))
 
 
-def ssim_torch(pred: torch.Tensor, gt: torch.Tensor) -> float:
-    """Simple channel-mean SSIM with 11x11 box filter."""
+def ssim_map_torch(pred: torch.Tensor, gt: torch.Tensor) -> np.ndarray:
+    """Return the channel-mean 11x11 SSIM map."""
     from numpy.lib.stride_tricks import sliding_window_view
 
-    def _one(x: np.ndarray, y: np.ndarray) -> float:
+    def _one(x: np.ndarray, y: np.ndarray) -> np.ndarray:
         c1, c2 = 0.01**2, 0.03**2
         k = 11
         xp = np.pad(x, k // 2, mode="reflect")
@@ -33,7 +33,7 @@ def ssim_torch(pred: torch.Tensor, gt: torch.Tensor) -> float:
         sxy = mf(xp * yp) - mx * my
         num = (2 * mx * my + c1) * (2 * sxy + c2)
         den = (mx * mx + my * my + c1) * (sx + sy + c2)
-        return float((num / (den + 1e-12)).mean())
+        return num / (den + 1e-12)
 
     p = pred.detach().float().cpu().clamp(0, 1)
     g = gt.detach().float().cpu().clamp(0, 1)
@@ -41,4 +41,9 @@ def ssim_torch(pred: torch.Tensor, gt: torch.Tensor) -> float:
         p, g = p[0], g[0]
     p = p.permute(1, 2, 0).numpy()
     g = g.permute(1, 2, 0).numpy()
-    return float(np.mean([_one(p[:, :, c], g[:, :, c]) for c in range(3)]))
+    return np.mean([_one(p[:, :, c], g[:, :, c]) for c in range(3)], axis=0)
+
+
+def ssim_torch(pred: torch.Tensor, gt: torch.Tensor) -> float:
+    """Simple channel-mean SSIM with an 11x11 box filter."""
+    return float(ssim_map_torch(pred, gt).mean())

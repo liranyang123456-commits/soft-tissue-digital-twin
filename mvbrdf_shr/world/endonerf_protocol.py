@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import torch
 
-from mvbrdf_shr.metrics import ssim_torch
+from mvbrdf_shr.metrics import ssim_map_torch, ssim_torch
 
 
 @dataclass(frozen=True)
@@ -82,13 +82,16 @@ def image_metrics(
     full_psnr = (
         99.0 if float(full_mse) < 1e-12 else float(-10.0 * torch.log10(full_mse))
     )
-    masked_prediction = prediction * mask
-    masked_target = target * mask
+    ssim_map = ssim_map_torch(prediction, target)
+    mask_2d = mask[0].detach().cpu().numpy()
+    tissue_ssim = float(
+        (ssim_map * mask_2d).sum() / max(float(mask_2d.sum()), 1.0)
+    )
     return {
         "full_psnr": full_psnr,
         "full_ssim": ssim_torch(prediction, target),
         "tissue_psnr": masked_psnr(prediction, target, mask),
-        "tissue_ssim": ssim_torch(masked_prediction, masked_target),
+        "tissue_ssim": tissue_ssim,
         "tissue_fraction": float(mask.mean()),
     }
 

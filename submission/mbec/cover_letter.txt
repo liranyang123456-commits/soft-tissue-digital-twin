@@ -1,0 +1,47 @@
+Dear Editors,
+
+Please consider our manuscript entitled "From Endoscopic Image Sequences
+to a Simulable Soft-Tissue Digital Twin: Gaussian Surface Tracking and
+Force-Scale-Aware Mechanical Inversion" as an Original Research Article in
+Medical & Biological Engineering & Computing.
+
+The manuscript proposes a complete observation-to-simulation framework:
+endoscopic images and auxiliary depth are converted into a canonical
+Gaussian surface and optical material representation; fixed primitive
+identities preserve deformation correspondence; an explicit
+Gaussian-to-tetrahedral map transfers surface observations to
+differentiable Neo-Hookean mechanics; and the resulting model predicts
+deformation, stress, and strain under prescribed loads. A force-scale
+analysis separates absolute-modulus uncertainty from force-scale-invariant
+stiffness contrast, while a provenance map records whether each parameter
+is measured, estimated, or assumed.
+
+The evaluation combines two public endoscopic sequences, a complete
+60-scenario finite-element campaign, common-protocol reconstruction
+baselines, a physical ultrasound phantom with independent compression-test
+measurements, and a patient-specific tetrahedral liver geometry generated
+from de-identified hospital computed-tomography images. Source code,
+evaluation protocols, and machine-readable result summaries are available
+at https://github.com/liranyang123456-commits/soft-tissue-digital-twin.
+
+The common reconstruction holdout is reported without a
+state-of-the-art claim: the present representation is less accurate than
+EndoGaussian because it prioritizes fixed mechanical correspondence. The
+complete finite-element campaign reports a 9.6% median background-modulus
+error and identifies weak recovery of deep-inclusion properties. We
+believe this transparent separation of visual fidelity, mechanical
+identifiability, and parameter provenance is directly relevant to MBEC's
+readership.
+
+The manuscript is original, has not been published, and is not under
+consideration elsewhere. All authors have approved the submission.
+
+Corresponding author:
+Ranyang Li
+Henan University of Technology
+lry@haut.edu.cn
+
+Authors: Ranyang Li, Haotian Ma, Zhipeng Lin, and Nan Wei.
+
+Sincerely,
+Ranyang Li
