@@ -1,6 +1,7 @@
 """Build a condensed MBEC manuscript from the full BME Online source."""
 from __future__ import annotations
 
+import json
 import re
 import shutil
 from pathlib import Path
@@ -20,10 +21,10 @@ supervision and tracked with constant-velocity initialization, graph
 regularization, and rollback. Tracked displacement provides regional
 stiffness contrast for uninstrumented video and surface observations for
 known-force finite-element inversion. Parameter provenance is recorded as
-measured, estimated, or assumed. Under a strict one-in-eight holdout,
-tissue-masked peak signal-to-noise ratio was 16.7 dB across two EndoNeRF
-sequences. A 60-scenario finite-element campaign and EndoGaussian baseline
-evaluation are reported using the same frozen protocols. A cross-subject
+measured, estimated, or assumed. Under a strict one-in-eight holdout on two EndoNeRF sequences,
+tissue-masked peak signal-to-noise ratio was 16.7 dB for the present method
+and 36.6 dB for official EndoGaussian. A 60-scenario finite-element
+campaign uses a frozen inversion protocol. A cross-subject
 mapping to a patient-specific liver volume produced 28,523 nodes and
 149,028 tetrahedra, with 38.7\% boundary coverage. Phantom stiffness
 contrast was $3.80\times$ versus $3.56\times$ by compression testing
@@ -228,6 +229,65 @@ Constant velocity with rollback & 1.55 & frame 5 rolled back \\""",
         "concentrates at the tool contact region.",
         "\nTracked displacement concentrates at the tool contact region.",
     )
+    mapping_marker = (
+        "This CT case is not paired with an endoscopic sequence and therefore "
+        "does\nnot validate optical classification or mechanical inversion.\n"
+    )
+    mapping_figure = r"""
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{gaussian_volume_mapping.png}
+\caption{Cross-subject computational mapping from the tracked Gaussian
+surface to the patient-specific CT-derived tetrahedral volume. Similarity
+alignment is followed by local interpolation onto covered boundary nodes.
+The mapping contains 28,523 nodes, 149,028 tetrahedra, and 2,755 mapped
+boundary nodes (38.7\% coverage). Because the endoscopic and CT data are
+from different subjects and CT spacing is unavailable, this demonstrates
+the software interface rather than anatomical correspondence or clinical
+validity.}
+\label{fig:volume_mapping}
+\end{figure*}
+"""
+    if mapping_marker in text:
+        text = text.replace(mapping_marker, mapping_marker + mapping_figure, 1)
+
+    common_path = ROOT / "docs" / "experiments" / "endonerf_common_summary.json"
+    if common_path.exists():
+        common = json.loads(common_path.read_text(encoding="utf-8"))["per_method"]
+        if "present" in common and "EndoGaussian" in common:
+            present = common["present"]
+            baseline = common["EndoGaussian"]
+            common_holdout_table = rf"""
+\begin{{table*}}[htbp]
+\centering
+\caption{{Strict one-in-eight EndoNeRF holdout. Both methods use the same
+28 held-out frames, tissue masks, and evaluator.}}
+\label{{tab:common_holdout}}
+\small
+\begin{{tabular}}{{lccccc}}
+\toprule
+Method & Frames & Full PSNR & Full SSIM & Tissue PSNR & Tissue SSIM \\
+\midrule
+Present method & {present['frames']} & {present['full_psnr']:.2f} & {present['full_ssim']:.3f} & {present['tissue_psnr']:.2f} & {present['tissue_ssim']:.3f} \\
+EndoGaussian & {baseline['frames']} & {baseline['full_psnr']:.2f} & {baseline['full_ssim']:.3f} & {baseline['tissue_psnr']:.2f} & {baseline['tissue_ssim']:.3f} \\
+\bottomrule
+\end{{tabular}}
+\end{{table*}}
+\begin{{figure*}}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{{endonerf_common_comparison.png}}
+\caption{{Common-protocol reconstruction comparison. The present digital-twin
+pipeline prioritizes fixed surface correspondence and mechanical coupling;
+it does not match the specialized dynamic reconstruction baseline.}}
+\label{{fig:common_holdout}}
+\end{{figure*}}
+"""
+            text = text.replace(
+                r"\subsection{Canonical reconstruction}",
+                common_holdout_table + "\n" + r"\subsection{Canonical reconstruction}",
+                1,
+            )
     text = reorder_sections(text)
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -235,6 +295,10 @@ Constant velocity with rollback & 1.55 & frame 5 rolled back \\""",
     shutil.copy2(
         ROOT / "docs" / "experiments" / "gaussian_volume_mapping.png",
         OUTPUT.parent / "figures" / "gaussian_volume_mapping.png",
+    )
+    shutil.copy2(
+        ROOT / "docs" / "experiments" / "endonerf_common_comparison.png",
+        OUTPUT.parent / "figures" / "endonerf_common_comparison.png",
     )
     print(OUTPUT)
 
