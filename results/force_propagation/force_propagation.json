@@ -1,0 +1,92 @@
+{
+  "force_error_model": {
+    "protocol": "camera",
+    "window": 30,
+    "n_samples": 6373,
+    "n_recordings": 50,
+    "mae_n": 0.295,
+    "rmse_n": 0.418,
+    "residual_std_n": 0.418,
+    "scale_factor_mean": 0.949,
+    "scale_factor_std": 0.14,
+    "scale_factor_p05": 0.706,
+    "scale_factor_p95": 1.163,
+    "bias_mean_n": 0.0142,
+    "bias_std_n": 0.2456
+  },
+  "force_scale_sweep": [
+    {
+      "force_scale": 0.8,
+      "E_bg_est": 6222.349257623821,
+      "E_bg_ratio": 0.8460493863825493,
+      "E_incl_est": 13554.209528304875,
+      "contrast_est": 2.178310629493808
+    },
+    {
+      "force_scale": 0.9,
+      "E_bg_est": 6908.855786400967,
+      "E_bg_ratio": 0.9393932993279503,
+      "E_incl_est": 15311.95812578262,
+      "contrast_est": 2.216279887607711
+    },
+    {
+      "force_scale": 1.0,
+      "E_bg_est": 7238.480769063128,
+      "E_bg_ratio": 0.9842122258734167,
+      "E_incl_est": 16364.398512848515,
+      "contrast_est": 2.2607504302268873
+    },
+    {
+      "force_scale": 1.1,
+      "E_bg_est": 7382.339726442523,
+      "E_bg_ratio": 1.0037726487261431,
+      "E_incl_est": 17145.077685230324,
+      "contrast_est": 2.3224449592612246
+    },
+    {
+      "force_scale": 1.2,
+      "E_bg_est": 8162.652613823651,
+      "E_bg_ratio": 1.1098713603576578,
+      "E_incl_est": 19817.22347366726,
+      "contrast_est": 2.4277920929902503
+    }
+  ],
+  "monte_carlo": {
+    "runs": [
+      {
+        "drawn_scale": 0.966,
+        "E_bg_rel_err": 0.117,
+        "contrast_est": 2.22
+      },
+      {
+        "drawn_scale": 0.93,
+        "E_bg_rel_err": 0.043,
+        "contrast_est": 2.24
+      },
+      {
+        "drawn_scale": 1.038,
+        "E_bg_rel_err": 0.009,
+        "contrast_est": 2.27
+      },
+      {
+        "drawn_scale": 0.963,
+        "E_bg_rel_err": 0.024,
+        "contrast_est": 2.25
+      },
+      {
+        "drawn_scale": 0.874,
+        "E_bg_rel_err": 0.012,
+        "contrast_est": 2.24
+      }
+    ],
+    "n_completed": 5,
+    "note": "5/8 runs; 6th hung on a bad force draw (Newton non-convergence), finalized with 5",
+    "E_bg_rel_err_mean": 0.041,
+    "E_bg_rel_err_std": 0.039834658276430596,
+    "contrast_est_range": [
+      2.22,
+      2.27
+    ]
+  },
+  "theory": "Quasi-static: u~F/E, systematic force scale bias propagates ~1:1 into E scale bias (sweep confirmed 0.80->0.846 ... 1.20->1.110). Per-frame magnitude noise averages down. Systematic force accuracy, not MAE, bounds absolute E; contrast is force-scale-immune."
+}

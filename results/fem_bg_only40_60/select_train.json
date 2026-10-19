@@ -1,0 +1,674 @@
+{
+  "n": 60,
+  "median_pred": 0.05109675939111162,
+  "median_bg": 0.047124831496740696,
+  "per_load": {
+    "press_right": 0.04435126488350216,
+    "shear_x": 0.06430657626618896,
+    "shear_y": 0.04388224812844592
+  },
+  "n_paper20": 15,
+  "n_bg_only40": 45,
+  "rows": [
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_000",
+      "chosen": "paper20",
+      "pred": 0.07731024146124152,
+      "bg_err": 0.015787774126656752,
+      "pred_by_case": {
+        "press_right": 0.006357824712233814,
+        "shear_x": 0.07731024146124152,
+        "shear_y": 0.1017844549866415
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_001",
+      "chosen": "bg_only40",
+      "pred": 0.040766004002864224,
+      "bg_err": 0.015069489097284599,
+      "pred_by_case": {
+        "press_right": 0.03581912133908539,
+        "shear_x": 0.040766004002864224,
+        "shear_y": 0.06536451546820089
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_002",
+      "chosen": "paper20",
+      "pred": 0.021890569546457166,
+      "bg_err": 0.023271729477405113,
+      "pred_by_case": {
+        "press_right": 0.021890569546457166,
+        "shear_x": 0.044655558773635654,
+        "shear_y": 0.008034373858434623
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_003",
+      "chosen": "bg_only40",
+      "pred": 0.050840549789958604,
+      "bg_err": 0.015876890914219916,
+      "pred_by_case": {
+        "press_right": 0.07612511886186864,
+        "shear_x": 0.050840549789958604,
+        "shear_y": 0.004380456773548307
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_004",
+      "chosen": "bg_only40",
+      "pred": 0.05274462299784944,
+      "bg_err": 0.055602218384774485,
+      "pred_by_case": {
+        "press_right": 0.05274462299784944,
+        "shear_x": 0.06096312557388208,
+        "shear_y": 0.03467753966334195
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_005",
+      "chosen": "paper20",
+      "pred": 0.024369906521378465,
+      "bg_err": 0.0549250744749072,
+      "pred_by_case": {
+        "press_right": 0.024369906521378465,
+        "shear_x": 0.015611206403332087,
+        "shear_y": 0.06803913982555505
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_006",
+      "chosen": "bg_only40",
+      "pred": 0.07011196600573742,
+      "bg_err": 0.009952373573377608,
+      "pred_by_case": {
+        "press_right": 0.07011196600573742,
+        "shear_x": 0.10683315935840193,
+        "shear_y": 0.001984317668758201
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_007",
+      "chosen": "bg_only40",
+      "pred": 0.08857929673580454,
+      "bg_err": 0.06663195851696783,
+      "pred_by_case": {
+        "press_right": 0.04376832592126898,
+        "shear_x": 0.08857929673580454,
+        "shear_y": 0.11752507704617168
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_008",
+      "chosen": "paper20",
+      "pred": 0.09231003129329379,
+      "bg_err": 0.09218251738482669,
+      "pred_by_case": {
+        "press_right": 0.09231003129329379,
+        "shear_x": 0.08578621696782955,
+        "shear_y": 0.10268784095854366
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_009",
+      "chosen": "bg_only40",
+      "pred": 0.03178657292333675,
+      "bg_err": 0.0038136655277360245,
+      "pred_by_case": {
+        "press_right": 0.03178657292333675,
+        "shear_x": 0.030435672953686727,
+        "shear_y": 0.038293177789757396
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_010",
+      "chosen": "bg_only40",
+      "pred": 0.051352968992264644,
+      "bg_err": 0.06144145363679433,
+      "pred_by_case": {
+        "press_right": 0.051352968992264644,
+        "shear_x": 0.03624525606709574,
+        "shear_y": 0.05425201359747442
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_011",
+      "chosen": "bg_only40",
+      "pred": 0.018484956187748994,
+      "bg_err": 0.03815145930449177,
+      "pred_by_case": {
+        "press_right": 0.018484956187748994,
+        "shear_x": 0.022139684199436044,
+        "shear_y": 0.017039693641295314
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_012",
+      "chosen": "bg_only40",
+      "pred": 0.03209290587145579,
+      "bg_err": 0.05739129801516455,
+      "pred_by_case": {
+        "press_right": 0.03209290587145579,
+        "shear_x": 0.050468219255278786,
+        "shear_y": 0.012927720141284984
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_013",
+      "chosen": "bg_only40",
+      "pred": 0.06351835162106363,
+      "bg_err": 0.030984835911016438,
+      "pred_by_case": {
+        "press_right": 0.0904342091217944,
+        "shear_x": 0.06351835162106363,
+        "shear_y": 0.018413425151662013
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_014",
+      "chosen": "bg_only40",
+      "pred": 0.12438989383861013,
+      "bg_err": 0.07059466301120129,
+      "pred_by_case": {
+        "press_right": 0.030752511056832917,
+        "shear_x": 0.12438989383861013,
+        "shear_y": 0.21256591117014767
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_015",
+      "chosen": "bg_only40",
+      "pred": 0.06868874167061455,
+      "bg_err": 0.02158602262200734,
+      "pred_by_case": {
+        "press_right": 0.04096077778986475,
+        "shear_x": 0.08972382168580617,
+        "shear_y": 0.06868874167061455
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_016",
+      "chosen": "paper20",
+      "pred": 0.04705109078804784,
+      "bg_err": 0.012231392046183039,
+      "pred_by_case": {
+        "press_right": 0.04705109078804784,
+        "shear_x": 0.09017934618619622,
+        "shear_y": 0.0361094508886743
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_017",
+      "chosen": "bg_only40",
+      "pred": 0.016169968896579612,
+      "bg_err": 0.053805439969711745,
+      "pred_by_case": {
+        "press_right": 0.01053654274291768,
+        "shear_x": 0.016169968896579612,
+        "shear_y": 0.10979576996832513
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_018",
+      "chosen": "bg_only40",
+      "pred": 0.07015552466590239,
+      "bg_err": 0.0774921467920169,
+      "pred_by_case": {
+        "press_right": 0.20475107818408195,
+        "shear_x": 0.07015552466590239,
+        "shear_y": 0.06884796684455592
+      }
+    },
+    {
+      "scenario": "geom_58db559b24da6eb7cc0d_scenario_019",
+      "chosen": "bg_only40",
+      "pred": 0.030811121253706827,
+      "bg_err": 0.05230522755196027,
+      "pred_by_case": {
+        "press_right": 0.030811121253706827,
+        "shear_x": 0.09066583276013054,
+        "shear_y": 0.011811692492945464
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_000",
+      "chosen": "paper20",
+      "pred": 0.0804154240138116,
+      "bg_err": 0.013764460970885933,
+      "pred_by_case": {
+        "press_right": 0.009754225926538997,
+        "shear_x": 0.0804154240138116,
+        "shear_y": 0.10500918606255247
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_001",
+      "chosen": "bg_only40",
+      "pred": 0.04587544783153431,
+      "bg_err": 6.709766107149637e-05,
+      "pred_by_case": {
+        "press_right": 0.020765344774560456,
+        "shear_x": 0.04587544783153431,
+        "shear_y": 0.06324465825817882
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_002",
+      "chosen": "paper20",
+      "pred": 0.03391311037741013,
+      "bg_err": 0.03607525213070131,
+      "pred_by_case": {
+        "press_right": 0.03391311037741013,
+        "shear_x": 0.06130676836693477,
+        "shear_y": 0.023705128036044396
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_003",
+      "chosen": "bg_only40",
+      "pred": 0.03608353842145437,
+      "bg_err": 0.046147820369052094,
+      "pred_by_case": {
+        "press_right": 0.044743568766126424,
+        "shear_x": 0.020905949564470647,
+        "shear_y": 0.03608353842145437
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_004",
+      "chosen": "bg_only40",
+      "pred": 0.06524608328869548,
+      "bg_err": 0.0662248432477735,
+      "pred_by_case": {
+        "press_right": 0.06524608328869548,
+        "shear_x": 0.08631253159220087,
+        "shear_y": 0.05491012514279
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_005",
+      "chosen": "paper20",
+      "pred": 0.03669863229931884,
+      "bg_err": 0.06280080895574548,
+      "pred_by_case": {
+        "press_right": 0.03669863229931884,
+        "shear_x": 0.015726591251673444,
+        "shear_y": 0.07820950070001617
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_006",
+      "chosen": "bg_only40",
+      "pred": 0.0712989375108006,
+      "bg_err": 0.010814621083057599,
+      "pred_by_case": {
+        "press_right": 0.0712989375108006,
+        "shear_x": 0.12412060844501263,
+        "shear_y": 0.0033071099618614576
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_007",
+      "chosen": "bg_only40",
+      "pred": 0.1714390914551209,
+      "bg_err": 0.06773594695636749,
+      "pred_by_case": {
+        "press_right": 0.18894251044707716,
+        "shear_x": 0.1714390914551209,
+        "shear_y": 0.15959877810726802
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_008",
+      "chosen": "paper20",
+      "pred": 0.09516219030410239,
+      "bg_err": 0.0984163450272984,
+      "pred_by_case": {
+        "press_right": 0.09516219030410239,
+        "shear_x": 0.08976398458315525,
+        "shear_y": 0.10166181452934829
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_009",
+      "chosen": "bg_only40",
+      "pred": 0.033542827459948285,
+      "bg_err": 0.0007026946599365773,
+      "pred_by_case": {
+        "press_right": 0.026678029346824336,
+        "shear_x": 0.033542827459948285,
+        "shear_y": 0.04204681397048058
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_010",
+      "chosen": "bg_only40",
+      "pred": 0.044984506894471844,
+      "bg_err": 0.05159087888211389,
+      "pred_by_case": {
+        "press_right": 0.08158446634395568,
+        "shear_x": 0.025233948307242845,
+        "shear_y": 0.044984506894471844
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_011",
+      "chosen": "bg_only40",
+      "pred": 0.027672818750003103,
+      "bg_err": 0.025731950865332965,
+      "pred_by_case": {
+        "press_right": 0.03975561682978614,
+        "shear_x": 0.012100583390057273,
+        "shear_y": 0.027672818750003103
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_012",
+      "chosen": "bg_only40",
+      "pred": 0.058796008682808876,
+      "bg_err": 0.06177797293229139,
+      "pred_by_case": {
+        "press_right": 0.058796008682808876,
+        "shear_x": 0.10625718099099311,
+        "shear_y": 0.009092379903166291
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_013",
+      "chosen": "bg_only40",
+      "pred": 0.07276619285177875,
+      "bg_err": 0.032792995442119305,
+      "pred_by_case": {
+        "press_right": 0.09240897865545263,
+        "shear_x": 0.07276619285177875,
+        "shear_y": 0.0223785881654337
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_014",
+      "chosen": "bg_only40",
+      "pred": 0.12262434511697835,
+      "bg_err": 0.05960917980025806,
+      "pred_by_case": {
+        "press_right": 0.017843539119434225,
+        "shear_x": 0.12262434511697835,
+        "shear_y": 0.21511503814245633
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_015",
+      "chosen": "bg_only40",
+      "pred": 0.08107516851928788,
+      "bg_err": 0.007476227306599998,
+      "pred_by_case": {
+        "press_right": 0.06433029096089238,
+        "shear_x": 0.08107516851928788,
+        "shear_y": 0.0954177948543897
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_016",
+      "chosen": "paper20",
+      "pred": 0.05001389067192284,
+      "bg_err": 0.015263063713982805,
+      "pred_by_case": {
+        "press_right": 0.05001389067192284,
+        "shear_x": 0.08992499207027786,
+        "shear_y": 0.04105225381812437
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_017",
+      "chosen": "bg_only40",
+      "pred": 0.019180024884488545,
+      "bg_err": 0.04987228980898212,
+      "pred_by_case": {
+        "press_right": 0.019180024884488545,
+        "shear_x": 0.018663738227257944,
+        "shear_y": 0.12262705635209521
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_018",
+      "chosen": "bg_only40",
+      "pred": 0.07256296419409294,
+      "bg_err": 0.07724368818649345,
+      "pred_by_case": {
+        "press_right": 0.20365052267075184,
+        "shear_x": 0.07256296419409294,
+        "shear_y": 0.07147876416335122
+      }
+    },
+    {
+      "scenario": "geom_62010c56d95ec023bc9b_scenario_019",
+      "chosen": "bg_only40",
+      "pred": 0.04395896100087789,
+      "bg_err": 0.058037318250469136,
+      "pred_by_case": {
+        "press_right": 0.04395896100087789,
+        "shear_x": 0.11071007086853571,
+        "shear_y": 0.02103030912123392
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_000",
+      "chosen": "paper20",
+      "pred": 0.07693446337799341,
+      "bg_err": 0.013081340690975022,
+      "pred_by_case": {
+        "press_right": 0.004086191397795711,
+        "shear_x": 0.07693446337799341,
+        "shear_y": 0.10139292378008459
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_001",
+      "chosen": "bg_only40",
+      "pred": 0.05663513470951144,
+      "bg_err": 0.011485594636198004,
+      "pred_by_case": {
+        "press_right": 0.05663513470951144,
+        "shear_x": 0.056103779621436665,
+        "shear_y": 0.05931059711839966
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_002",
+      "chosen": "paper20",
+      "pred": 0.021642562039543435,
+      "bg_err": 0.02673383304672204,
+      "pred_by_case": {
+        "press_right": 0.021642562039543435,
+        "shear_x": 0.034548418710873434,
+        "shear_y": 0.0023726100376237277
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_003",
+      "chosen": "bg_only40",
+      "pred": 0.03604389069286878,
+      "bg_err": 0.030439011067254825,
+      "pred_by_case": {
+        "press_right": 0.06044330377901349,
+        "shear_x": 0.03604389069286878,
+        "shear_y": 0.019264619875713703
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_004",
+      "chosen": "bg_only40",
+      "pred": 0.05576734261499635,
+      "bg_err": 0.0584204860916314,
+      "pred_by_case": {
+        "press_right": 0.05576734261499635,
+        "shear_x": 0.06509480091131431,
+        "shear_y": 0.03905622062260276
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_005",
+      "chosen": "paper20",
+      "pred": 0.017162095523627064,
+      "bg_err": 0.05395281709839179,
+      "pred_by_case": {
+        "press_right": 0.014182732431037157,
+        "shear_x": 0.017162095523627064,
+        "shear_y": 0.07197607469820465
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_006",
+      "chosen": "bg_only40",
+      "pred": 0.06960860759564722,
+      "bg_err": 0.0109280882906529,
+      "pred_by_case": {
+        "press_right": 0.06960860759564722,
+        "shear_x": 0.10961463252054361,
+        "shear_y": 0.003123813550859802
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_007",
+      "chosen": "bg_only40",
+      "pred": 0.17024413438302463,
+      "bg_err": 0.07156637562882515,
+      "pred_by_case": {
+        "press_right": 0.19407681635714985,
+        "shear_x": 0.17024413438302463,
+        "shear_y": 0.15738113738765333
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_008",
+      "chosen": "paper20",
+      "pred": 0.09437295542922348,
+      "bg_err": 0.09616904894923484,
+      "pred_by_case": {
+        "press_right": 0.09437295542922348,
+        "shear_x": 0.08976112989870141,
+        "shear_y": 0.10575780393313793
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_009",
+      "chosen": "bg_only40",
+      "pred": 0.03736430661694669,
+      "bg_err": 0.005208661437524631,
+      "pred_by_case": {
+        "press_right": 0.028203840067448808,
+        "shear_x": 0.03736430661694669,
+        "shear_y": 0.04277998936241999
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_010",
+      "chosen": "bg_only40",
+      "pred": 0.04207808498593039,
+      "bg_err": 0.049049902770969114,
+      "pred_by_case": {
+        "press_right": 0.07868455318120897,
+        "shear_x": 0.017158447705650948,
+        "shear_y": 0.04207808498593039
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_011",
+      "chosen": "bg_only40",
+      "pred": 0.02825894304904719,
+      "bg_err": 0.02756647747368767,
+      "pred_by_case": {
+        "press_right": 0.030751396542259314,
+        "shear_x": 0.008596058514665418,
+        "shear_y": 0.02825894304904719
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_012",
+      "chosen": "bg_only40",
+      "pred": 0.022808861887657874,
+      "bg_err": 0.06593798318803343,
+      "pred_by_case": {
+        "press_right": 0.022808861887657874,
+        "shear_x": 0.06087603803804898,
+        "shear_y": 0.002461406463755179
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_013",
+      "chosen": "bg_only40",
+      "pred": 0.05933563551246288,
+      "bg_err": 0.02658065229322828,
+      "pred_by_case": {
+        "press_right": 0.0838287346602302,
+        "shear_x": 0.05933563551246288,
+        "shear_y": 0.01297746866220542
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_014",
+      "chosen": "bg_only40",
+      "pred": 0.11064740363749864,
+      "bg_err": 0.05747642587907141,
+      "pred_by_case": {
+        "press_right": 0.018643903336985183,
+        "shear_x": 0.11064740363749864,
+        "shear_y": 0.20148345619940072
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_015",
+      "chosen": "bg_only40",
+      "pred": 0.07507180684725476,
+      "bg_err": 0.014628546572200269,
+      "pred_by_case": {
+        "press_right": 0.05802591206309842,
+        "shear_x": 0.07507180684725476,
+        "shear_y": 0.08293275921482571
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_016",
+      "chosen": "paper20",
+      "pred": 0.049803766760663754,
+      "bg_err": 0.016163760128593906,
+      "pred_by_case": {
+        "press_right": 0.049803766760663754,
+        "shear_x": 0.08801626973658558,
+        "shear_y": 0.039499885593854575
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_017",
+      "chosen": "bg_only40",
+      "pred": 0.020239131251967548,
+      "bg_err": 0.048101842624429306,
+      "pred_by_case": {
+        "press_right": 0.020239131251967548,
+        "shear_x": 0.018379311616980143,
+        "shear_y": 0.11130644080172317
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_018",
+      "chosen": "bg_only40",
+      "pred": 0.0601069623919986,
+      "bg_err": 0.06574947886444549,
+      "pred_by_case": {
+        "press_right": 0.1945167604782049,
+        "shear_x": 0.0601069623919986,
+        "shear_y": 0.05759465973790248
+      }
+    },
+    {
+      "scenario": "geom_ab578f1bb0ee02be2ccd_scenario_019",
+      "chosen": "bg_only40",
+      "pred": 0.0404804982079584,
+      "bg_err": 0.05845933943833446,
+      "pred_by_case": {
+        "press_right": 0.0404804982079584,
+        "shear_x": 0.10318259261205273,
+        "shear_y": 0.0189372834558835
+      }
+    }
+  ]
+}

@@ -134,9 +134,9 @@ def load_endonerf_scene(
             if image_scale != 1.0:
                 depth_img = depth_img.resize((new_W, new_H), Image.NEAREST)
             depth_np = np.array(depth_img, dtype=np.float32)
-            # If someone stored metric mm as uint16 (>1000), convert to meters.
-            if depth_np.dtype == np.float32 and depth_np.max() > 1000:
-                depth_np = depth_np / 1000.0
+            # Some uint16 files contain isolated invalid values (up to 65535);
+            # mark them invalid instead of rescaling the whole map.
+            depth_np[depth_np > 2.0 * far] = 0.0
             depth_tensor = torch.from_numpy(depth_np)
 
         # Load mask (optional).

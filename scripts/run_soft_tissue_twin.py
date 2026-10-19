@@ -41,6 +41,8 @@ from mvbrdf_shr.world.endonerf_dataset import load_endonerf_scene, _depth_to_poi
 from mvbrdf_shr.world.scene import GaussianBRDFField
 from mvbrdf_shr.world.lighting import WorldLight
 from mvbrdf_shr.world.renderer import GaussianBRDFRenderer
+from mvbrdf_shr.world.flow_init import make_flow_init
+from mvbrdf_shr.world.correspondence import CorrespondenceObserver
 from mvbrdf_shr.world.deform import (
     track_deformation,
     visualize_deformation,
@@ -71,7 +73,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--backend", default="auto", choices=["auto", "torch", "gsplat"])
     p.add_argument("--seed", type=int, default=0, help="random seed for reproducibility")
     p.add_argument("--skip-tier3-synthetic", action="store_true")
+    p.add_argument("--temporal-model", default="inertia", choices=["constant_velocity", "inertia"])
+    p.add_argument("--flow-init", action="store_true")
+    p.add_argument("--fused", action="store_true", help="persistent correspondence observations")
     return p
+
+
+def twin_prediction(out, exposure: torch.Tensor) -> torch.Tensor:
+    """Image-formation model shared by fitting, tracking, and evaluation (CHW)."""
+    shaded = out.full[:3]
+    albedo = out.albedo[:3] if out.albedo.shape[0] >= 3 else out.albedo.expand(3, -1, -1)
+    return 0.5 * exposure * (shaded + albedo)
 
 
 def make_endoscopic_light(cam, device) -> WorldLight:
@@ -323,6 +335,11 @@ def run_tier2(args, scene, tier1: dict, device, out_dir: Path) -> dict:
         lambda f: make_endoscopic_light(f.camera.to(device), device),
         device=device,
         steps_per_frame=args.track_steps,
+        image_fn=lambda out: twin_prediction(out, tier1["log_exposure"].exp()),
+        temporal_model=getattr(args, "temporal_model", "inertia"),
+        init_fn=(make_flow_init(scene.frames[0], device)
+                 if getattr(args, "flow_init", False) and not getattr(args, "fused", False) else None),
+        observer=CorrespondenceObserver(scene.frames[0], device) if getattr(args, "fused", False) else None,
     )
     result.save_npz(t2_dir / "boundary_conditions.npz")
     save_deformation_summary(result, t2_dir / "deformation_summary.json")

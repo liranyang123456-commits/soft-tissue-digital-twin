@@ -8,23 +8,8 @@ datasets/
 *.ply
 *.npz
 
-# ---- superseded submission versions (keep only cmpb) ----
-submission/jbhi/
-submission/neurocomputing/
-submission/tmm/
-submission/tmm_latex_package/
-submission/_pkg_test/
-submission/*.zip
-
-# ---- submission build artifacts ----
-submission/**/*.aux
-submission/**/*.log
-submission/**/*.out
-submission/**/*.spl
-submission/**/*.synctex
-submission/**/*.blg
-submission/**/figures/*.aux
-submission/**/figures/*.log
+# ---- manuscripts and submission packages (kept private) ----
+submission/
 
 # ---- python ----
 __pycache__/

@@ -1,0 +1,88 @@
+{
+  "phantom": "ETS indentation phantom (Borealis, DOI 10.5683/SP3/ASTGWY)",
+  "modality": "ultrasound incremental registration (strain ratio)",
+  "measured_contrast": {
+    "ratio_median": 3.803389038258594,
+    "bootstrap_ci95": [
+      3.1575603128612277,
+      4.343135368087106
+    ],
+    "bose_truth_ratio": 3.559,
+    "relative_error_percent": 6.862962978168897,
+    "provenance": "estimated_deformation",
+    "evidence": "6 acquisitions, DIS optical-flow strain ratio; sensitivity over 9 configs: err [3.5, 9.3]"
+  },
+  "inclusion_region": {
+    "instance_id": 1,
+    "tissue_class": "generic_soft_tissue",
+    "youngs_median_kpa": 10.000000000000009,
+    "youngs_ci95_kpa": [
+      2.084616890896318,
+      47.97044504278357
+    ],
+    "youngs_log_mu": 9.210340371976184,
+    "youngs_log_sigma": 0.8,
+    "poisson": {
+      "mean": 0.47,
+      "std": 0.02,
+      "source": "assumed_table",
+      "prior_mean": 0.47,
+      "prior_std": 0.02,
+      "confidence": 0.0,
+      "evidence": "no observation; prior from generic_soft_tissue tissue table"
+    },
+    "density": {
+      "mean": 1040.0,
+      "std": 50.0,
+      "source": "assumed_table",
+      "prior_mean": 1040.0,
+      "prior_std": 50.0,
+      "confidence": 0.0,
+      "evidence": "no observation; prior from generic_soft_tissue tissue table"
+    },
+    "viscosity": {
+      "mean": 15.0,
+      "std": 10.0,
+      "source": "assumed_table",
+      "prior_mean": 15.0,
+      "prior_std": 10.0,
+      "confidence": 0.0,
+      "evidence": "no observation; prior from generic_soft_tissue tissue table"
+    },
+    "friction": {
+      "mean": 0.35,
+      "std": 0.15,
+      "source": "assumed_table",
+      "prior_mean": 0.35,
+      "prior_std": 0.15,
+      "confidence": 0.0,
+      "evidence": "no observation; prior from generic_soft_tissue tissue table"
+    },
+    "constitutive_model": "neo_hookean",
+    "audit": {
+      "youngs_modulus": "assumed_table",
+      "poisson_ratio": "assumed_table",
+      "density": "assumed_table",
+      "viscosity": "assumed_table",
+      "friction": "assumed_table"
+    },
+    "comparison_to_bose_truth_kpa": [
+      8.71,
+      3.8
+    ],
+    "note": "absolute E NOT measurable from this modality; prior-driven (assumed_table), as the audit demands"
+  },
+  "background_region": {
+    "youngs_median_kpa": 38.033890382585966,
+    "youngs_ci95_kpa": [
+      7.864794781538162,
+      183.93065017160566
+    ],
+    "provenance": "estimated_deformation(ratio) x assumed_table(scale)",
+    "comparison_to_bose_truth_kpa": [
+      31.0,
+      1.87
+    ]
+  },
+  "conclusion": "Real-world mechanics validation: image-derived modulus contrast 3.80x vs Bose truth 3.56x (6.9% error). Absolute E remains honestly prior-driven; contrast is the measured quantity."
+}

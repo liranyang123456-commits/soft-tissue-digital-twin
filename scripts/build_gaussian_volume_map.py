@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -13,7 +12,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,20 +23,15 @@ from mvbrdf_shr.world.volume_mapping import (  # noqa: E402
     similarity_icp,
     voxel_mask_to_tetrahedra,
 )
-from scripts.run_hospital_ct_liver import find_patient, segment_liver_slice  # noqa: E402
 
 
-def _load_ct_mask(ct_root: Path) -> tuple[str, np.ndarray]:
-    patient, images = find_patient(ct_root)
-    if patient is None or not images:
-        raise FileNotFoundError(f"no patient JPEG series under {ct_root}")
-    masks = [
-        segment_liver_slice(np.asarray(Image.open(path).convert("L")))
-        for path in images
-    ]
-    match = re.match(r"\d+", patient.name)
-    case_id = f"case_{match.group(0)}" if match else "case_deidentified"
-    return case_id, np.stack(masks)
+def _load_ct_mask(mask_npz: Path) -> tuple[str, np.ndarray, np.ndarray]:
+    data = np.load(mask_npz)
+    summary_path = mask_npz.with_name("ct_liver_summary.json")
+    case_id = "case_deidentified"
+    if summary_path.exists():
+        case_id = json.loads(summary_path.read_text(encoding="utf-8")).get("case", case_id)
+    return case_id, data["mask"].astype(bool), data["spacing_zyx_mm"].astype(np.float64)
 
 
 def _load_gaussians(checkpoint: Path) -> np.ndarray:
@@ -119,7 +112,7 @@ def _plot(
 
     axis = figure.add_subplot(1, 3, 3)
     axis.hist(nearest_distance, bins=30, color="#4C72B0", alpha=0.85)
-    axis.set_xlabel("nearest Gaussian distance (volume-index units)")
+    axis.set_xlabel("nearest Gaussian distance (mm)")
     axis.set_ylabel("boundary-node count")
     axis.set_title("Observation-transfer distance")
     figure.tight_layout()
@@ -130,13 +123,26 @@ def _plot(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--ct-root", type=Path, default=Path(r"E:\ct_extract"))
+    parser.add_argument(
+        "--mask-npz",
+        type=Path,
+        default=ROOT / "outputs" / "hospital_ct_dicom" / "liver_mask.npz",
+    )
+    parser.add_argument(
+        "--displacements",
+        type=Path,
+        default=ROOT
+        / "outputs"
+        / "twin_pulling_flow"
+        / "tier2_deformation"
+        / "boundary_conditions.npz",
+    )
     parser.add_argument(
         "--gaussian-checkpoint",
         type=Path,
         default=ROOT
         / "outputs"
-        / "soft_tissue_twin_seeded"
+        / "twin_pulling_flow"
         / "tier1_reconstruction"
         / "canonical_field.pt",
     )
@@ -145,15 +151,19 @@ def main() -> None:
         type=Path,
         default=ROOT / "outputs" / "gaussian_volume_mapping",
     )
-    parser.add_argument("--block", type=int, nargs=3, default=(2, 8, 8))
+    parser.add_argument("--block", type=int, nargs=3, default=(2, 2, 2))
     parser.add_argument("--trim-fraction", type=float, default=0.7)
     parser.add_argument("--coverage-fraction", type=float, default=0.05)
     parser.add_argument("--neighbors", type=int, default=4)
     args = parser.parse_args()
 
     args.output.mkdir(parents=True, exist_ok=True)
-    patient, mask = _load_ct_mask(args.ct_root)
-    volume = voxel_mask_to_tetrahedra(mask, block=tuple(args.block))
+    patient, mask, spacing = _load_ct_mask(args.mask_npz)
+    volume = voxel_mask_to_tetrahedra(
+        mask,
+        block=tuple(args.block),
+        spacing=tuple(spacing.tolist()),
+    )
     gaussians = _load_gaussians(args.gaussian_checkpoint)
     boundary = volume.nodes[volume.boundary_nodes]
     transform, alignment = similarity_icp(
@@ -190,11 +200,42 @@ def main() -> None:
         nearest_distance=observation_map.nearest_distance,
     )
 
+    tracked = np.load(args.displacements)
+    displacement = tracked["displacements"][-1].astype(np.float64)
+    if displacement.shape != gaussians.shape:
+        raise ValueError("tracked displacement does not match the Gaussian checkpoint")
+    volume_frame = transform.scale * (displacement @ transform.rotation.T)
+    transferred = observation_map.transfer(volume_frame)
+    transferred_norm = np.linalg.norm(transferred, axis=1)
+    np.savez_compressed(
+        args.output / "transferred_boundary_displacement.npz",
+        volume_node_ids=observation_map.volume_node_ids,
+        displacement_mm=transferred,
+    )
+
     coverage = len(observation_map.volume_node_ids) / len(volume.boundary_nodes)
+    element_volume = np.abs(
+        np.einsum(
+            "ij,ij->i",
+            np.cross(
+                volume.nodes[volume.elements[:, 1]] - volume.nodes[volume.elements[:, 0]],
+                volume.nodes[volume.elements[:, 2]] - volume.nodes[volume.elements[:, 0]],
+            ),
+            volume.nodes[volume.elements[:, 3]] - volume.nodes[volume.elements[:, 0]],
+        )
+    ) / 6.0
     summary = {
         "patient": patient,
-        "ct_slices": int(mask.shape[0]),
-        "coordinate_units": "CT voxel-index units; physical spacing unavailable",
+        "ct_series": "contrast-enhanced abdominal CT, DICOM",
+        "voxel_spacing_mm_zyx": spacing.tolist(),
+        "coordinate_units": "millimetres in the CT patient frame",
+        "mesh_volume_ml": float(element_volume.sum() / 1000.0),
+        "tracked_frame": int(len(tracked["displacements"])),
+        "transferred_displacement_mm": {
+            "median": float(np.median(transferred_norm)),
+            "p95": float(np.quantile(transferred_norm, 0.95)),
+            "max": float(transferred_norm.max()),
+        },
         "cross_subject_mapping": True,
         "gaussian_checkpoint": str(args.gaussian_checkpoint),
         "gaussians": int(len(gaussians)),

@@ -83,6 +83,9 @@ def _run_scenario(
             "iterations": n_iters,
             "measured_force": True,
             "surface_motion": "noisy_observation",
+            "ratio_weight": inversion.get("ratio_weight"),
+            "contrast_weight": inversion.get("contrast_weight"),
+            "staged": inversion.get("staged"),
         },
         "E_bg_gt": inversion["E_bg_gt"],
         "E_bg_est": inversion["E_bg_est"],
@@ -185,6 +188,12 @@ def aggregate(rows: list[dict], expected_scenarios: int = 60) -> dict:
             }
             for case in HOLDOUT_CASES
         }
+        gaps = [
+            item["estimated_rel_err"] - item["oracle_rel_err"]
+            for row in rows
+            for item in row.get("held_out", [])
+        ]
+        summary["holdout_gap_vs_oracle"] = _describe(gaps)
     return summary
 
 

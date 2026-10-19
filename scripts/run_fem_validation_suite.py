@@ -85,10 +85,18 @@ def case_tensors(gt: dict, frames=(1, 2, 4)):
     forces_m = gt["forces_measured"]         # (T,3N)
     u_obs = gt["surface_motion_observed"]    # (T,S,3) noisy displacement
     fixed_nodes = torch.unique(fixed // 3)  # dataset stores DOF indices
+    u_true = gt.get("surface_motion_true")
+    if u_true is None and "u_seq" in gt:
+        # Fall back to full nodal GT reshaped onto surface nodes.
+        u_true = gt["u_seq"].view(gt["u_seq"].shape[0], -1, 3)[:, surf]
     return {
         "nodes": nodes, "elems": elems, "fixed": fixed_nodes, "surf": surf,
         "fixed_dofs": fixed,
-        "forces_m": forces_m, "u_obs": u_obs, "frames": list(frames),
+        "forces_m": forces_m,
+        "forces_true": gt.get("forces", forces_m),
+        "u_obs": u_obs,
+        "u_true": u_true,
+        "frames": list(frames),
         "E_bg": float(gt["E_background"]), "E_incl": float(gt["E_inclusion"]),
         "center": gt["inclusion_center"], "radius": float(gt["inclusion_radius"]),
     }
@@ -111,61 +119,168 @@ def invert_two_param_fem(
     extra_noise_std: float = 0.0,
     noise_seed: int = 0,
     verbose: bool = False,
+    focus_gain: float = 0.0,
+    contrast_weight: float = 0.0,
+    ratio_weight: float = 0.0,
+    soft_width: float = 0.02,
+    staged: bool = False,
+    stage2_ratio: float = 0.0,
+    stage2_focus: float = 2.0,
+    extra_loads: list[dict] | None = None,
+    optimize_incl: bool = True,
 ) -> dict:
     """Recover (E_bg, E_incl) with known inclusion center/radius.
 
-    Forward model = the same differentiable Neo-Hookean FEM used to generate
-    the data (upper-bound setting); inputs are the *measured* forces (5 %
-    calibrated error) and *noisy* surface motion, never the clean GT.
+    Default paper protocol: joint Adam on (log E_bg, log E_incl) with surface
+    MSE on one load case. Pass ``extra_loads`` (more ``case_tensors`` dicts) to
+    jointly fit several measured loads — the main lever left for inclusion
+    identifiability under surface-only observation.
     """
     nodes, elems, surf = data["nodes"], data["elems"], data["surf"]
     frames = frames if frames is not None else data["frames"]
     fixed_dofs = data["fixed_dofs"]
 
-    u_obs = data["u_obs"][frames].clone()
-    if extra_noise_std > 0:
-        g = torch.Generator().manual_seed(noise_seed)
-        u_obs = u_obs + extra_noise_std * torch.randn(u_obs.shape, generator=g)
-    scale = u_obs.norm(dim=-1).mean().clamp_min(1e-9)
+    def _prep(case: dict, case_frames: list[int]):
+        obs = case["u_obs"][case_frames].clone()
+        if extra_noise_std > 0:
+            g = torch.Generator().manual_seed(noise_seed)
+            obs = obs + extra_noise_std * torch.randn(obs.shape, generator=g)
+        scale = obs.norm(dim=-1).mean().clamp_min(1e-9)
+        return {
+            "frames": list(case_frames),
+            "u_obs": obs,
+            "scale": scale,
+            "forces_m": case["forces_m"],
+            "fixed_dofs": case["fixed_dofs"],
+        }
 
-    log_E = torch.tensor(
-        [np.log(E_init_bg), np.log(E_init_incl)],
-        dtype=torch.float64, requires_grad=True,
-    )
-    opt = torch.optim.Adam([log_E], lr=lr)
+    bundles = [_prep(data, frames)]
+    for extra in extra_loads or []:
+        bundles.append(_prep(extra, extra.get("frames", frames)))
+
+    log_bg = torch.tensor(np.log(E_init_bg), dtype=torch.float64, requires_grad=True)
+    log_incl = torch.tensor(np.log(E_init_incl), dtype=torch.float64, requires_grad=True)
     curve: list[float] = []
     t0 = time.time()
-    for it in range(n_iters):
-        opt.zero_grad()
-        E_bg, E_incl = log_E.exp()
-        E_field = make_heterogeneous_E_field(
-            nodes, data["center"], data["radius"], E_bg, E_incl, soft_width=0.02,
-        )
-        loss = torch.zeros((), dtype=torch.float64)
-        for f_i in frames:
-            u = solve_nh_heterogeneous(
-                nodes, elems, E_field, _nu_t(),
-                data["forces_m"][f_i] * force_scale, fixed_dofs, D=3,
+    dist = (nodes[surf] - data["center"]).norm(dim=-1)
+    radius = float(data["radius"])
+    near = dist <= radius
+    far = dist >= 2.0 * radius
+    if far.sum() < 8:
+        far = dist >= 1.5 * radius
+
+    def _run(n_steps: int, params: list, focus: float, far_gain: float, ratio: float, c_w: float) -> None:
+        opt = torch.optim.Adam(params, lr=lr)
+        for it in range(n_steps):
+            opt.zero_grad()
+            E_bg, E_incl = log_bg.exp(), log_incl.exp()
+            E_field = make_heterogeneous_E_field(
+                nodes, data["center"], data["radius"], E_bg, E_incl, soft_width=soft_width,
             )
-            u_surf = u.view(-1, 3)[surf]
-            loss = loss + torch.mean(
-                ((u_surf - u_obs[list(frames).index(f_i)]) / scale) ** 2
+            loss = torch.zeros((), dtype=torch.float64)
+            n_terms = 0
+            for bundle in bundles:
+                for idx, f_i in enumerate(bundle["frames"]):
+                    u = solve_nh_heterogeneous(
+                        nodes, elems, E_field, _nu_t(),
+                        bundle["forces_m"][f_i] * force_scale, bundle["fixed_dofs"], D=3,
+                    )
+                    u_surf = u.view(-1, 3)[surf]
+                    obs = bundle["u_obs"][idx]
+                    residual = ((u_surf - obs) / bundle["scale"]) ** 2
+                    focus_map = torch.exp(-(dist / (2.0 * max(radius, 1e-6))) ** 2)
+                    weight = (1.0 + focus * focus_map + far_gain * far.float()).unsqueeze(-1)
+                    loss = loss + (weight * residual).sum() / weight.sum()
+                    n_terms += 1
+                    if bool(near.any()) and bool(far.any()):
+                        if c_w > 0:
+                            pred_c = u_surf[near].mean(0) - u_surf[far].mean(0)
+                            obs_c = obs[near].mean(0) - obs[far].mean(0)
+                            loss = loss + c_w * ((pred_c - obs_c) / bundle["scale"]).pow(2).sum()
+                        if ratio > 0:
+                            pred_r = (
+                                u_surf[near].norm(dim=-1).mean()
+                                / u_surf[far].norm(dim=-1).mean().clamp_min(1e-8)
+                            )
+                            obs_r = (
+                                obs[near].norm(dim=-1).mean()
+                                / obs[far].norm(dim=-1).mean().clamp_min(1e-8)
+                            )
+                            loss = loss + ratio * ((pred_r - obs_r) / obs_r.clamp_min(1e-3)) ** 2
+            loss = loss / max(n_terms, 1)
+            loss.backward()
+            opt.step()
+            curve.append(float(loss.item()))
+            if verbose and (it % 10 == 0 or it == n_steps - 1):
+                print(
+                    f"    it {len(curve)-1:3d}: loss {loss.item():.5f} "
+                    f"E_bg {E_bg.item()/1e3:.2f} E_incl {E_incl.item()/1e3:.2f} kPa"
+                )
+
+    if not optimize_incl:
+        # Homogeneous background fit: E_incl locked to E_bg. Force-driven
+        # prediction is dominated by 1/E_bg, so this often beats a noisy inclusion.
+        log_incl.requires_grad_(False)
+        log_bg.requires_grad_(True)
+        with torch.no_grad():
+            log_incl.copy_(log_bg)
+        opt = torch.optim.Adam([log_bg], lr=lr)
+        for it in range(n_iters):
+            opt.zero_grad()
+            with torch.no_grad():
+                log_incl.copy_(log_bg)
+            E_bg, E_incl = log_bg.exp(), log_incl.exp()
+            E_field = make_heterogeneous_E_field(
+                nodes, data["center"], data["radius"], E_bg, E_incl, soft_width=soft_width,
             )
-        loss = loss / len(frames)
-        loss.backward()
-        opt.step()
-        curve.append(float(loss.item()))
-        if verbose and (it % 10 == 0 or it == n_iters - 1):
-            print(f"    it {it:3d}: loss {loss.item():.5f} "
-                  f"E_bg {E_bg.item()/1e3:.2f} E_incl {E_incl.item()/1e3:.2f} kPa")
-    E_bg, E_incl = log_E.detach().exp()
+            loss = torch.zeros((), dtype=torch.float64)
+            n_terms = 0
+            for bundle in bundles:
+                for idx, f_i in enumerate(bundle["frames"]):
+                    u = solve_nh_heterogeneous(
+                        nodes, elems, E_field, _nu_t(),
+                        bundle["forces_m"][f_i] * force_scale, bundle["fixed_dofs"], D=3,
+                    )
+                    u_surf = u.view(-1, 3)[surf]
+                    obs = bundle["u_obs"][idx]
+                    residual = ((u_surf - obs) / bundle["scale"]) ** 2
+                    loss = loss + residual.mean()
+                    n_terms += 1
+            loss = loss / max(n_terms, 1)
+            loss.backward()
+            opt.step()
+            curve.append(float(loss.item()))
+        with torch.no_grad():
+            log_incl.copy_(log_bg)
+        used_ratio = 0.0
+    elif staged and n_iters >= 4:
+        n1 = max(2, n_iters // 2)
+        n2 = n_iters - n1
+        log_incl.requires_grad_(False)
+        log_bg.requires_grad_(True)
+        _run(n1, [log_bg], focus=0.0, far_gain=2.0, ratio=0.0, c_w=0.0)
+        log_bg.requires_grad_(False)
+        log_incl.requires_grad_(True)
+        _run(n2, [log_incl], focus=stage2_focus, far_gain=0.0, ratio=stage2_ratio, c_w=contrast_weight)
+        used_ratio = float(stage2_ratio)
+    else:
+        log_bg.requires_grad_(True)
+        log_incl.requires_grad_(True)
+        _run(n_iters, [log_bg, log_incl], focus=focus_gain, far_gain=0.0, ratio=ratio_weight, c_w=contrast_weight)
+        used_ratio = float(ratio_weight)
+
+    E_bg, E_incl = log_bg.detach().exp(), log_incl.detach().exp()
     return {
-        "E_bg_est": float(E_bg) , "E_incl_est": float(E_incl),
+        "E_bg_est": float(E_bg), "E_incl_est": float(E_incl),
         "E_bg_gt": data["E_bg"], "E_incl_gt": data["E_incl"],
         "contrast_est": float(E_incl / E_bg),
         "contrast_gt": data["E_incl"] / data["E_bg"],
         "loss_curve": curve, "runtime_s": time.time() - t0,
-        "log_E_est": [float(v) for v in log_E.detach()],
+        "log_E_est": [float(log_bg.detach()), float(log_incl.detach())],
+        "ratio_weight": used_ratio,
+        "contrast_weight": float(contrast_weight),
+        "staged": bool(staged and n_iters >= 4),
+        "n_loads": len(bundles),
     }
 
 
@@ -343,25 +458,54 @@ def invert_two_param_surrogate(
 # ---------------------------------------------------------------------------
 
 
-def predict_load_case(data: dict, E_bg: float, E_incl: float, frame: int = 2):
-    """Simulate a load case with given material and compare with FEM GT."""
+def predict_load_case(
+    data: dict,
+    E_bg: float,
+    E_incl: float,
+    frame: int = 2,
+    *,
+    soft_width: float | None = None,
+    use_true_force: bool = False,
+    against: str = "observed",
+):
+    """Simulate a load case with given material and compare with surface motion.
+
+    Uses the same ``solve_nh_heterogeneous`` forward model as inversion (not a
+    separate Newton path), so prediction errors are not inflated by solver
+    mismatch. ``against`` is ``observed`` (noisy protocol) or ``true`` (clean
+    FEM surface displacement).
+    """
     nodes, elems, surf = data["nodes"], data["elems"], data["surf"]
     fixed_dofs = data["fixed_dofs"]
-    E_field = make_heterogeneous_E_field(
-        nodes, data["center"], data["radius"], E_bg, E_incl
-    )
-    mu, lam, _ = node_E_to_per_elem_mu_lam(E_field, elems, NU)
-    u_pred = newton_solve(
-        nodes, elems, mu, lam, data["forces_m"][frame], fixed_dofs, 3
+    # Floats + soft_width=None => hard inclusion (matches GT generation).
+    # Tensors / nonzero soft_width => smooth field (matches inversion).
+    if soft_width is None:
+        E_field = make_heterogeneous_E_field(
+            nodes, data["center"], data["radius"], float(E_bg), float(E_incl), soft_width=None,
+        )
+    else:
+        E_bg_t = torch.tensor(E_bg, dtype=torch.float64)
+        E_incl_t = torch.tensor(E_incl, dtype=torch.float64)
+        E_field = make_heterogeneous_E_field(
+            nodes, data["center"], data["radius"], E_bg_t, E_incl_t, soft_width=soft_width,
+        )
+    forces = data["forces_true"] if use_true_force else data["forces_m"]
+    u_pred = solve_nh_heterogeneous(
+        nodes, elems, E_field, _nu_t(), forces[frame], fixed_dofs, D=3,
     ).view(-1, 3)
-    u_gt = data["u_obs"][frame]  # noisy observed surface displacement
+    if against == "true" and data.get("u_true") is not None:
+        u_gt = data["u_true"][frame]
+    else:
+        u_gt = data["u_obs"][frame]
     err = (u_pred[surf] - u_gt).norm(dim=-1)
     mag = u_gt.norm(dim=-1).mean().clamp_min(1e-9)
     return {
-        "err_mean_mm": float(err.mean() * 1e3),
-        "err_max_mm": float(err.max() * 1e3),
-        "err_relative": float(err.mean() / mag),
-        "u_pred_surf": u_pred[surf],
+        "err_mean_mm": float(err.mean().detach() * 1e3),
+        "err_max_mm": float(err.max().detach() * 1e3),
+        "err_relative": float((err.mean() / mag).detach()),
+        "u_pred_surf": u_pred[surf].detach(),
+        "against": against,
+        "soft_width": soft_width,
     }
 
 

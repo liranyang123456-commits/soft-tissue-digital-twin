@@ -1,5 +1,9 @@
 """Hospital-CT liver geometry + tissue-classification validation.
 
+Superseded: the 82-slice JPEG export of case 002 is a cranial series with
+burnt-in viewer annotations, so this script does not segment the liver.  Use
+``run_ct_liver_dicom.py`` on the abdominal DICOM series instead.
+
 Pipeline:
 1. Load a patient's abdominal CT (jpeg slices) from the Henan Provincial
    People's Hospital dataset (E:\\ct_extract).
@@ -133,11 +137,11 @@ def main():
     except Exception as e:
         print(f"marching cubes failed: {e}")
 
-    # ---- figure: 2 rows of CT slices + 1 full-width row with the 3D mesh ----
-    fig = plt.figure(figsize=(13, 11), dpi=150)
+    # ---- figure: 2 rows of CT slices + 1 full-width tall row with the 3D mesh ----
+    fig = plt.figure(figsize=(13, 13), dpi=150)
     slice_ids = [int(len(imgs) * f) for f in (0.20, 0.32, 0.42, 0.52, 0.65, 0.78)]
-    # rows 1-2: 3 slices each (grid positions 1,2,3 and 5,6,7 in a 3x3 grid)
-    gs = fig.add_gridspec(3, 3, height_ratios=[1, 1, 1.15], hspace=0.08, wspace=0.05)
+    # rows 1-2 keep their size; row 3 is taller so the mesh fills the width
+    gs = fig.add_gridspec(3, 3, height_ratios=[1, 1, 1.9], hspace=0.06, wspace=0.04)
     positions = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
     for k, si in enumerate(slice_ids):
         ax = fig.add_subplot(gs[positions[k]])
@@ -145,18 +149,33 @@ def main():
         ax.contour(volume[si], levels=[0.5], colors="#22CC22", linewidths=1.5)
         ax.set_title(f"CT slice {si}", fontsize=10)
         ax.axis("off")
-    # row 3: the 3D mesh, enlarged, spanning the full width
+    # row 3: the 3D mesh, enlarged, spanning the full width and filling the axes
     ax = fig.add_subplot(gs[2, :], projection="3d")
     if n_verts > 0:
         try:
             import trimesh
             m = trimesh.load(str(mesh_path))
-            ax.plot_trisurf(m.vertices[:, 0], m.vertices[:, 1], m.vertices[:, 2],
-                            triangles=m.faces[:: max(1, len(m.faces) // 6000)],
-                            color="#C97B6B", alpha=0.9, linewidth=0)
+            v = m.vertices
+            ax.plot_trisurf(v[:, 0], v[:, 1], v[:, 2],
+                            triangles=m.faces[:: max(1, len(m.faces) // 16000)],
+                            color="#C97B6B", alpha=0.95, linewidth=0,
+                            shade=True)
+            # limits around the mesh with a small margin so nothing is cropped
+            x0, x1 = v[:, 0].min(), v[:, 0].max()
+            y0, y1 = v[:, 1].min(), v[:, 1].max()
+            z0, z1 = v[:, 2].min(), v[:, 2].max()
+            mx = 0.06 * (x1 - x0)
+            my = 0.06 * (y1 - y0)
+            mz = 0.06 * max(z1 - z0, 1e-3)
+            ax.set_xlim(x0 - mx, x1 + mx)
+            ax.set_ylim(y0 - my, y1 + my)
+            ax.set_zlim(z0 - mz, z1 + mz)
+            # match the 3D box to the mesh's own proportions (fills the view)
+            ax.set_box_aspect((x1 - x0, y1 - y0, max(z1 - z0, 1e-3)))
             ax.set_title(f"patient-specific liver mesh ({n_verts//1000}k verts, "
-                         f"~{liver_vol_ml:.0f} mL)", fontsize=12)
-            ax.view_init(elev=18, azim=-55)
+                         f"~{liver_vol_ml:.0f} mL)", fontsize=13, pad=2)
+            ax.view_init(elev=20, azim=-60)
+            ax.dist = 8  # far enough to show the whole organ
         except Exception:
             ax.text(0.5, 0.5, 0.5, "mesh", ha="center")
     ax.set_axis_off()

@@ -1,0 +1,74 @@
+{
+  "scenario": "geom_58db559b24da6eb7cc0d_scenario_000",
+  "frame": 2,
+  "conditions": {
+    "matched": [
+      {
+        "case": "press_right",
+        "estimated_rel_err": 0.09463194509798395,
+        "oracle_rel_err": 0.09563538985037236
+      },
+      {
+        "case": "shear_x",
+        "estimated_rel_err": 0.07800488180912406,
+        "oracle_rel_err": 0.07195576102372982
+      },
+      {
+        "case": "shear_y",
+        "estimated_rel_err": 0.10184147825601968,
+        "oracle_rel_err": 0.10853550674106272
+      }
+    ],
+    "mooney": [
+      {
+        "case": "press_right",
+        "estimated_rel_err": 0.09483939235243849,
+        "oracle_rel_err": 0.09557576847579773
+      },
+      {
+        "case": "shear_x",
+        "estimated_rel_err": 0.08066362706920903,
+        "oracle_rel_err": 0.07485829193229913
+      },
+      {
+        "case": "shear_y",
+        "estimated_rel_err": 0.10132600026938972,
+        "oracle_rel_err": 0.10772342276730765
+      }
+    ],
+    "fine": [
+      {
+        "case": "press_right",
+        "estimated_rel_err": 0.22510684934805852,
+        "oracle_rel_err": 0.2786561590138191
+      },
+      {
+        "case": "shear_x",
+        "estimated_rel_err": 0.13287448420980028,
+        "oracle_rel_err": 0.15801714059780828
+      },
+      {
+        "case": "shear_y",
+        "estimated_rel_err": 0.3922858487647512,
+        "oracle_rel_err": 0.46750402095850646
+      }
+    ],
+    "mooney_fine": [
+      {
+        "case": "press_right",
+        "estimated_rel_err": 0.2256807012147513,
+        "oracle_rel_err": 0.2774930363673385
+      },
+      {
+        "case": "shear_x",
+        "estimated_rel_err": 0.1332265359924568,
+        "oracle_rel_err": 0.15572656739028326
+      },
+      {
+        "case": "shear_y",
+        "estimated_rel_err": 0.3928576563165138,
+        "oracle_rel_err": 0.4665160153793922
+      }
+    ]
+  }
+}

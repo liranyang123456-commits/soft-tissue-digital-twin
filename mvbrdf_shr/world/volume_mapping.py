@@ -272,7 +272,7 @@ def similarity_icp(
         transform = compose(incremental, transform)
         rmse = float(np.sqrt(np.mean(np.square(distance[keep]))))
         history.append(rmse)
-        if abs(previous - rmse) <= 1e-7 * max(previous, 1.0):
+        if np.isfinite(previous) and abs(previous - rmse) <= 1e-7 * max(previous, 1.0):
             break
         previous = rmse
 

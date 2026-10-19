@@ -1,0 +1,37 @@
+{
+  "dataset": "dataset_1",
+  "rows": [
+    {
+      "keyframe": "keyframe_1",
+      "tissue_psnr": 26.98891170112465,
+      "all_psnr": 24.795142889389624,
+      "n_gaussians": 7221
+    },
+    {
+      "keyframe": "keyframe_2",
+      "tissue_psnr": 26.183948452838596,
+      "all_psnr": 24.456574423450622,
+      "n_gaussians": 7676
+    },
+    {
+      "keyframe": "keyframe_3",
+      "tissue_psnr": 25.32991431435277,
+      "all_psnr": 22.32389547043743,
+      "n_gaussians": 7988
+    },
+    {
+      "keyframe": "keyframe_4",
+      "tissue_psnr": 26.70184079795257,
+      "all_psnr": 25.00895103504459,
+      "n_gaussians": 6670
+    },
+    {
+      "keyframe": "keyframe_5",
+      "tissue_psnr": 29.56914290803068,
+      "all_psnr": 28.026598344835524,
+      "n_gaussians": 6672
+    }
+  ],
+  "tissue_psnr_mean": 26.95475163485985,
+  "note": "single-view + metric stereo depth; camera intrinsics from endoscope_calibration.yaml; depth in mm"
+}

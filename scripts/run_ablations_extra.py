@@ -88,11 +88,28 @@ def run_tier1(scene, device, n_points, steps=600):
 
 
 def main():
+    # Controlled #Gaussians ablation: reuse the MAIN Tier-1 pipeline
+    # (same 24 frames, 800 steps, adaptive scale, seed 0) and vary only
+    # max_points, so the 6498 case matches the main reconstruction result.
+    import argparse
+    import random
+    from scripts.run_soft_tissue_twin import run_tier1
+
+    seed = 0
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    scene = load_endonerf_scene(SCENE, max_frames=2, image_scale=0.5)
+    scene = load_endonerf_scene(SCENE, max_frames=24, image_scale=0.5)
     results = {"tier1_n_gaussians": {}}
     for n in [4000, 6498, 10000]:
-        p = run_tier1(scene, device, n, steps=600)
+        args = argparse.Namespace(max_points=n, backend="gsplat", steps=800)
+        out_dir = ROOT / "outputs" / f"ablation_ng{n}"
+        r = run_tier1(args, scene, device, out_dir)
+        p = r["psnr"]
         results["tier1_n_gaussians"][str(n)] = p
         print(f"  Tier-1 #Gaussians {n}: tissue-PSNR {p:.2f} dB")
     OUT.write_text(json.dumps(results, indent=2), encoding="utf-8")

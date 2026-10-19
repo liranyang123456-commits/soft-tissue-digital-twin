@@ -1,0 +1,44 @@
+[
+ {
+  "state": "01",
+  "surface_points": 57518,
+  "surface_extent_mm": [
+   202.1,
+   35.6,
+   110.6
+  ],
+  "surface_to_model_median_mm": 3.213287883557843,
+  "surface_to_model_rigid_median_mm": 2.9287925550085,
+  "fiducials_within_15mm": 22,
+  "their_true_displacement_median_mm": 53.490138288754466,
+  "all_fiducial_displacement_median_mm": 55.660559942952446
+ },
+ {
+  "state": "10",
+  "surface_points": 117061,
+  "surface_extent_mm": [
+   65.5,
+   20.7,
+   50.6
+  ],
+  "surface_to_model_median_mm": 2.7169308385386333,
+  "surface_to_model_rigid_median_mm": 2.3006568735063624,
+  "fiducials_within_15mm": 8,
+  "their_true_displacement_median_mm": 33.7100532293631,
+  "all_fiducial_displacement_median_mm": 48.12702486206248
+ },
+ {
+  "state": "13",
+  "surface_points": 102821,
+  "surface_extent_mm": [
+   60.0,
+   13.0,
+   86.3
+  ],
+  "surface_to_model_median_mm": 7.934090611657398,
+  "surface_to_model_rigid_median_mm": 6.4251652465970395,
+  "fiducials_within_15mm": 10,
+  "their_true_displacement_median_mm": 35.58866450075379,
+  "all_fiducial_displacement_median_mm": 45.9827208509963
+ }
+]
